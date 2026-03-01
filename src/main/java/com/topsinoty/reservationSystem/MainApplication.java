@@ -1,13 +1,13 @@
-package com.topsinoty.reservation_system;
+package com.topsinoty.reservationSystem;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class RestaurantReservationSystemApplication {
+public class MainApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(RestaurantReservationSystemApplication.class, args);
+		SpringApplication.run(MainApplication.class, args);
 	}
 
 }
