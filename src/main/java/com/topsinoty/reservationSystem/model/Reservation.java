@@ -17,7 +17,7 @@ public class Reservation {
     private LocalTime time;
     private LocalDate date;
     private Integer people;
-    @OneToOne(mappedBy = "restaurant_table")
+    @ManyToOne
     @JoinColumn(name = "restaurant_table_id", nullable = false)
-    private RestaurantTable table;
+    private RestaurantTable restaurantTable;
 }

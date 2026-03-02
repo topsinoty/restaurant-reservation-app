@@ -21,4 +21,7 @@ public class RestaurantTable {
             joinColumns = @JoinColumn(name = "restaurant_table_id"))
     @Column(name = "feature")
     private Set<Feature> features;
+
+    @OneToMany(mappedBy = "restaurantTable")
+    private Set<Reservation> reservations;
 }
