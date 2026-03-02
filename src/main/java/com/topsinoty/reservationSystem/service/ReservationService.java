@@ -30,6 +30,26 @@ public class ReservationService {
         this.tableRepository = tableRepository;
     }
 
+    public Reservation bookTable(Long tableId, LocalDate date, LocalTime time, int people) {
+
+        RestaurantTable restaurantTable = tableRepository.findById(tableId)
+                .orElseThrow(() -> new IllegalArgumentException("Table not found"));
+
+        boolean tableIsFree = isTableFree(tableId, date, time);
+
+        if (!tableIsFree) {
+            throw new IllegalStateException("Table is not available for the selected time");
+        }
+
+        Reservation reservation = new Reservation();
+        reservation.setRestaurantTable(restaurantTable);
+        reservation.setDate(date);
+        reservation.setTime(time);
+        reservation.setPeople(people);
+
+        return reservationRepository.save(reservation);
+    }
+
     public List<RestaurantTable> getAvailableTables(LocalDate date,
                                                     LocalTime requestedBookingStartTime,
                                                     int people,
