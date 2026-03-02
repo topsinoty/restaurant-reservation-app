@@ -1,0 +1,9 @@
+services:
+  postgres:
+    image: 'postgres:alpine3.19'
+    environment:
+      - 'POSTGRES_DB=restaurantDB'
+      - 'POSTGRES_PASSWORD=password'
+      - 'POSTGRES_USER=sa'
+    ports:
+      - '5432:5432'
