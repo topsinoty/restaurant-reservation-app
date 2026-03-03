@@ -80,27 +80,6 @@ public class ReservationService {
                 .toList();
     }
 
-    private boolean isTableFree(Long tableId, LocalDate date, LocalTime requestedBookingStartTime) {
-
-        LocalTime requestedBookingEndTime = requestedBookingStartTime.plusHours(RESERVATION_DURATION_HOURS);
-
-        List<Reservation> reservations = reservationRepository.findAllByRestaurantTableIdAndDate(tableId, date);
-
-        for (Reservation reservation : reservations) {
-
-            LocalTime existingBookingStartTime = reservation.getTime();
-            LocalTime existingBookingEndTime = existingBookingStartTime.plusHours(RESERVATION_DURATION_HOURS);
-
-            boolean bookingTimeOverlaps = existingBookingStartTime.isBefore(requestedBookingEndTime) && existingBookingEndTime.isAfter(requestedBookingStartTime);
-
-            if (bookingTimeOverlaps) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
     private int countMatchingFeatures(RestaurantTable restaurantTable, Set<Feature> requestedFeatures) {
 
         if (requestedFeatures.isEmpty() || restaurantTable.getFeatures()==null || restaurantTable.getFeatures()
