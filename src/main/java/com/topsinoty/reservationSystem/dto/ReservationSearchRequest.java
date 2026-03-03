@@ -1,10 +1,8 @@
 package com.topsinoty.reservationSystem.dto;
 
 
-
 import com.topsinoty.reservationSystem.model.Feature;
 import com.topsinoty.reservationSystem.model.Location;
-
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
@@ -22,7 +20,7 @@ public record ReservationSearchRequest(
 
         @NotNull
         @Positive
-        Integer expectedPeople,
+        Integer people,
 
         Set<Feature> preferredFeatures,
 
