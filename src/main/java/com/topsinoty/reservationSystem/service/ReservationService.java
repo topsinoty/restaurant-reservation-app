@@ -6,6 +6,7 @@ import com.topsinoty.reservationSystem.model.Reservation;
 import com.topsinoty.reservationSystem.model.RestaurantTable;
 import com.topsinoty.reservationSystem.repository.ReservationRepository;
 import com.topsinoty.reservationSystem.repository.RestaurantTableRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -30,12 +31,13 @@ public class ReservationService {
         this.tableRepository = tableRepository;
     }
 
+    @Transactional
     public Reservation bookTable(Long tableId, LocalDate date, LocalTime time, int people) {
 
         RestaurantTable restaurantTable = tableRepository.findById(tableId)
                 .orElseThrow(() -> new IllegalArgumentException("Table not found"));
 
-        boolean tableIsFree = isTableFree(tableId, date, time);
+        boolean tableIsFree = !reservationRepository.existsByRestaurantTableIdAndDateAndTimeBetween(tableId, date, time, time.plusHours(RESERVATION_DURATION_HOURS));
 
         if (!tableIsFree) {
             throw new IllegalStateException("Table is not available for the selected time");
@@ -62,7 +64,7 @@ public class ReservationService {
                 .equals(value)).orElse(true);
 
         Predicate<RestaurantTable> filterByCapacity = restaurantTable -> restaurantTable.getCapacity() >= people;
-        Predicate<RestaurantTable> filterByAvailability = restaurantTable -> isTableFree(restaurantTable.getId(), date, requestedBookingStartTime);
+        Predicate<RestaurantTable> filterByAvailability = restaurantTable -> !reservationRepository.existsByRestaurantTableIdAndDateAndTimeBetween(restaurantTable.getId(), date, requestedBookingStartTime, requestedBookingStartTime.plusHours(RESERVATION_DURATION_HOURS));
         ToIntFunction<RestaurantTable> countFeatureMatch = restaurantTable -> countMatchingFeatures(restaurantTable, requestedFeatures);
 
         Comparator<RestaurantTable> sortByFeatureMatchThenCapacity = Comparator.comparingInt(countFeatureMatch)
