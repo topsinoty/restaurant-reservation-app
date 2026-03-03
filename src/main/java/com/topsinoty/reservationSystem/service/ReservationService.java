@@ -37,7 +37,7 @@ public class ReservationService {
         RestaurantTable restaurantTable = tableRepository.findById(tableId)
                 .orElseThrow(() -> new IllegalArgumentException("Table not found"));
 
-        boolean tableIsFree = reservationRepository.doesNotExistsByRestaurantTableIdAndDateAndTimeBetween(tableId, date, time, time.plusHours(RESERVATION_DURATION_HOURS));
+        boolean tableIsFree = !reservationRepository.existsByRestaurantTableIdAndDateAndTimeBetween(tableId, date, time, time.plusHours(RESERVATION_DURATION_HOURS));
 
         if (!tableIsFree) {
             throw new IllegalStateException("Table is not available for the selected time");
@@ -64,7 +64,7 @@ public class ReservationService {
                 .equals(value)).orElse(true);
 
         Predicate<RestaurantTable> filterByCapacity = restaurantTable -> restaurantTable.getCapacity() >= people;
-        Predicate<RestaurantTable> filterByAvailability = restaurantTable -> reservationRepository.doesNotExistsByRestaurantTableIdAndDateAndTimeBetween(restaurantTable.getId(), date, requestedBookingStartTime, requestedBookingStartTime.plusHours(RESERVATION_DURATION_HOURS));
+        Predicate<RestaurantTable> filterByAvailability = restaurantTable -> !reservationRepository.existsByRestaurantTableIdAndDateAndTimeBetween(restaurantTable.getId(), date, requestedBookingStartTime, requestedBookingStartTime.plusHours(RESERVATION_DURATION_HOURS));
         ToIntFunction<RestaurantTable> countFeatureMatch = restaurantTable -> countMatchingFeatures(restaurantTable, requestedFeatures);
 
         Comparator<RestaurantTable> sortByFeatureMatchThenCapacity = Comparator.comparingInt(countFeatureMatch)

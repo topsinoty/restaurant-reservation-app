@@ -8,7 +8,7 @@ import java.time.LocalTime;
 import java.util.List;
 
 public interface ReservationRepository extends ListCrudRepository<Reservation, Long> {
-    boolean doesNotExistsByRestaurantTableIdAndDateAndTimeBetween(Long tableId,
+    boolean existsByRestaurantTableIdAndDateAndTimeBetween(Long tableId,
                                                            LocalDate date,
                                                            LocalTime start,
                                                            LocalTime end);
