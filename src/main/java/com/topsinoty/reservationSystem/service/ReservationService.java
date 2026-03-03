@@ -37,7 +37,7 @@ public class ReservationService {
         RestaurantTable restaurantTable = tableRepository.findById(tableId)
                 .orElseThrow(() -> new IllegalArgumentException("Table not found"));
 
-        boolean tableIsFree = !reservationRepository.doesNotExistsByRestaurantTableIdAndDateAndTimeBetween(tableId, date, time, time.plusHours(RESERVATION_DURATION_HOURS));
+        boolean tableIsFree = reservationRepository.doesNotExistsByRestaurantTableIdAndDateAndTimeBetween(tableId, date, time, time.plusHours(RESERVATION_DURATION_HOURS));
 
         if (!tableIsFree) {
             throw new IllegalStateException("Table is not available for the selected time");
