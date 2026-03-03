@@ -1,6 +1,10 @@
 package com.topsinoty.reservationSystem.controller;
 
+import com.topsinoty.reservationSystem.dto.ReservationBookingRequest;
+import com.topsinoty.reservationSystem.dto.ReservationBookingResponse;
 import com.topsinoty.reservationSystem.dto.ReservationSearchRequest;
+import com.topsinoty.reservationSystem.dto.ReservationSearchResponse;
+import com.topsinoty.reservationSystem.model.Reservation;
 import com.topsinoty.reservationSystem.model.RestaurantTable;
 import com.topsinoty.reservationSystem.repository.RestaurantTableRepository;
 import com.topsinoty.reservationSystem.service.ReservationService;
@@ -24,8 +28,19 @@ public class ReservationController {
     }
 
     @PostMapping("")
-    public List<RestaurantTable> getAvailableTables(@RequestBody @Valid ReservationSearchRequest req) {
-        return reservationService.getAvailableTables(req.date(), req.time(), req.expectedPeople(), Optional.ofNullable(req.preferredFeatures()), Optional.ofNullable(req.location()));
+    public List<ReservationSearchResponse> getAvailableTables(@RequestBody @Valid ReservationSearchRequest req) {
+        List<RestaurantTable> availableTables = reservationService.getAvailableTables(req.date(), req.time(), req.people(), Optional.ofNullable(req.preferredFeatures()), Optional.ofNullable(req.location()));
+        return availableTables.stream()
+                .map(table -> new ReservationSearchResponse(table.getId(), table.getLocation(), table.getFeatures(), table.getCapacity()))
+                .toList();
+    }
+
+    @PostMapping("/book")
+    public ReservationBookingResponse bookTable(@RequestBody @Valid ReservationBookingRequest req) {
+        System.out.println(req.toString());
+        Reservation reservation = reservationService.bookTable(req.id(), req.date(), req.time(), req.people());
+        return new ReservationBookingResponse(reservation.getId(), reservation.getRestaurantTable()
+                .getId(), reservation.getDate(), reservation.getTime(), reservation.getPeople());
     }
 
 }
