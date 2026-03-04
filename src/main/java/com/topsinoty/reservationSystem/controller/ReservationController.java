@@ -39,4 +39,10 @@ public class ReservationController {
     public ReservationBookingResponse bookReservation(@Valid @RequestBody ReservationBookingRequest request) {
         return reservationService.bookReservation(request);
     }
+
+    @DeleteMapping("/cancel/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteReservationById(@PathVariable String id) {
+        reservationService.cancelReservation(Long.valueOf(id));
+    }
 }
