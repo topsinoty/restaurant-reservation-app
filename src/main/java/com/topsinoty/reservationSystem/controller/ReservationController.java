@@ -1,35 +1,37 @@
 package com.topsinoty.reservationSystem.controller;
 
-import com.topsinoty.reservationSystem.dto.ReservationResponse;
-import com.topsinoty.reservationSystem.repository.ReservationRepository;
-import com.topsinoty.reservationSystem.repository.RestaurantTableRepository;
+import com.topsinoty.reservationSystem.dto.*;
 import com.topsinoty.reservationSystem.service.ReservationService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+// todo add proper http codes
 
 @RestController
-@RequestMapping("/api/reservation")
+@RequestMapping("/api/reservations")
 public class ReservationController {
 
     private final ReservationService reservationService;
-    private final ReservationRepository reservationRepository;
 
-    public ReservationController(ReservationService reservationService,
-                                 RestaurantTableRepository tableRepository,
-                                 ReservationRepository reservationRepository) {
+    public ReservationController(ReservationService reservationService) {
         this.reservationService = reservationService;
-        this.reservationRepository = reservationRepository;
     }
 
-    @GetMapping("")
+    @GetMapping
     public List<ReservationResponse> getAllReservations() {
         return reservationRepository.findAll()
                 .stream()
                 .map(reservation -> new ReservationResponse(reservation.getId(), reservation.getTime(), reservation.getDate(), reservation.getPeople(), reservation.getRestaurantTable()
                         .getId()))
                 .toList();
+        return reservationService.findAll();
+    }
+
+    @GetMapping("/{id}")
+    public ReservationResponse getReservationById(@PathVariable String id) {
+        return reservationService.findById(Long.valueOf(id));
+    }
     }
 }
