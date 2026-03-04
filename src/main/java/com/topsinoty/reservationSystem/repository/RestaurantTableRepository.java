@@ -1,7 +1,13 @@
 package com.topsinoty.reservationSystem.repository;
 
 import com.topsinoty.reservationSystem.model.RestaurantTable;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.ListCrudRepository;
+import org.springframework.data.repository.query.Param;
+
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.List;
 
 public interface RestaurantTableRepository extends ListCrudRepository<RestaurantTable, Long> {
     @Query("""
