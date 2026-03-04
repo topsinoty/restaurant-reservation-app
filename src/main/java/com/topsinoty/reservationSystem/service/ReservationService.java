@@ -18,8 +18,6 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.function.ToDoubleFunction;
 
-// TODO LOCATION FILTERING
-
 @Service
 public class ReservationService {
 
@@ -78,6 +76,14 @@ public class ReservationService {
 
         return new ReservationBookingResponse(saved.getId(), saved.getDate(), saved.getTime(), saved.getPeople(), saved.getRestaurantTable()
                 .getId());
+    }
+
+    @Transactional
+    public void cancelReservation(Long id) throws NoSuchElementException {
+        Reservation reservation = reservationRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Reservation not found with id: " + id));
+
+        reservationRepository.delete(reservation);
     }
 
     public List<ReservationSearchResponse> getPossibleTablesForReservation(ReservationSearchRequest req) {
