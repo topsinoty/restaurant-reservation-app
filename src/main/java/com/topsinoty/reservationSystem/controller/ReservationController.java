@@ -29,7 +29,7 @@ public class ReservationController {
         return reservationService.findById(id);
     }
 
-    @GetMapping("/available")
+    @PostMapping("/available")
     public List<ReservationSearchResponse> getAvailableReservations(@Valid @RequestBody ReservationSearchRequest reservationSearchRequest) {
         return reservationService.getPossibleTablesForReservation(reservationSearchRequest);
     }
