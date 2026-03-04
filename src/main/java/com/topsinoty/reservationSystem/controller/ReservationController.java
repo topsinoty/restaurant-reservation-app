@@ -33,5 +33,10 @@ public class ReservationController {
     public List<ReservationSearchResponse> getAvailableReservations(@Valid @RequestBody ReservationSearchRequest reservationSearchRequest) {
         return reservationService.getPossibleTablesForReservation(reservationSearchRequest);
     }
+
+    @PostMapping("/book")
+    @ResponseStatus(HttpStatus.CREATED)
+    public ReservationBookingResponse bookReservation(@Valid @RequestBody ReservationBookingRequest request) {
+        return reservationService.bookReservation(request);
     }
 }
