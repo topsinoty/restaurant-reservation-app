@@ -15,7 +15,10 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.function.ToDoubleFunction;
+
+// TODO LOCATION FILTERING
 
 @Service
 public class ReservationService {
@@ -83,11 +86,13 @@ public class ReservationService {
         Comparator<RestaurantTable> sortByFeatureMatchThenCapacity = Comparator.comparingDouble(countFeatureMatch)
                 .reversed()
                 .thenComparingInt(RestaurantTable::getCapacity);
+        Predicate<RestaurantTable> filterByLocationIfLocationIsPresent = t -> t.getLocation()==null || t.getLocation()
+                .equals(req.location());
 
         LocalTime endTime = req.time().plus(RESERVATION_DURATION);
 
         return tableRepository.findAvailableTables(req.people(), req.date(), req.time(), endTime)
-                .stream()
+                .stream().filter(filterByLocationIfLocationIsPresent)
                 .sorted(sortByFeatureMatchThenCapacity)
                 .map(t -> new ReservationSearchResponse(t.getId(), t.getLocation(), t.getFeatures(), t.getCapacity()))
                 .toList();
