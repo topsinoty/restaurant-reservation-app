@@ -32,8 +32,16 @@ public class ReservationService {
                         .getId()))
                 .orElseThrow();
     }
+
     public ReservationBookingResponse bookReservation(ReservationBookingRequest request)
             throws HttpClientErrorException.BadRequest {
+        boolean tableFree = tableRepository.isTableFree(request.tableId(), request.date(), request.time(), request.time()
+                .plus(Duration.ofHours(2)));
+
+        if (!tableFree) {
+            return null;
+        }
+
         RestaurantTable table = tableRepository.findById(request.tableId()).orElseThrow();
 
         Reservation reservation = new Reservation();
@@ -48,6 +56,7 @@ public class ReservationService {
         return new ReservationBookingResponse(saved.getId(), saved.getDate(), saved.getTime(), saved.getPeople(), saved.getRestaurantTable()
                 .getId());
     }
+
     public List<ReservationSearchResponse> getPossibleTablesForReservation(ReservationSearchRequest req) {
         ToIntFunction<RestaurantTable> countFeatureMatch = restaurantTable -> countMatchingFeatures(restaurantTable, req.preferredFeatures());
         Comparator<RestaurantTable> sortByFeatureMatchThenCapacity = Comparator.comparingInt(countFeatureMatch)
