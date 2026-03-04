@@ -5,6 +5,23 @@ import org.springframework.data.repository.ListCrudRepository;
 
 public interface RestaurantTableRepository extends ListCrudRepository<RestaurantTable, Long> {
     @Query("""
+            SELECT t FROM RestaurantTable t
+            WHERE t.capacity >= :capacity 
+            AND t.id NOT IN (
+                SELECT r.restaurantTable.id 
+                FROM Reservation r 
+                WHERE r.date = :date 
+                AND r.time < :endTime 
+                AND r.endTime > :time
+            ) 
+            ORDER BY t.capacity
+            """)
+    List<RestaurantTable> findAvailableTables(@Param("capacity") int capacity,
+                                              @Param("date") LocalDate date,
+                                              @Param("time") LocalTime startTime,
+                                              @Param("endTime") LocalTime endTime);
+
+    @Query("""
             SELECT CASE WHEN COUNT(r) = 0 THEN true ELSE false END
             FROM Reservation r
             WHERE r.restaurantTable.id = :tableId

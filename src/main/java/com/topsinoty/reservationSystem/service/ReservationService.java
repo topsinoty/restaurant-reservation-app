@@ -1,13 +1,22 @@
 package com.topsinoty.reservationSystem.service;
 
+import com.topsinoty.reservationSystem.dto.*;
+import com.topsinoty.reservationSystem.model.Feature;
+import com.topsinoty.reservationSystem.model.Reservation;
+import com.topsinoty.reservationSystem.model.RestaurantTable;
 import com.topsinoty.reservationSystem.repository.ReservationRepository;
 import com.topsinoty.reservationSystem.repository.RestaurantTableRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
+
+import java.time.Duration;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Set;
+import java.util.function.ToIntFunction;
 
 @Service
 public class ReservationService {
-
-    private static final int RESERVATION_DURATION_HOURS = 2;
 
     private final ReservationRepository reservationRepository;
     private final RestaurantTableRepository tableRepository;
