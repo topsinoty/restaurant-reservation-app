@@ -7,7 +7,6 @@ import com.topsinoty.reservationSystem.model.RestaurantTable;
 import com.topsinoty.reservationSystem.repository.ReservationRepository;
 import com.topsinoty.reservationSystem.repository.RestaurantTableRepository;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
 
 import java.time.Duration;
 import java.util.Comparator;
@@ -35,15 +34,14 @@ public class ReservationService {
                 .toList();
     }
 
-    public ReservationResponse findById(Long id) throws HttpClientErrorException.NotFound {
+    public ReservationResponse findById(Long id) {
         return reservationRepository.findById(id)
                 .map(r -> new ReservationResponse(r.getId(), r.getTime(), r.getDate(), r.getPeople(), r.getRestaurantTable()
                         .getId()))
                 .orElseThrow();
     }
 
-    public ReservationBookingResponse bookReservation(ReservationBookingRequest request)
-            throws HttpClientErrorException.BadRequest {
+    public ReservationBookingResponse bookReservation(ReservationBookingRequest request) {
         boolean tableFree = tableRepository.isTableFree(request.tableId(), request.date(), request.time(), request.time()
                 .plus(Duration.ofHours(2)));
 
