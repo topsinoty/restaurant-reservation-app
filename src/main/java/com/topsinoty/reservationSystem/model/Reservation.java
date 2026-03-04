@@ -2,6 +2,8 @@ package com.topsinoty.reservationSystem.model;
 
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Future;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.Data;
 
@@ -15,9 +17,11 @@ public class Reservation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Positive
+    @NotNull
     private LocalTime time;
-    @Positive
+    @NotNull
+    private LocalTime endTime;
+    @Future
     private LocalDate date;
     @Positive
     private Integer people;
