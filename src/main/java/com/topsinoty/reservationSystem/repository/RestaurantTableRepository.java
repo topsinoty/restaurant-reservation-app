@@ -12,10 +12,10 @@ import java.util.List;
 public interface RestaurantTableRepository extends ListCrudRepository<RestaurantTable, Long> {
     @Query("""
             SELECT t FROM RestaurantTable t
-            WHERE t.capacity >= :capacity 
+            WHERE t.capacity >= :capacity
             AND t.id NOT IN (
-                SELECT r.restaurantTable.id 
-                FROM Reservation r 
+                SELECT r.restaurantTable.id
+                FROM Reservation r
                 WHERE r.date = :date 
                 AND r.time < :endTime 
                 AND r.endTime > :time
