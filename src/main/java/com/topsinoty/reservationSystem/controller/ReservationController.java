@@ -21,17 +21,17 @@ public class ReservationController {
 
     @GetMapping
     public List<ReservationResponse> getAllReservations() {
-        return reservationRepository.findAll()
-                .stream()
-                .map(reservation -> new ReservationResponse(reservation.getId(), reservation.getTime(), reservation.getDate(), reservation.getPeople(), reservation.getRestaurantTable()
-                        .getId()))
-                .toList();
         return reservationService.findAll();
     }
 
     @GetMapping("/{id}")
     public ReservationResponse getReservationById(@PathVariable String id) {
         return reservationService.findById(Long.valueOf(id));
+    }
+
+    @GetMapping("/available")
+    public List<ReservationSearchResponse> getAvailableReservations(@Valid @RequestBody ReservationSearchRequest reservationSearchRequest) {
+        return reservationService.getPossibleTablesForReservation(reservationSearchRequest);
     }
     }
 }
