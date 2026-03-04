@@ -8,7 +8,7 @@ import java.time.LocalTime;
 
 public record ReservationBookingRequest(
 
-        @NotNull Long id,
+        @NotNull Long tableId,
 
         @NotNull LocalDate date,
 
