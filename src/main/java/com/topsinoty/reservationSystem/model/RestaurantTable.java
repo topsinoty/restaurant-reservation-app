@@ -1,6 +1,7 @@
 package com.topsinoty.reservationSystem.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Positive;
 import lombok.Data;
 
 import java.util.Set;
@@ -13,6 +14,7 @@ public class RestaurantTable {
     private Long id;
     @Enumerated(EnumType.STRING)
     private Location location;
+    @Positive
     private int capacity;
 
     @ElementCollection(targetClass = Feature.class)

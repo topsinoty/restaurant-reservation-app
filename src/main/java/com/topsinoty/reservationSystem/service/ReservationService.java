@@ -1,26 +1,27 @@
 package com.topsinoty.reservationSystem.service;
 
+import com.topsinoty.reservationSystem.dto.*;
 import com.topsinoty.reservationSystem.model.Feature;
-import com.topsinoty.reservationSystem.model.Location;
 import com.topsinoty.reservationSystem.model.Reservation;
 import com.topsinoty.reservationSystem.model.RestaurantTable;
 import com.topsinoty.reservationSystem.repository.ReservationRepository;
 import com.topsinoty.reservationSystem.repository.RestaurantTableRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
+import java.time.Duration;
 import java.time.LocalTime;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
+import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.function.Predicate;
-import java.util.function.ToIntFunction;
+import java.util.function.ToDoubleFunction;
 
 @Service
 public class ReservationService {
 
-    private static final long RESERVATION_DURATION_HOURS = 2;
+    private static final Duration RESERVATION_DURATION = Duration.ofHours(2);
 
     private final ReservationRepository reservationRepository;
     private final RestaurantTableRepository tableRepository;
@@ -30,70 +31,84 @@ public class ReservationService {
         this.tableRepository = tableRepository;
     }
 
-    public List<RestaurantTable> getAvailableTables(LocalDate date,
-                                                    LocalTime requestedBookingStartTime,
-                                                    int people,
-                                                    Optional<Set<Feature>> preferredFeatures,
-                                                    Optional<Location> location) {
-
-        Set<Feature> requestedFeatures = preferredFeatures.orElse(Set.of());
-
-        Predicate<RestaurantTable> filterByLocation = restaurantTable -> location.map(value -> restaurantTable.getLocation()
-                .equals(value)).orElse(true);
-
-        Predicate<RestaurantTable> filterByCapacity = restaurantTable -> restaurantTable.getCapacity() >= people;
-        Predicate<RestaurantTable> filterByAvailability = restaurantTable -> isTableFree(restaurantTable.getId(), date, requestedBookingStartTime);
-        ToIntFunction<RestaurantTable> countFeatureMatch = restaurantTable -> countMatchingFeatures(restaurantTable, requestedFeatures);
-
-        Comparator<RestaurantTable> sortByFeatureMatchThenCapacity = Comparator.comparingInt(countFeatureMatch)
-                .reversed()
-                .thenComparingInt(RestaurantTable::getCapacity);
-
-        return tableRepository.findAll()
+    public List<ReservationResponse> findAll() {
+        return reservationRepository.findAll()
                 .stream()
-                .filter(filterByLocation)
-                .filter(filterByCapacity)
-                .filter(filterByAvailability)
-                .sorted(sortByFeatureMatchThenCapacity)
+                .map(r -> new ReservationResponse(r.getId(), r.getTime(), r.getDate(), r.getPeople(), r.getRestaurantTable()
+                        .getId()))
+                .sorted(Comparator.comparingInt(ReservationResponse::people))
                 .toList();
     }
 
-    private boolean isTableFree(Long tableId, LocalDate date, LocalTime requestedBookingStartTime) {
-
-        LocalTime requestedBookingEndTime = requestedBookingStartTime.plusHours(RESERVATION_DURATION_HOURS);
-
-        List<Reservation> reservations = reservationRepository.findAllByRestaurantTableIdAndDate(tableId, date);
-
-        for (Reservation reservation : reservations) {
-
-            LocalTime existingBookingStartTime = reservation.getTime();
-            LocalTime existingBookingEndTime = existingBookingStartTime.plusHours(RESERVATION_DURATION_HOURS);
-
-            boolean bookingTimeOverlaps = existingBookingStartTime.isBefore(requestedBookingEndTime) && existingBookingEndTime.isAfter(requestedBookingStartTime);
-
-            if (bookingTimeOverlaps) {
-                return false;
-            }
-        }
-
-        return true;
+    public ReservationResponse findById(Long id) throws NoSuchElementException {
+        return reservationRepository.findById(id)
+                .map(r -> new ReservationResponse(r.getId(), r.getTime(), r.getDate(), r.getPeople(), r.getRestaurantTable()
+                        .getId()))
+                .orElseThrow(() -> new NoSuchElementException("Reservation not found with id: " + id));
     }
 
-    private int countMatchingFeatures(RestaurantTable restaurantTable, Set<Feature> requestedFeatures) {
+    @Transactional
+    public ReservationBookingResponse bookReservation(ReservationBookingRequest request)
+            throws IllegalStateException, NoSuchElementException {
+        LocalTime endTime = request.time().plus(RESERVATION_DURATION);
 
-        if (requestedFeatures.isEmpty() || restaurantTable.getFeatures()==null || restaurantTable.getFeatures()
-                .isEmpty()) {
+        boolean tableFree = tableRepository.isTableFree(request.tableId(), request.date(), request.time(), endTime);
+
+        if (!tableFree) {
+            throw new IllegalStateException("Table is not available for the selected time");
+        }
+
+        RestaurantTable table = tableRepository.findById(request.tableId())
+                .orElseThrow(() -> new NoSuchElementException("Table not found with id: " + request.tableId()));
+
+        if (request.people() > table.getCapacity()) {
+            throw new IllegalStateException("Table capacity is too small for the requested size");
+        }
+
+        Reservation reservation = new Reservation();
+        reservation.setTime(request.time());
+        reservation.setEndTime(endTime);
+        reservation.setDate(request.date());
+        reservation.setPeople(request.people());
+        reservation.setRestaurantTable(table);
+
+        Reservation saved = reservationRepository.save(reservation);
+
+        return new ReservationBookingResponse(saved.getId(), saved.getDate(), saved.getTime(), saved.getPeople(), saved.getRestaurantTable()
+                .getId());
+    }
+
+    @Transactional
+    public void cancelReservation(Long id) throws NoSuchElementException {
+        Reservation reservation = reservationRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Reservation not found with id: " + id));
+
+        reservationRepository.delete(reservation);
+    }
+
+    public List<ReservationSearchResponse> getPossibleTablesForReservation(ReservationSearchRequest req) {
+        ToDoubleFunction<RestaurantTable> countFeatureMatch = table -> countMatchingFeatures(table, req.preferredFeatures());
+
+        Comparator<RestaurantTable> sortByFeatureMatchThenCapacity = Comparator.comparingDouble(countFeatureMatch)
+                .reversed()
+                .thenComparingInt(RestaurantTable::getCapacity);
+        Predicate<RestaurantTable> filterByLocationIfLocationIsPresent = t -> t.getLocation()==null || t.getLocation()
+                .equals(req.location());
+
+        LocalTime endTime = req.time().plus(RESERVATION_DURATION);
+
+        return tableRepository.findAvailableTables(req.people(), req.date(), req.time(), endTime)
+                .stream().filter(filterByLocationIfLocationIsPresent)
+                .sorted(sortByFeatureMatchThenCapacity)
+                .map(t -> new ReservationSearchResponse(t.getId(), t.getLocation(), t.getFeatures(), t.getCapacity()))
+                .toList();
+    }
+
+    private long countMatchingFeatures(RestaurantTable table, Set<Feature> requestedFeatures) {
+
+        if (requestedFeatures.isEmpty() || table.getFeatures()==null || table.getFeatures().isEmpty()) {
             return 0;
         }
-
-        int matchingFeatureCount = 0;
-
-        for (Feature feature : requestedFeatures) {
-            if (restaurantTable.getFeatures().contains(feature)) {
-                matchingFeatureCount++;
-            }
-        }
-
-        return matchingFeatureCount;
+        return requestedFeatures.stream().filter(table.getFeatures()::contains).count();
     }
 }
