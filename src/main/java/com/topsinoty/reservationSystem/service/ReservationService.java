@@ -6,6 +6,7 @@ import com.topsinoty.reservationSystem.model.Reservation;
 import com.topsinoty.reservationSystem.model.RestaurantTable;
 import com.topsinoty.reservationSystem.repository.ReservationRepository;
 import com.topsinoty.reservationSystem.repository.RestaurantTableRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
@@ -42,6 +43,7 @@ public class ReservationService {
                 .orElseThrow(() -> new NoSuchElementException("Reservation not found with id: " + id));
     }
 
+    @Transactional
     public ReservationBookingResponse bookReservation(ReservationBookingRequest request)
             throws IllegalStateException, NoSuchElementException {
         boolean tableFree = tableRepository.isTableFree(request.tableId(), request.date(), request.time(), request.time()
