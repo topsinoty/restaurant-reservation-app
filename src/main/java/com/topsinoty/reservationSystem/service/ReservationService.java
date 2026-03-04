@@ -16,6 +16,7 @@ public class ReservationService {
         this.reservationRepository = reservationRepository;
         this.tableRepository = tableRepository;
     }
+
     public List<ReservationResponse> findAll() {
         return reservationRepository.findAll()
                 .stream()
@@ -30,5 +31,14 @@ public class ReservationService {
                 .map(r -> new ReservationResponse(r.getId(), r.getTime(), r.getDate(), r.getPeople(), r.getRestaurantTable()
                         .getId()))
                 .orElseThrow();
+    }
+    public List<ReservationSearchResponse> getPossibleTablesForReservation(ReservationSearchRequest req) {
+        ToIntFunction<RestaurantTable> countFeatureMatch = restaurantTable -> countMatchingFeatures(restaurantTable, req.preferredFeatures());
+
+        return tableRepository.findAvailableTables(req.people(), req.date(), req.time(), req.time()
+                        .plus(Duration.ofHours(2)))
+                .stream()
+                .map(r -> new ReservationSearchResponse(r.getId(), r.getLocation(), r.getFeatures(), r.getCapacity()))
+                .toList();
     }
 }
