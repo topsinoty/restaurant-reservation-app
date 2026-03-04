@@ -34,11 +34,33 @@ public class ReservationService {
     }
     public List<ReservationSearchResponse> getPossibleTablesForReservation(ReservationSearchRequest req) {
         ToIntFunction<RestaurantTable> countFeatureMatch = restaurantTable -> countMatchingFeatures(restaurantTable, req.preferredFeatures());
+        Comparator<RestaurantTable> sortByFeatureMatchThenCapacity = Comparator.comparingInt(countFeatureMatch)
+                .reversed()
+                .thenComparingInt(RestaurantTable::getCapacity);
 
         return tableRepository.findAvailableTables(req.people(), req.date(), req.time(), req.time()
                         .plus(Duration.ofHours(2)))
                 .stream()
+                .sorted(sortByFeatureMatchThenCapacity)
                 .map(r -> new ReservationSearchResponse(r.getId(), r.getLocation(), r.getFeatures(), r.getCapacity()))
                 .toList();
+    }
+
+    private int countMatchingFeatures(RestaurantTable restaurantTable, Set<Feature> requestedFeatures) {
+
+        if (requestedFeatures.isEmpty() || restaurantTable.getFeatures()==null || restaurantTable.getFeatures()
+                .isEmpty()) {
+            return 0;
+        }
+
+        int matchingFeatureCount = 0;
+
+        for (Feature feature : requestedFeatures) {
+            if (restaurantTable.getFeatures().contains(feature)) {
+                matchingFeatureCount++;
+            }
+        }
+
+        return matchingFeatureCount;
     }
 }
