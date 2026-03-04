@@ -4,9 +4,12 @@ import com.topsinoty.reservationSystem.model.Feature;
 import com.topsinoty.reservationSystem.model.Location;
 import com.topsinoty.reservationSystem.model.RestaurantTable;
 import com.topsinoty.reservationSystem.repository.RestaurantTableRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.Random;
 import java.util.Set;
@@ -15,6 +18,7 @@ import java.util.Set;
 public class DataInitializer implements CommandLineRunner {
 
     private final RestaurantTableRepository restaurantTableRepository;
+    private static final Logger log = LoggerFactory.getLogger(DataInitializer.class);
 
     public DataInitializer(RestaurantTableRepository restaurantTableRepository) {
         this.restaurantTableRepository = restaurantTableRepository;
@@ -28,16 +32,22 @@ public class DataInitializer implements CommandLineRunner {
             return;
         }
 
-        Random random = new Random();
+        try {
+            Random random = new Random();
 
-        for (int i = 0; i < 20; i++) {
-            RestaurantTable table = new RestaurantTable();
-            table.setCapacity(randomCapacity(random));
-            table.setLocation(randomLocation(random));
-            table.setFeatures(randomFeatures(random));
-            restaurantTableRepository.save(table);
+            RestaurantTable[] tables = new RestaurantTable[20];
+            for (int i = 0; i < 20; i++) {
+                RestaurantTable table = new RestaurantTable();
+                table.setCapacity(randomCapacity(random));
+                table.setLocation(randomLocation(random));
+                table.setFeatures(randomFeatures(random));
+                tables[i] = table;
+            }
+            restaurantTableRepository.saveAll(Arrays.asList(tables));
+            System.out.println("Generated 20 tables");
+        } catch (Exception e) {
+            log.error("Failed to generate restaurant tables", e);
         }
-        System.out.println("Generated 20 tables");
     }
 
     private int randomCapacity(Random random) {
