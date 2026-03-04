@@ -10,6 +10,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
+import java.time.LocalTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -18,6 +19,8 @@ import java.util.function.ToDoubleFunction;
 
 @Service
 public class ReservationService {
+
+    private static final Duration RESERVATION_DURATION = Duration.ofHours(2);
 
     private final ReservationRepository reservationRepository;
     private final RestaurantTableRepository tableRepository;
@@ -46,8 +49,9 @@ public class ReservationService {
     @Transactional
     public ReservationBookingResponse bookReservation(ReservationBookingRequest request)
             throws IllegalStateException, NoSuchElementException {
-        boolean tableFree = tableRepository.isTableFree(request.tableId(), request.date(), request.time(), request.time()
-                .plus(Duration.ofHours(2)));
+        LocalTime endTime = request.time().plus(RESERVATION_DURATION);
+
+        boolean tableFree = tableRepository.isTableFree(request.tableId(), request.date(), request.time(), endTime);
 
         if (!tableFree) {
             throw new IllegalStateException("Table is not available for the selected time");
@@ -56,9 +60,13 @@ public class ReservationService {
         RestaurantTable table = tableRepository.findById(request.tableId())
                 .orElseThrow(() -> new NoSuchElementException("Table not found with id: " + request.tableId()));
 
+        if (request.people() > table.getCapacity()) {
+            throw new IllegalStateException("Table capacity is too small for the requested size");
+        }
+
         Reservation reservation = new Reservation();
         reservation.setTime(request.time());
-        reservation.setEndTime(request.time().plus(Duration.ofHours(2)));
+        reservation.setEndTime(endTime);
         reservation.setDate(request.date());
         reservation.setPeople(request.people());
         reservation.setRestaurantTable(table);
@@ -70,25 +78,26 @@ public class ReservationService {
     }
 
     public List<ReservationSearchResponse> getPossibleTablesForReservation(ReservationSearchRequest req) {
-        ToDoubleFunction<RestaurantTable> countFeatureMatch = restaurantTable -> countMatchingFeatures(restaurantTable, req.preferredFeatures());
+        ToDoubleFunction<RestaurantTable> countFeatureMatch = table -> countMatchingFeatures(table, req.preferredFeatures());
+
         Comparator<RestaurantTable> sortByFeatureMatchThenCapacity = Comparator.comparingDouble(countFeatureMatch)
                 .reversed()
                 .thenComparingInt(RestaurantTable::getCapacity);
 
-        return tableRepository.findAvailableTables(req.people(), req.date(), req.time(), req.time()
-                        .plus(Duration.ofHours(2)))
+        LocalTime endTime = req.time().plus(RESERVATION_DURATION);
+
+        return tableRepository.findAvailableTables(req.people(), req.date(), req.time(), endTime)
                 .stream()
                 .sorted(sortByFeatureMatchThenCapacity)
-                .map(r -> new ReservationSearchResponse(r.getId(), r.getLocation(), r.getFeatures(), r.getCapacity()))
+                .map(t -> new ReservationSearchResponse(t.getId(), t.getLocation(), t.getFeatures(), t.getCapacity()))
                 .toList();
     }
 
-    private long countMatchingFeatures(RestaurantTable restaurantTable, Set<Feature> requestedFeatures) {
+    private long countMatchingFeatures(RestaurantTable table, Set<Feature> requestedFeatures) {
 
-        if (requestedFeatures.isEmpty() || restaurantTable.getFeatures()==null || restaurantTable.getFeatures()
-                .isEmpty()) {
+        if (requestedFeatures.isEmpty() || table.getFeatures()==null || table.getFeatures().isEmpty()) {
             return 0;
         }
-        return (requestedFeatures.stream().filter(restaurantTable.getFeatures()::contains).count());
+        return requestedFeatures.stream().filter(table.getFeatures()::contains).count();
     }
 }
