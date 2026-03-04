@@ -25,8 +25,8 @@ public class ReservationController {
     }
 
     @GetMapping("/{id}")
-    public ReservationResponse getReservationById(@PathVariable String id) {
-        return reservationService.findById(Long.valueOf(id));
+    public ReservationResponse getReservationById(@PathVariable Long id) {
+        return reservationService.findById(id);
     }
 
     @GetMapping("/available")
@@ -42,7 +42,7 @@ public class ReservationController {
 
     @DeleteMapping("/cancel/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteReservationById(@PathVariable String id) {
-        reservationService.cancelReservation(Long.valueOf(id));
+    public void deleteReservationById(@PathVariable Long id) {
+        reservationService.cancelReservation(id);
     }
 }
