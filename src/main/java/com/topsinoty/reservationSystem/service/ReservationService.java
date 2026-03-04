@@ -16,4 +16,19 @@ public class ReservationService {
         this.reservationRepository = reservationRepository;
         this.tableRepository = tableRepository;
     }
+    public List<ReservationResponse> findAll() {
+        return reservationRepository.findAll()
+                .stream()
+                .map(r -> new ReservationResponse(r.getId(), r.getTime(), r.getDate(), r.getPeople(), r.getRestaurantTable()
+                        .getId()))
+                .sorted(Comparator.comparingInt(ReservationResponse::people))
+                .toList();
+    }
+
+    public ReservationResponse findById(Long id) throws HttpClientErrorException.NotFound {
+        return reservationRepository.findById(id)
+                .map(r -> new ReservationResponse(r.getId(), r.getTime(), r.getDate(), r.getPeople(), r.getRestaurantTable()
+                        .getId()))
+                .orElseThrow();
+    }
 }
