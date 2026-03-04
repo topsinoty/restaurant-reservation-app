@@ -16,8 +16,8 @@ public interface RestaurantTableRepository extends ListCrudRepository<Restaurant
             AND t.id NOT IN (
                 SELECT r.restaurantTable.id
                 FROM Reservation r
-                WHERE r.date = :date 
-                AND r.time < :endTime 
+                WHERE r.date = :date
+                AND r.time < :endTime
                 AND r.endTime > :time
             ) 
             ORDER BY t.capacity
