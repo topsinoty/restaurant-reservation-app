@@ -14,7 +14,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
-import java.util.function.ToIntFunction;
+import java.util.function.ToDoubleFunction;
 
 @Service
 public class ReservationService {
@@ -70,8 +70,8 @@ public class ReservationService {
     }
 
     public List<ReservationSearchResponse> getPossibleTablesForReservation(ReservationSearchRequest req) {
-        ToIntFunction<RestaurantTable> countFeatureMatch = restaurantTable -> countMatchingFeatures(restaurantTable, req.preferredFeatures());
-        Comparator<RestaurantTable> sortByFeatureMatchThenCapacity = Comparator.comparingInt(countFeatureMatch)
+        ToDoubleFunction<RestaurantTable> countFeatureMatch = restaurantTable -> countMatchingFeatures(restaurantTable, req.preferredFeatures());
+        Comparator<RestaurantTable> sortByFeatureMatchThenCapacity = Comparator.comparingDouble(countFeatureMatch)
                 .reversed()
                 .thenComparingInt(RestaurantTable::getCapacity);
 
@@ -83,21 +83,12 @@ public class ReservationService {
                 .toList();
     }
 
-    private int countMatchingFeatures(RestaurantTable restaurantTable, Set<Feature> requestedFeatures) {
+    private long countMatchingFeatures(RestaurantTable restaurantTable, Set<Feature> requestedFeatures) {
 
         if (requestedFeatures.isEmpty() || restaurantTable.getFeatures()==null || restaurantTable.getFeatures()
                 .isEmpty()) {
             return 0;
         }
-
-        int matchingFeatureCount = 0;
-
-        for (Feature feature : requestedFeatures) {
-            if (restaurantTable.getFeatures().contains(feature)) {
-                matchingFeatureCount++;
-            }
-        }
-
-        return matchingFeatureCount;
+        return (requestedFeatures.stream().filter(restaurantTable.getFeatures()::contains).count());
     }
 }
