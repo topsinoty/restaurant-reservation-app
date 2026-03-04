@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.time.Duration;
 import java.util.Comparator;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.function.ToIntFunction;
 
@@ -34,22 +35,24 @@ public class ReservationService {
                 .toList();
     }
 
-    public ReservationResponse findById(Long id) {
+    public ReservationResponse findById(Long id) throws NoSuchElementException {
         return reservationRepository.findById(id)
                 .map(r -> new ReservationResponse(r.getId(), r.getTime(), r.getDate(), r.getPeople(), r.getRestaurantTable()
                         .getId()))
-                .orElseThrow();
+                .orElseThrow(() -> new NoSuchElementException("Reservation not found with id: " + id));
     }
 
-    public ReservationBookingResponse bookReservation(ReservationBookingRequest request) {
+    public ReservationBookingResponse bookReservation(ReservationBookingRequest request)
+            throws IllegalStateException, NoSuchElementException {
         boolean tableFree = tableRepository.isTableFree(request.tableId(), request.date(), request.time(), request.time()
                 .plus(Duration.ofHours(2)));
 
         if (!tableFree) {
-            return null;
+            throw new IllegalStateException("Table is not available for the selected time");
         }
 
-        RestaurantTable table = tableRepository.findById(request.tableId()).orElseThrow();
+        RestaurantTable table = tableRepository.findById(request.tableId())
+                .orElseThrow(() -> new NoSuchElementException("Table not found with id: " + request.tableId()));
 
         Reservation reservation = new Reservation();
         reservation.setTime(request.time());
