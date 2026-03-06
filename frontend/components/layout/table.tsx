@@ -1,5 +1,8 @@
 import { PositionedTable } from "@/types/table";
 import { getBgColor } from "./compute-bg-color";
+import { FaPeopleArrows } from "react-icons/fa";
+import { Group } from "lucide-react";
+import { FaPeopleGroup } from "react-icons/fa6";
 
 export function Table({
 	x,
@@ -76,16 +79,18 @@ export function Table({
 			)}
 
 			<span className="font-bold">#{id}</span>
-			<span>{capacity}p</span>
+			<span className="flex items-center gap-1">
+				{capacity} <FaPeopleGroup />
+			</span>
 
 			{isOccupied && (
 				<span className="absolute -top-2 -right-2 rounded-full bg-slate-700 px-1.5 py-0.5 text-[9px] text-white">
-					Hoivatud
+					Occupied
 				</span>
 			)}
 			{isTopRecommended && (
 				<span className="absolute -bottom-2 -left-2 rounded-full bg-amber-400 px-1.5 py-0.5 text-[9px] text-slate-900">
-					Parim
+					Best
 				</span>
 			)}
 		</button>
