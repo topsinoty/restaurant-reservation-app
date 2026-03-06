@@ -1,4 +1,4 @@
-package com.topsinoty.reservation_system;
+package com.topsinoty.reservationSystem;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
