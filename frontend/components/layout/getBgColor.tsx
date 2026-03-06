@@ -1,4 +1,4 @@
-import { PositionedTable } from "@/types/tables";
+import { PositionedTable } from "@/types/table";
 import { CSSProperties } from "react";
 
 const FEATURE_COLORS = {

@@ -1,4 +1,4 @@
-import { PositionedTable } from "@/types/tables";
+import { PositionedTable } from "@/types/table";
 
 export class FloorPlanManager {
 	async init(): Promise<PositionedTable[]> {
