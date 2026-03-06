@@ -1,4 +1,5 @@
 import { PositionedTable } from "@/types/tables";
+import { getBgColor } from "./getBgColor";
 
 export function Table({
 	x,
@@ -20,6 +21,7 @@ export function Table({
 				top: y * cellSize + cellSize / 2 - size / 2,
 				width: size,
 				height: size,
+				backgroundColor: getBgColor(features),
 			}}
 		>
 			{x}:{y} {location}

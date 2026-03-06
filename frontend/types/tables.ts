@@ -2,7 +2,14 @@ export interface TableProps {
 	id: number;
 	capacity: number;
 	location: "CENTER" | "CORNER" | "OUTDOOR";
-	features: string[];
+	features: (
+		| "GREAT_VIEW"
+		| "KIDS_AREA"
+		| "QUIET"
+		| "ROMANTIC"
+		| "BUSY"
+		| "WINDOW_SIDE"
+	)[];
 }
 
 export type PositionedTable = TableProps & {
