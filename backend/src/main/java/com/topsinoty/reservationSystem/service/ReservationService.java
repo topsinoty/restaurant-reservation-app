@@ -102,7 +102,7 @@ public class ReservationService {
                 .stream().filter(filterByLocationIfLocationIsPresent)
                 .sorted(sortByFeatureMatchThenCapacity)
                 .map(t -> new ReservationSearchResponse(t.getId(), t.getLocation(), t.getFeatures(), t.getCapacity()))
-                .sorted(Comparator.comparingInt(ReservationSearchResponse::people))
+                .sorted(Comparator.comparingInt(ReservationSearchResponse::capacity))
                 .toList();
     }
     private long countMatchingFeatures(RestaurantTable table, Set<Feature> requestedFeatures) {
