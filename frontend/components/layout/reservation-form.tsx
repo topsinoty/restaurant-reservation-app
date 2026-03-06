@@ -23,7 +23,7 @@ const TIME_24H_REGEX = /^([01]\d|2[0-3]):[0-5]\d$/;
 const reservationBookingSchema = object({
 	date: iso.date(),
 	time: string().regex(TIME_24H_REGEX, {
-		error: "Use format HH:mm AM/PM",
+		error: "Use 24-hour format HH:mm",
 	}),
 	people: number().min(1).max(12),
 	location: z.union([literal(""), z.enum(TABLE_LOCATIONS)]),
