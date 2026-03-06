@@ -57,7 +57,7 @@ export function ReservationForm() {
 export function Table({
 	x,
 	y,
-	location,
+    location,
 	capacity,
 	features,
 	id,
