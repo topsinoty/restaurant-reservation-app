@@ -92,7 +92,7 @@ public class ReservationService {
         Comparator<RestaurantTable> sortByFeatureMatchThenCapacity = Comparator.comparingDouble(countFeatureMatch)
                 .reversed()
                 .thenComparingInt(RestaurantTable::getCapacity);
-        Predicate<RestaurantTable> filterByLocationIfLocationIsPresent = t -> t.getLocation()==null || t.getLocation()
+        Predicate<RestaurantTable> filterByLocationIfLocationIsPresent = t -> req.location()==null || t.getLocation()
                 .equals(req.location());
 
         LocalTime endTime = req.time().plus(RESERVATION_DURATION);
