@@ -6,7 +6,8 @@ import {
 } from "@/types/reservation";
 import { PositionedTable } from "@/types/table";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8080";
+const API_BASE_URL =
+	process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8080";
 
 function normalizeTime(value: string): string {
 	if (/^\d{2}:\d{2}$/.test(value)) {
@@ -66,19 +67,22 @@ export async function fetchRestaurantTables(): Promise<PositionedTable[]> {
 export async function searchAvailableTables(
 	filters: ReservationSearchFilters,
 ): Promise<ReservationSearchResponse[]> {
-	return apiRequest<ReservationSearchResponse[]>("/api/reservations/available", {
-		method: "POST",
-		body: JSON.stringify({
-			date: filters.date,
-			time: normalizeTime(filters.time),
-			people: filters.people,
-			location: filters.location ?? undefined,
-			preferredFeatures:
-				filters.preferredFeatures.length > 0
-					? filters.preferredFeatures
-					: undefined,
-		}),
-	});
+	return apiRequest<ReservationSearchResponse[]>(
+		"/api/reservations/available",
+		{
+			method: "POST",
+			body: JSON.stringify({
+				date: filters.date,
+				time: normalizeTime(filters.time),
+				people: filters.people,
+				location: filters.location ?? undefined,
+				preferredFeatures:
+					filters.preferredFeatures.length > 0
+						? filters.preferredFeatures
+						: undefined,
+			}),
+		},
+	);
 }
 
 export async function bookReservation(
