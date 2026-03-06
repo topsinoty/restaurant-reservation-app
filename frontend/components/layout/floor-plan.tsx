@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { PositionedTable } from "@/types/table";
 import { Table } from "./table";
 
@@ -15,9 +16,17 @@ type FloorPlanProps = {
 	isSearching?: boolean;
 };
 
-const CELL_SIZE = globalThis.innerWidth < 726 ? 80 : 120;
+const MOBILE_BREAKPOINT = 726;
+const DESKTOP_CELL_SIZE = 120;
+const MOBILE_CELL_SIZE = 80;
 const GRID_WIDTH = 8;
 const GRID_HEIGHT = 6;
+
+function resolveCellSize(viewportWidth: number): number {
+	return viewportWidth < MOBILE_BREAKPOINT
+		? MOBILE_CELL_SIZE
+		: DESKTOP_CELL_SIZE;
+}
 
 export function FloorPlan({
 	tables,
@@ -30,6 +39,21 @@ export function FloorPlan({
 	onSelectTable,
 	isSearching,
 }: Readonly<FloorPlanProps>) {
+	const [cellSize, setCellSize] = useState(DESKTOP_CELL_SIZE);
+
+	useEffect(() => {
+		const updateCellSize = () => {
+			setCellSize(resolveCellSize(window.innerWidth));
+		};
+
+		updateCellSize();
+		window.addEventListener("resize", updateCellSize);
+
+		return () => {
+			window.removeEventListener("resize", updateCellSize);
+		};
+	}, []);
+
 	return (
 		<div className="w-full rounded-2xl border bg-slate-50 p-4 sm:p-6 lg:max-w-5/7 h-min relative">
 			{!hasActiveSearch && (
@@ -54,8 +78,8 @@ export function FloorPlan({
 				<div
 					className="relative"
 					style={{
-						width: CELL_SIZE * GRID_WIDTH,
-						height: CELL_SIZE * GRID_HEIGHT,
+						width: cellSize * GRID_WIDTH,
+						height: cellSize * GRID_HEIGHT,
 					}}
 				>
 					{tables.map((table) => {
@@ -64,12 +88,12 @@ export function FloorPlan({
 							: randomOccupiedIds.has(table.id);
 
 						return (
-							<Table
-								key={table.id}
-								{...table}
-								cellSize={CELL_SIZE}
-								onSelect={onSelectTable}
-								isOccupied={isOccupied}
+								<Table
+									key={table.id}
+									{...table}
+									cellSize={cellSize}
+									onSelect={onSelectTable}
+									isOccupied={isOccupied}
 								isSelectable={hasActiveSearch && !isOccupied}
 								isRecommended={hasActiveSearch && recommendedIds.has(table.id)}
 								isTopRecommended={
@@ -83,17 +107,17 @@ export function FloorPlan({
 					<div
 						className="absolute rounded-b-xl  border border-sky-100 bg-sky-100/70"
 						style={{
-							width: CELL_SIZE * 1.2,
-							height: CELL_SIZE * 3.95,
+							width: cellSize * 1.2,
+							height: cellSize * 3.95,
 							left: 0,
-							bottom: CELL_SIZE,
+							bottom: cellSize,
 						}}
 					/>
 					<div
 						className="absolute rounded-t-xl border border-sky-100 bg-sky-100/70"
 						style={{
-							width: CELL_SIZE * 8,
-							height: CELL_SIZE * 1.05,
+							width: cellSize * 8,
+							height: cellSize * 1.05,
 							left: 0,
 							top: 0,
 						}}
@@ -101,19 +125,19 @@ export function FloorPlan({
 					<div
 						className="absolute rounded-b-xl border border-emerald-100 bg-emerald-100/70"
 						style={{
-							width: CELL_SIZE * 2.2,
-							height: CELL_SIZE * 3.95,
+							width: cellSize * 2.2,
+							height: cellSize * 3.95,
 							right: 0,
-							bottom: CELL_SIZE,
+							bottom: cellSize,
 						}}
 					/>
 					<div
 						className="absolute rounded-xl border border-orange-100 bg-orange-100/70"
 						style={{
-							width: CELL_SIZE * 3.2,
-							height: CELL_SIZE * 3.2,
-							left: CELL_SIZE * 1.95,
-							top: CELL_SIZE * 2,
+							width: cellSize * 3.2,
+							height: cellSize * 3.2,
+							left: cellSize * 1.95,
+							top: cellSize * 2,
 						}}
 					/>
 					{/* <div className="pointer-events-none absolute left-4 top-3 rounded bg-sky-700 px-2 py-1 text-[11px] font-medium text-white">
