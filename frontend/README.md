@@ -1,36 +1,121 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Smart Restaurant Reservation System - Frontend
 
-## Getting Started
+Next.js frontend for the CGI internship assignment. This app lets a guest search for available tables, view recommendations on a floor plan, and book a selected table through a Spring Boot API.
 
-First, run the development server:
+## Tech Stack
+
+- Next.js 16 (App Router)
+- React 19 + TypeScript
+- Tailwind CSS 4
+- React Hook Form + Zod
+
+## Implemented Requirements
+
+### 1) Search and Filtering
+
+The UI supports these filters:
+
+- Date
+- Time
+- Party size
+- Zone (`CENTER`, `CORNER`, `OUTDOOR`)
+- Preferences:
+  - Quiet / private
+  - Window-side
+  - Kids area nearby
+  - Romantic
+  - Great view
+
+### 2) Table Recommendation and Selection Logic
+
+- Availability and ranking are requested from backend endpoint:
+  - `POST /api/reservations/available`
+- Frontend behavior:
+  - all available results are visually marked as recommended
+  - first ranked result is highlighted as the best table
+  - user can click a free table directly on the floor plan
+
+### 3) Visual Floor Plan
+
+- Tables are shown on a fixed hall layout grid.
+- Occupied tables are visually distinct.
+- Recommended tables are highlighted in blue.
+- Best recommendation is highlighted in gold.
+- Selected table is highlighted in black.
+
+### Random Occupancy Demo State
+
+- Before filters are submitted, the floor plan shows a demo occupancy state generated randomly in the frontend.
+- After filters are submitted, occupancy and recommendations come from the backend search result.
+
+### Booking Flow
+
+- User selects a table on the floor plan.
+- `POST /api/reservations/book` is sent with table id, date, time, and party size.
+- On success, a booking id is shown and availability is refreshed.
+
+## Project Structure
+
+- `app/` - Next.js app router pages and global styles
+- `components/layout/` - floor plan, reservation form, reservation client flow
+- `lib/reservation-api.ts` - API calls to backend
+- `types/` - shared frontend types for tables and reservations
+
+## Run Locally
+
+## 1. Start backend
+
+Backend setup is in `../backend/README.md`.
+Default API base URL expected by frontend is `http://localhost:8080`.
+
+## 2. Install dependencies and run frontend
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
+pnpm install
 pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open: `http://localhost:3000`
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Configuration
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Set custom backend base URL in `.env.local` if needed:
 
-## Learn More
+```bash
+NEXT_PUBLIC_API_BASE_URL=http://localhost:8080
+```
 
-To learn more about Next.js, take a look at the following resources:
+## Quality Checks
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+pnpm lint
+pnpm build
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Assumptions and Limitations
 
-## Deploy on Vercel
+- Reservation duration is handled by backend and currently fixed to 2 hours.
+- No separate accessibility enum was defined in backend features, so other available preference tags are used.
+- Admin table-layout editing is not implemented.
+- Multi-table merge suggestions for very large groups are not implemented.
+- Automated frontend test coverage is not implemented yet.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Sources and Attribution
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- UI foundation: shadcn/ui components
+- Documentation references:
+  - Next.js docs
+  - React Hook Form docs
+  - Zod docs
+
+If you used larger snippets from external sources, StackOverflow, or AI tools, list them here before submission.
+
+## Submission Notes (Fill Before Sending)
+
+- Total time spent: `TODO`
+- Main challenges:
+  - `TODO`
+- How challenges were solved:
+  - `TODO`
+- Unresolved issues and planned fixes:
+  - `TODO`
