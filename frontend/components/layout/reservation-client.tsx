@@ -3,11 +3,21 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { FloorPlan } from "./floor-plan";
 import { ReservationForm } from "./reservation-form";
-import { bookReservation, fetchRestaurantTables, searchAvailableTables } from "@/lib/reservation-api";
+import {
+	bookReservation,
+	fetchRestaurantTables,
+	searchAvailableTables,
+} from "@/lib/reservation-api";
 import { FEATURE_LABELS, LOCATION_LABELS } from "@/lib/table-labels";
 import { ReservationSearchFilters } from "@/types/reservation";
 import { PositionedTable } from "@/types/table";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card";
+import {
+	Card,
+	CardContent,
+	CardDescription,
+	CardHeader,
+	CardTitle,
+} from "../ui/card";
 import { Button } from "../ui/button";
 
 type Notice = {
@@ -39,37 +49,44 @@ export function ReservationClient() {
 	const [availableIds, setAvailableIds] = useState<Set<number>>(new Set());
 	const [recommendedIds, setRecommendedIds] = useState<Set<number>>(new Set());
 	const [topRecommendedId, setTopRecommendedId] = useState<number | null>(null);
-	const [randomOccupiedIds, setRandomOccupiedIds] = useState<Set<number>>(new Set());
+	const [randomOccupiedIds, setRandomOccupiedIds] = useState<Set<number>>(
+		new Set(),
+	);
 	const [selectedTableId, setSelectedTableId] = useState<number | null>(null);
 	const [isLoadingTables, setIsLoadingTables] = useState(true);
 	const [isSearching, setIsSearching] = useState(false);
 	const [isBooking, setIsBooking] = useState(false);
 	const [notice, setNotice] = useState<Notice | null>(null);
 
-	const runSearch = useCallback(async (activeFilters: ReservationSearchFilters) => {
-		setIsSearching(true);
+	const runSearch = useCallback(
+		async (activeFilters: ReservationSearchFilters) => {
+			setIsSearching(true);
 
-		try {
-			const availableTables = await searchAvailableTables(activeFilters);
-			const ids = new Set(availableTables.map((table) => table.id));
-			setAvailableIds(ids);
-			setRecommendedIds(ids);
-			setTopRecommendedId(availableTables[0]?.id ?? null);
-			setSelectedTableId((current) =>
-				current !== null && !ids.has(current) ? null : current,
-			);
-		} catch (error) {
-			const message =
-				error instanceof Error ? error.message : "Vabade laudade otsing ebaonnestus";
-			setAvailableIds(new Set());
-			setRecommendedIds(new Set());
-			setTopRecommendedId(null);
-			setSelectedTableId(null);
-			setNotice({ type: "error", text: message });
-		} finally {
-			setIsSearching(false);
-		}
-	}, []);
+			try {
+				const availableTables = await searchAvailableTables(activeFilters);
+				const ids = new Set(availableTables.map((table) => table.id));
+				setAvailableIds(ids);
+				setRecommendedIds(ids);
+				setTopRecommendedId(availableTables[0]?.id ?? null);
+				setSelectedTableId((current) =>
+					current !== null && !ids.has(current) ? null : current,
+				);
+			} catch (error) {
+				const message =
+					error instanceof Error
+						? error.message
+						: "Vabade laudade otsing ebaonnestus";
+				setAvailableIds(new Set());
+				setRecommendedIds(new Set());
+				setTopRecommendedId(null);
+				setSelectedTableId(null);
+				setNotice({ type: "error", text: message });
+			} finally {
+				setIsSearching(false);
+			}
+		},
+		[],
+	);
 
 	useEffect(() => {
 		let ignore = false;
@@ -92,7 +109,9 @@ export function ReservationClient() {
 				}
 
 				const message =
-					error instanceof Error ? error.message : "Laudade laadimine ebaonnestus";
+					error instanceof Error
+						? error.message
+						: "Laudade laadimine ebaonnestus";
 				setNotice({ type: "error", text: message });
 			} finally {
 				if (!ignore) {
@@ -125,8 +144,12 @@ export function ReservationClient() {
 		[selectedTableId, tables],
 	);
 
-	const availableCount = filters ? availableIds.size : tables.length - randomOccupiedIds.size;
-	const occupiedCount = filters ? tables.length - availableIds.size : randomOccupiedIds.size;
+	const availableCount = filters
+		? availableIds.size
+		: tables.length - randomOccupiedIds.size;
+	const occupiedCount = filters
+		? tables.length - availableIds.size
+		: randomOccupiedIds.size;
 
 	async function handleBookSelectedTable() {
 		if (!filters || !selectedTableId) {
@@ -146,13 +169,12 @@ export function ReservationClient() {
 
 			setNotice({
 				type: "success",
-				text: `Broneering kinnitatud. Broneeringu ID: ${booking.id}.`,
+				text: `Booking Successful. Booking ID: ${booking.id}.`,
 			});
 
 			await runSearch(filters);
 		} catch (error) {
-			const message =
-				error instanceof Error ? error.message : "Laua broneerimine ebaonnestus";
+			const message = error instanceof Error ? error.message : "Booking Failed";
 			setNotice({ type: "error", text: message });
 		} finally {
 			setIsBooking(false);
@@ -162,7 +184,7 @@ export function ReservationClient() {
 	if (isLoadingTables) {
 		return (
 			<div className="rounded-xl border bg-white p-6 text-sm text-muted-foreground">
-				Laadime restorani saaliplaani...
+				Loading Restaurant floor plan
 			</div>
 		);
 	}
@@ -197,53 +219,58 @@ export function ReservationClient() {
 
 				<Card>
 					<CardHeader>
-						<CardTitle>Broneeringu kokkuvotte</CardTitle>
+						<CardTitle>Booking Summary</CardTitle>
 						<CardDescription>
 							{filters
-								? "Soovitused ja valik on seotud sinu filtritega."
-								: "Filter puudub: kuvatud on juhuslikult genereeritud hoivatud lauad."}
+								? "Recommendations and selections are based on the applied filters"
+								: "No filters selected."}
 						</CardDescription>
 					</CardHeader>
 					<CardContent className="flex flex-col gap-4 text-sm">
 						<div className="grid grid-cols-2 gap-2 rounded-md bg-slate-50 p-3">
-							<div>Vabu laudu: {availableCount}</div>
-							<div>Hoivatud laudu: {occupiedCount}</div>
-							<div>Soovitatud: {recommendedIds.size}</div>
+							<div>Free tables: {availableCount}</div>
+							<div>Occupied tables: {occupiedCount}</div>
+							<div>Recommendation: {recommendedIds.size}</div>
 							<div>
-								Parim laud: {topRecommendedId ? `#${topRecommendedId}` : "-"}
+								Best table: {topRecommendedId ? `#${topRecommendedId}` : "-"}
 							</div>
 						</div>
 
 						{filters && (
 							<div className="rounded-md border p-3">
-								<p className="font-medium">Aktiivsed filtrid</p>
-								<p>Kuupaev: {filters.date}</p>
-								<p>Kellaaeg: {filters.time}</p>
-								<p>Seltskond: {filters.people}</p>
+								<p className="font-medium">Selected filters</p>
+								<p>Date: {filters.date}</p>
+								<p>Time: {filters.time}</p>
+								<p>People: {filters.people}</p>
 								<p>
-									Tsoon: {filters.location ? LOCATION_LABELS[filters.location] : "Koik tsoonid"}
+									Zone:
+									{filters.location
+										? LOCATION_LABELS[filters.location]
+										: "All Zones"}
 								</p>
 								<p>
-									Eelistused:{" "}
+									Preferences:{" "}
 									{filters.preferredFeatures.length > 0
 										? filters.preferredFeatures
 												.map((feature) => FEATURE_LABELS[feature])
 												.join(", ")
-										: "Puuduvad"}
+										: "None selected"}
 								</p>
 							</div>
 						)}
 
 						<div className="rounded-md border p-3">
-							<p className="font-medium">Valitud laud</p>
+							<p className="font-medium">Selected table</p>
 							{selectedTable ? (
 								<>
 									<p>ID: #{selectedTable.id}</p>
-									<p>Mahutavus: {selectedTable.capacity}</p>
-									<p>Tsoon: {LOCATION_LABELS[selectedTable.location]}</p>
+									<p>Capacity: {selectedTable.capacity}</p>
+									<p>Zone: {LOCATION_LABELS[selectedTable.location]}</p>
 								</>
 							) : (
-								<p className="text-muted-foreground">Vali laud saaliplaanilt.</p>
+								<p className="text-muted-foreground">
+									Choose a table from the floor plan.
+								</p>
 							)}
 						</div>
 
@@ -269,18 +296,8 @@ export function ReservationClient() {
 								isBooking
 							}
 						>
-							{isBooking ? "Broneerin..." : "Broneeri valitud laud"}
+							{isBooking ? "Booking..." : "Book selected table..."}
 						</Button>
-
-						{!filters && (
-							<Button
-								type="button"
-								variant="secondary"
-								onClick={() => setRandomOccupiedIds(generateRandomOccupiedIds(tables))}
-							>
-								Genereeri juhuslik hoivatus uuesti
-							</Button>
-						)}
 					</CardContent>
 				</Card>
 			</div>
