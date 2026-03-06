@@ -6,7 +6,10 @@ export default function Home() {
 			<h1 className="text-4xl mb-6">Booking Service</h1>
 			<div className="w-full h-full flex flex-col">
 				<span className="text-xl mb-4">Please select a table</span>
-				<FloorPlan />
+				<div className="w-full h-full flex flex-col lg:flex-row gap-8">
+					<FloorPlan />
+					<ReservationForm />
+				</div>
 			</div>
 		</section>
 	);
