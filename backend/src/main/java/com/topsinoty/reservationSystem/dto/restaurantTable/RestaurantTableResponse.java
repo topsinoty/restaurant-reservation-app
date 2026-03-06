@@ -5,5 +5,5 @@ import com.topsinoty.reservationSystem.model.Location;
 
 import java.util.Set;
 
-public record RestaurantTable(Long id, Integer capacity, Location location, Set<Feature> features) {
+public record RestaurantTableResponse(Long id, Integer capacity, Location location, Set<Feature> features) {
 }

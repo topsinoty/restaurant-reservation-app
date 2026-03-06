@@ -35,8 +35,8 @@ public class DataInitializer implements CommandLineRunner {
         try {
             Random random = new Random();
 
-            RestaurantTable[] tables = new RestaurantTable[20];
-            for (int i = 0; i < 20; i++) {
+            RestaurantTable[] tables = new RestaurantTable[36];
+            for (int i = 0; i < 36; i++) {
                 RestaurantTable table = new RestaurantTable();
                 table.setCapacity(randomCapacity(random));
                 table.setLocation(randomLocation(random));
@@ -44,7 +44,7 @@ public class DataInitializer implements CommandLineRunner {
                 tables[i] = table;
             }
             restaurantTableRepository.saveAll(Arrays.asList(tables));
-            System.out.println("Generated 20 tables");
+            System.out.println("Generated 36 tables");
         } catch (Exception e) {
             log.error("Failed to generate restaurant tables", e);
         }

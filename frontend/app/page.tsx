@@ -1,5 +1,18 @@
-import Image from "next/image";
+import { FloorPlan } from "@/components/layout/floor-plan";
 
 export default function Home() {
-  return (<section></section>);
+	return (
+		<section>
+			<h1 className="text-4xl mb-6">Booking Service</h1>
+			<div>
+				<form>
+					<label>Please choose a date</label>
+				</form>
+			</div>
+			<div className="w-full h-full flex flex-col">
+				<span className="text-xl mb-4">Please select a table</span>
+				<FloorPlan />
+			</div>
+		</section>
+	);
 }

@@ -1,6 +1,6 @@
 package com.topsinoty.reservationSystem.service;
 
-import com.topsinoty.reservationSystem.dto.*;
+import com.topsinoty.reservationSystem.dto.reservation.*;
 import com.topsinoty.reservationSystem.model.Feature;
 import com.topsinoty.reservationSystem.model.Reservation;
 import com.topsinoty.reservationSystem.model.RestaurantTable;
