@@ -4,15 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b83559b6-5e47-40ee-ae89-8bb03045e536" name="Changes" comment="move to package">
+    <list default="true" id="b83559b6-5e47-40ee-ae89-8bb03045e536" name="Changes" comment="move positions to backend">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/topsinoty/reservationSystem/config/DataInitializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/topsinoty/reservationSystem/config/DataInitializer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/topsinoty/reservationSystem/dto/restaurantTable/RestaurantTableResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/topsinoty/reservationSystem/dto/restaurantTable/RestaurantTableResponse.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/topsinoty/reservationSystem/model/RestaurantTable.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/topsinoty/reservationSystem/model/RestaurantTable.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/topsinoty/reservationSystem/service/ReservationService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/topsinoty/reservationSystem/service/ReservationService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/topsinoty/reservationSystem/service/RestaurantTableService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/topsinoty/reservationSystem/service/RestaurantTableService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/components/layout/floor-plan-manager.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/components/layout/floor-plan-manager.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/components/layout/floor-plan.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/components/layout/floor-plan.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/components/layout/table.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/components/layout/table.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/types/tables.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/types/tables.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -125,7 +120,7 @@
       <workItem from="1772703308896" duration="8748000" />
       <workItem from="1772731368365" duration="3367000" />
       <workItem from="1772785799413" duration="976000" />
-      <workItem from="1772787220532" duration="1572000" />
+      <workItem from="1772787220532" duration="4431000" />
     </task>
     <task id="LOCAL-00001" summary="idea stuff">
       <option name="closed" value="true" />
@@ -175,7 +170,23 @@
       <option name="project" value="LOCAL" />
       <updated>1772706857215</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="fix the typo">
+      <option name="closed" value="true" />
+      <created>1772789025134</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1772789025135</updated>
+    </task>
+    <task id="LOCAL-00008" summary="move positions to backend">
+      <option name="closed" value="true" />
+      <created>1772789072495</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1772789072495</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -188,7 +199,9 @@
     <MESSAGE value="initial setup...need to speed up" />
     <MESSAGE value="shadcn additions" />
     <MESSAGE value="move to package" />
-    <option name="LAST_COMMIT_MESSAGE" value="move to package" />
+    <MESSAGE value="fix the typo" />
+    <MESSAGE value="move positions to backend" />
+    <option name="LAST_COMMIT_MESSAGE" value="move positions to backend" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

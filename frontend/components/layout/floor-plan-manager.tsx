@@ -1,10 +1,4 @@
-import { TableProps, PositionedTable } from "@/types/tables";
-
-const locations = ["CORNER", "CENTER", "OUTDOOR"] as const;
-
-type Location = (typeof locations)[number];
-
-type Layout = Readonly<Record<Location, readonly { x: number; y: number }[]>>;
+import { PositionedTable } from "@/types/tables";
 
 export class FloorPlanManager {
 	async init(): Promise<PositionedTable[]> {

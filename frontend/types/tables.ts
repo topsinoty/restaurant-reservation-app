@@ -1,4 +1,4 @@
-export interface TableProps {
+interface TableProps {
 	id: number;
 	capacity: number;
 	location: "CENTER" | "CORNER" | "OUTDOOR";
