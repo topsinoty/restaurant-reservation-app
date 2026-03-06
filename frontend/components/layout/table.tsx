@@ -1,21 +1,30 @@
 import { PositionedTable } from "@/types/tables";
 
-interface TableComponentProps {
-	table: PositionedTable;
-}
+export function Table({
+	x,
+	y,
+	location,
+	capacity,
+	features,
+	id,
+	cellSize,
+}: Readonly<PositionedTable> & { cellSize: number }) {
+	const ratio = capacity / 10;
+	const size = cellSize * (0.4 + ratio * 0.6);
 
-export function Table({ table }: Readonly<TableComponentProps>) {
 	return (
 		<div
-			className="border rounded-lg flex items-center justify-center  bg-white"
+			className="absolute border rounded-xl flex items-center justify-center bg-white text-xs"
 			style={{
-				gridColumn: table.x,
-				gridRow: table.y,
+				left: x * cellSize + cellSize / 2 - size / 2,
+				top: y * cellSize + cellSize / 2 - size / 2,
+				width: size,
+				height: size,
 			}}
 		>
-			{table.x}:{table.y} {table.location}
+			{x}:{y} {location}
 			<br />
-			{table.capacity}
+			{capacity}
 		</div>
 	);
 }

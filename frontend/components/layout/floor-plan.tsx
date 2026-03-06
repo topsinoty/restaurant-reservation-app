@@ -1,25 +1,22 @@
 import { FloorPlanManager } from "./floor-plan-manager";
+import { Table } from "./table";
 
 export const FloorPlan = async () => {
 	const planner = new FloorPlanManager();
-
 	const tables = await planner.init();
+	const CELL_SIZE = 100;
 
 	return (
-		<section className="bg-accent grid grid-cols-8 grid-rows-6 h-screen gap-8 w-full">
+		<div
+			className="relative border bg-gray-100"
+			style={{
+				width: CELL_SIZE * 8,
+				height: CELL_SIZE * 6,
+			}}
+		>
 			{tables.map((t) => (
-				<div
-					className="bg-white border border-black"
-					key={t.id}
-					style={{
-						gridColumn: t.x + 1,
-						gridRow: t.y + 1,
-					}}
-				>
-					{t.capacity}
-					{t.features}
-				</div>
+				<Table key={t.id} {...t} cellSize={CELL_SIZE} />
 			))}
-		</section>
+		</div>
 	);
 };
