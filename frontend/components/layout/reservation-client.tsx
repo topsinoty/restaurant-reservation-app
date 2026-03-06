@@ -186,7 +186,7 @@ export function ReservationClient() {
 	}
 
 	return (
-		<div className="flex w-full flex-col gap-6 lg:flex-row">
+		<div className="flex w-full flex-col-reverse gap-6 lg:flex-row">
 			<FloorPlan
 				tables={tables}
 				hasActiveSearch={Boolean(filters)}
@@ -199,7 +199,7 @@ export function ReservationClient() {
 				isSearching={isSearching}
 			/>
 
-			<div className="flex w-full flex-col gap-6 lg:max-w-[24rem]">
+			<div className="flex w-full flex-col gap-6 lg:max-w-2/7">
 				<ReservationForm
 					onSubmit={(data) => {
 						setNotice(null);
