@@ -31,56 +31,13 @@ export function FloorPlan({
 	isSearching,
 }: Readonly<FloorPlanProps>) {
 	return (
-		<div className="w-min max-w-full lg:max-w-3/5 border overflow-scroll p-8 rounded-2xl bg-gray-100">
-			<div
-				className="relative"
-				style={{
-					width: CELL_SIZE * 8,
-					height: CELL_SIZE * 6,
-				}}
-			>
-				{tables.map((t) => (
-					<Table key={t.id} {...t} cellSize={CELL_SIZE} />
-				))}
-				{/* Outside overlay */}
-				<div
-					className="absolute bg-pink-400 rounded-b-2xl"
-					style={{
-						width: CELL_SIZE * 2 + 16,
-						height: CELL_SIZE * 4 + 16,
-						right: -8,
-						bottom: CELL_SIZE - 8,
-					}}
-				/>
-				<div
-					className="w-full absolute bg-blue-400 z-0 rounded-b-2xl rounded-tl-2xl"
-					style={{
-						width: CELL_SIZE * 1 + 16,
-						height: CELL_SIZE * 5 + 16,
-						left: -8,
-						bottom: CELL_SIZE - 8,
-					}}
-				/>
-				<div
-					className="w-full absolute bg-blue-400 z-0 rounded-tl-2xl rounded-tr-2xl"
-					style={{
-						width: CELL_SIZE * 8 + 16,
-						height: CELL_SIZE * 1 + 16,
-						left: -8,
-						top: -8,
-					}}
-				/>
-				<div
-					className="bg-orange-400 absolute rounded-2xl"
-					style={{
-						width: CELL_SIZE * 3 + 16,
-						height: CELL_SIZE * 3 + 16,
-						right: CELL_SIZE * 3 - 8,
-						top: CELL_SIZE * 2 - 8,
-					}}
-				/>
-				<div className="bg-" />
 		<div className="w-full rounded-2xl border bg-slate-50 p-4 sm:p-6 lg:max-w-[65%]">
+			<div className="mb-4 flex flex-wrap items-center gap-2 text-xs">
+				<span className="rounded-full border border-slate-300 px-2 py-1">Grey: Occupied</span>
+				<span className="rounded-full border-2 border-sky-500 px-2 py-1">Blue: Recommended</span>
+				<span className="rounded-full border-2 border-amber-400 px-2 py-1">Gold: Best Option</span>
+				<span className="rounded-full border-2 border-slate-900 px-2 py-1">Black: Currently Selected Table</span>
+			</div>
 
 			<div className="overflow-auto">
 				<div
