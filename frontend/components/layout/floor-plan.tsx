@@ -1,4 +1,3 @@
-import { layout } from "@/lib/layout";
 import { FloorPlanManager } from "./floor-plan-manager";
 
 export const FloorPlan = async () => {
