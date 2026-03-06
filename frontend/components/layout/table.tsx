@@ -1,89 +1,69 @@
-"use client";
-
 import { PositionedTable } from "@/types/table";
 import { getBgColor } from "./getBgColor";
-import { date, z, iso, number, object, string } from "zod";
-import { useForm } from "react-hook-form";
-import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
-import { Card } from "../ui/card";
-
-type WindowLocation = {
-	left: boolean;
-	top: boolean;
-};
-
-async function bookTable(tableId: number) {
-	const headers = new Headers();
-	headers.append("Content-Type", "application/json");
-	const res = await fetch("http://localhost:8080/api/reservations/book", {
-		method: "POST",
-		headers,
-		body: JSON.stringify({
-			tableId,
-			date: "2026-04-02",
-			time: "20:40",
-			people: 4,
-		}),
-	});
-	console.log(await res.json());
-}
-
-const reservationBookingSchema = object({
-	tableId: number(),
-	date: iso.date(),
-	time: iso.time(),
-	people: number(),
-});
-
-export function ReservationForm() {
-	const form = useForm<z.infer<typeof reservationBookingSchema>>({
-		resolver: standardSchemaResolver(reservationBookingSchema),
-	});
-
-	function onSubmit(data: z.infer<typeof reservationBookingSchema>) {
-		console.log(data);
-	}
-
-	return (
-		<form
-			onSubmit={form.handleSubmit(onSubmit)}
-			className="w-full h-min bg-black"
-		>
-			<Card />
-		</form>
-	);
-}
 
 export function Table({
 	x,
 	y,
-    location,
 	capacity,
 	features,
 	id,
 	cellSize,
-}: Readonly<PositionedTable> & { cellSize: number }) {
+	onSelect,
+	isRecommended,
+	isTopRecommended,
+	isOccupied,
+	isSelectable,
+	isSelected,
+}: Readonly<PositionedTable> & {
+	cellSize: number;
+	onSelect?: (id: number) => void;
+	isRecommended?: boolean;
+	isTopRecommended?: boolean;
+	isOccupied?: boolean;
+	isSelectable?: boolean;
+	isSelected?: boolean;
+}) {
 	const ratio = capacity / 10;
 	const size = cellSize * (0.4 + ratio * 0.6);
 
 	const hasWindow = features.includes("WINDOW_SIDE");
 
-	const windowLocation: WindowLocation = {
+	const windowLocation = {
 		left: hasWindow && x === 0,
 		top: hasWindow && y === 0,
+	};
+
+	const borderStyle = () => {
+		if (isSelected) {
+			return "3px solid rgb(15, 23, 42)";
+		}
+		if (isTopRecommended) {
+			return "3px solid rgb(245, 158, 11)";
+		}
+		if (isRecommended) {
+			return "2px solid rgb(14, 165, 233)";
+		}
+		if (isOccupied) {
+			return "2px solid rgb(156, 163, 175)";
+		}
+		return "1px solid black";
 	};
 
 	return (
 		<button
 			type="button"
-			className="absolute border rounded-xl flex items-center justify-center text-xs z-1"
-			onClick={() => bookTable(id)}
+			disabled={!isSelectable}
+			onClick={() => onSelect?.(id)}
+			className="absolute border rounded-xl flex flex-col items-center justify-center text-[10px] z-10 transition-transform hover:scale-105 disabled:cursor-not-allowed disabled:hover:scale-100"
 			style={{
 				left: x * cellSize + cellSize / 2 - size / 2,
 				top: y * cellSize + cellSize / 2 - size / 2,
 				width: size,
 				height: size,
 				backgroundColor: getBgColor(features),
+				border: borderStyle(),
+				filter: isOccupied ? "saturate(0.3) brightness(0.9)" : "none",
+				opacity: isOccupied ? 0.75 : 1,
 				...(capacity <= 3 && { borderRadius: "100%" }),
 			}}
 		>
@@ -93,6 +73,20 @@ export function Table({
 
 			{windowLocation.top && capacity > 3 && (
 				<div className="absolute top-0 left-1/2 -translate-x-1/2 h-1 w-3/5 bg-black" />
+			)}
+
+			<span className="font-bold">#{id}</span>
+			<span>{capacity}p</span>
+
+			{isOccupied && (
+				<span className="absolute -top-2 -right-2 rounded-full bg-slate-700 px-1.5 py-0.5 text-[9px] text-white">
+					Hoivatud
+				</span>
+			)}
+			{isTopRecommended && (
+				<span className="absolute -bottom-2 -left-2 rounded-full bg-amber-400 px-1.5 py-0.5 text-[9px] text-slate-900">
+					Parim
+				</span>
 			)}
 		</button>
 	);
