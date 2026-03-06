@@ -1,4 +1,5 @@
 import { FloorPlan } from "@/components/layout/floor-plan";
+import { ReservationForm } from "@/components/layout/table";
 
 export default function Home() {
 	return (
