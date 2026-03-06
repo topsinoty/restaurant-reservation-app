@@ -1,158 +1,103 @@
-# Restaurant Reservation System
+# Restaurant Reservation System - Backend
 
-A Spring Boot REST API for searching, booking, listing, and cancelling restaurant table reservations.
+Spring Boot REST API for table availability search, recommendation ranking, booking, and cancellation.
 
 ## Tech Stack
 
-- Java 25 (from `pom.xml`)
-- Spring Boot 4.0.3
+- Java (configured in `pom.xml`)
+- Spring Boot 4
 - Spring Web MVC
 - Spring Data JPA
+- Bean Validation
 - PostgreSQL
 - Maven Wrapper (`./mvnw`)
-- Docker Compose (optional, for local Postgres)
 
-## What This Service Does
+## Core Features
 
-- Seeds 20 random restaurant tables on startup if no tables exist.
-- Finds available tables for a requested date/time/party size.
-- Ranks candidate tables by feature match, then by capacity.
-- Books a reservation for a specific table if no time overlap exists.
-- Lists reservations and retrieves reservation by ID.
-- Cancels reservations.
+- Generates table layout data on startup when database is empty.
+- Provides all restaurant tables for floor plan rendering.
+- Finds available tables for requested date/time/party size.
+- Ranks tables based on fit and preference match.
+- Creates bookings with overlap protection.
+- Supports reservation listing, lookup by id, and cancellation.
+- Reservation slot duration is fixed to 2 hours.
 
-Reservation duration is fixed at **2 hours**.
+## Data Model Summary
 
-## Project Structure
+### RestaurantTable
 
-```text
-.
-├── compose.yaml
-├── pom.xml
-├── src
-│   ├── main
-│   │   ├── java/com/topsinoty/reservationSystem
-│   │   │   ├── MainApplication.java
-│   │   │   ├── config/DataInitializer.java
-│   │   │   ├── controller/ReservationController.java
-│   │   │   ├── dto/
-│   │   │   ├── model/
-│   │   │   ├── repository/
-│   │   │   └── service/ReservationService.java
-│   │   └── resources/application.properties
-│   └── test/java/com/topsinoty/reservation_system/MainApplicationTests.java
-└── mvnw
-```
+- `id`
+- `capacity`
+- `location` (`CENTER`, `CORNER`, `OUTDOOR`)
+- `features` (`GREAT_VIEW`, `KIDS_AREA`, `QUIET`, `ROMANTIC`, `BUSY`, `WINDOW_SIDE`)
+- `x`, `y` coordinates for floor plan placement
 
-## Domain Model
+### Reservation
 
-### `RestaurantTable`
-
-- `id: Long`
-- `location: Location` (`CENTER`, `OUTDOOR`, `CORNER`)
-- `capacity: int`
-- `features: Set<Feature>`
-- `reservations: Set<Reservation>`
-
-### `Reservation`
-
-- `id: Long`
-- `date: LocalDate`
-- `time: LocalTime` (start)
-- `endTime: LocalTime` (auto-calculated = start + 2 hours)
-- `people: Integer`
-- `restaurantTable: RestaurantTable`
-
-### `Feature` enum
-
-- `GREAT_VIEW`, `KIDS_AREA`, `QUIET`, `ROMANTIC`, `BUSY`, `WINDOW_SIDE`
+- `id`
+- `date`
+- `time` (start)
+- `endTime` (auto: `time + 2h`)
+- `people`
+- linked `restaurantTable`
 
 ## Availability Rules
 
-A table is considered available for a requested time window if there is **no overlapping reservation** for the same table and date:
+A table is available when there is no overlapping reservation for that table and date.
 
-- existing reservation start `<` requested end
-- existing reservation end `>` requested start
+Overlap condition used in queries:
 
-Search endpoint returns tables where:
+- existing start `< requested end`
+- existing end `> requested start`
 
-- table capacity `>= requested people`
-- no overlap with requested slot
-- optional location filter is satisfied
+For the purpose of fast iteration a hard 2h is considered the duration
 
-Results are sorted by:
+Search constraints:
 
-1. Number of matching preferred features (descending)
-2. Table capacity (ascending)
+- capacity must be `>= requested people`
+- optional location filter
+- ranking applied to matching candidates
 
-## API
+## API Endpoints
 
-Base path: `/api/reservations`
+Base routes:
 
-### 1. List all reservations
+- Tables: `/api/tables`
+- Reservations: `/api/reservations`
+
+### Tables
+
+- `GET /api/tables`
+  - Returns all tables with coordinates and features.
+
+### Reservations
 
 - `GET /api/reservations`
-- Response: `200 OK`
-
-```json
-[
-  {
-    "id": 1,
-    "time": "18:00:00",
-    "date": "2026-03-10",
-    "people": 4,
-    "restaurant_table_id": 7
-  }
-]
-```
-
-### 2. Get reservation by ID
-
+  - List all reservations.
 - `GET /api/reservations/{id}`
-- Response: `200 OK`
-
-```json
-{
-  "id": 1,
-  "time": "18:00:00",
-  "date": "2026-03-10",
-  "people": 4,
-  "restaurant_table_id": 7
-}
-```
-
-### 3. Search available tables
-
+  - Get reservation by id.
 - `POST /api/reservations/available`
-- Request body:
+  - Search available and ranked tables.
+- `POST /api/reservations/book`
+  - Create reservation for selected table.
+- `DELETE /api/reservations/cancel/{id}`
+  - Cancel reservation.
+
+## Example Request Bodies
+
+### Search availability
 
 ```json
 {
   "date": "2026-03-10",
   "time": "18:00:00",
   "people": 4,
-  "preferredFeatures": ["QUIET", "WINDOW_SIDE"],
-  "location": "CENTER"
+  "preferredFeatures": ["QUIET", "WINDOW_SIDE"], //optional 
+  "location": "CENTER" // optional
 }
 ```
 
-- Response: `200 OK`
-
-```json
-[
-  {
-    "id": 7,
-    "location": "CENTER",
-    "features": ["QUIET", "WINDOW_SIDE"],
-    "people": 4
-  }
-]
-```
-
-### 4. Book reservation
-
-- `POST /api/reservations/book`
-- Request body:
+### Book table
 
 ```json
 {
@@ -163,55 +108,27 @@ Base path: `/api/reservations`
 }
 ```
 
-- Response: `201 Created`
-
-```json
-{
-  "id": 12,
-  "date": "2026-03-10",
-  "time": "18:00:00",
-  "capacity": 4,
-  "table": 7
-}
-```
-
-### 5. Cancel reservation
-
-- `DELETE /api/reservations/cancel/{id}`
-- Response: `204 No Content`
-
-## Validation
-
-Current DTO/entity validation includes:
-
-- Booking date must be present or future (`@FutureOrPresent` in booking request).
-- Search and booking require non-null `date`, `time`, and positive `people`.
-- Reservation entity enforces positive people and future date.
-
-## Local Development
+## Local Setup
 
 ## 1. Start PostgreSQL
+
+From repository root (folder that contains `compose.yaml`):
 
 ```bash
 docker compose up -d
 ```
 
-`compose.yaml` provisions:
+## 2. Run backend
 
-- DB: `restaurantDB`
-- User: `sa`
-- Password: `password`
-- Port: `5432`
-
-## 2. Run the app
+From `backend/` folder:
 
 ```bash
 ./mvnw spring-boot:run
 ```
 
-The app seeds 20 random tables at startup if the table repository is empty.
+The app seeds table data if table repository is empty.
 
-## 3. Run tests
+## 3. Run checks
 
 ```bash
 ./mvnw test
@@ -228,45 +145,33 @@ spring.datasource.generate-unique-name=false
 spring.jpa.hibernate.ddl-auto=create-only
 ```
 
-Notes:
+If your local setup needs explicit datasource config, set `spring.datasource.url`, `spring.datasource.username`, and `spring.datasource.password`.
 
-- `ddl-auto=create-only` creates schema but does not update/drop automatically.
-- For explicit DB connection settings, add standard `spring.datasource.url`, `spring.datasource.username`, and `spring.datasource.password` entries if needed for your environment.
+## Known Limitations
 
-## Known Gaps / Improvement Areas
+- Global exception mapping (`@ControllerAdvice`) is not implemented yet.
+- Automated test coverage is minimal.
 
-- Error handling is currently exception-based without a global `@ControllerAdvice` mapping.
-- API response naming is inconsistent in a few DTOs (`capacity` field carries booked people count, and some fields are named `people` where they represent capacity).
-- Test coverage is minimal (only context load test).
-- `notes.md` indicates this project was built while learning the framework and still has model/design follow-up work.
+## Submission Notes
 
-## Quick cURL Examples
+- Total time spent: 42
+- Main challenges:
+  - Learning spring-Boot
+  - Understanding conventions of spring-boot and how to maximally utilize item
+  - Flow of the project structure
+  - Wrong structure for the project. I started the backend and the frontend in different branches. It made it weird for me.
+- How challenges were solved:
+  - Watched some videos:
+  - Did some research for the structure and other people how had developed similar systems
+  - Cross-examined with AI and google searches to see if i was heading in the right direction
+  - Used git --allow-unrelated-histories. I couldnt successfully merge all the histories together but the branches are available for anyone interested in seeing the process from the beginning.
+  - Information for compilation issues were solved from github gist and everything was easy if you searched it up.
 
-```bash
-# search
-curl -X POST http://localhost:8080/api/reservations/available \
-  -H "Content-Type: application/json" \
-  -d '{
-    "date":"2026-03-10",
-    "time":"18:00:00",
-    "people":4,
-    "preferredFeatures":["QUIET"],
-    "location":"CENTER"
-  }'
+- Unresolved issues/Maybe fixes:
+  - Result DTO for the api
+  - Weak error handling
 
-# book
-curl -X POST http://localhost:8080/api/reservations/book \
-  -H "Content-Type: application/json" \
-  -d '{
-    "tableId":7,
-    "date":"2026-03-10",
-    "time":"18:00:00",
-    "people":4
-  }'
-
-# list
-curl http://localhost:8080/api/reservations
-
-# cancel
-curl -X DELETE http://localhost:8080/api/reservations/cancel/12
-```
+## Sources and Attribution
+- https://youtu.be/31KTdfRH6nY?si=h1ipJTms2Vw64MUv
+- https://youtu.be/ZZTYQIUd_uY?si=LcCaH03Bae640JUs
+- https://v2.tableonline.fi/instabook/bookings/2qFamxk/selection?locale=en

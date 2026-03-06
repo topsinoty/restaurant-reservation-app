@@ -1,4 +1,4 @@
-# Smart Restaurant Reservation System - Frontend
+# Restaurant Reservation System - Frontend
 
 Next.js frontend for the CGI internship assignment. This app lets a guest search for available tables, view recommendations on a floor plan, and book a selected table through a Spring Boot API.
 
@@ -29,11 +29,9 @@ The UI supports these filters:
 ### 2) Table Recommendation and Selection Logic
 
 - Availability and ranking are requested from backend endpoint:
-  - `POST /api/reservations/available`
-- Frontend behavior:
-  - all available results are visually marked as recommended
-  - first ranked result is highlighted as the best table
-  - user can click a free table directly on the floor plan
+- all available results are visually marked as recommended
+- first ranked result is highlighted as the best table
+- user can click a free table directly on the floor plan
 
 ### 3) Visual Floor Plan
 
@@ -110,12 +108,13 @@ pnpm build
 
 If you used larger snippets from external sources, StackOverflow, or AI tools, list them here before submission.
 
-## Submission Notes (Fill Before Sending)
+## Submission Notes
 
-- Total time spent: `TODO`
+- Total time spent: 23h
 - Main challenges:
-  - `TODO`
+  - Layout Rendering logic
+    I started with a grid and later moved to an absolute position rendering
 - How challenges were solved:
-  - `TODO`
+  - Trial and error and checking what looked better
 - Unresolved issues and planned fixes:
-  - `TODO`
+  - I dont like the UI
