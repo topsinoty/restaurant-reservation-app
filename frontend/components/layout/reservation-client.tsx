@@ -73,9 +73,7 @@ export function ReservationClient() {
 				);
 			} catch (error) {
 				const message =
-					error instanceof Error
-						? error.message
-						: "Vabade laudade otsing ebaonnestus";
+					error instanceof Error ? error.message : "Availability search failed";
 				setAvailableIds(new Set());
 				setRecommendedIds(new Set());
 				setTopRecommendedId(null);
@@ -109,9 +107,7 @@ export function ReservationClient() {
 				}
 
 				const message =
-					error instanceof Error
-						? error.message
-						: "Laudade laadimine ebaonnestus";
+					error instanceof Error ? error.message : "Floor plan loading failed";
 				setNotice({ type: "error", text: message });
 			} finally {
 				if (!ignore) {
