@@ -1,7 +1,5 @@
 import { PositionedTable } from "@/types/table";
 import { getBgColor } from "./compute-bg-color";
-import { FaPeopleArrows } from "react-icons/fa";
-import { Group } from "lucide-react";
 import { FaPeopleGroup } from "react-icons/fa6";
 
 export function Table({
