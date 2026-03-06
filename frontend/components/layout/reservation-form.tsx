@@ -3,7 +3,13 @@
 import { iso, number, object, string, array, literal, z } from "zod";
 import { Controller, useForm } from "react-hook-form";
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card";
+import {
+	Card,
+	CardContent,
+	CardDescription,
+	CardHeader,
+	CardTitle,
+} from "../ui/card";
 import { Field, FieldError, FieldLabel } from "../ui/field";
 import { Input } from "../ui/input";
 import { Calendar } from "../ui/calendar";
@@ -56,8 +62,9 @@ export function ReservationForm({
 		defaultValues,
 	});
 
-	const today = new Date();
-	today.setHours(0, 0, 0, 0);
+	const tomorrow = new Date();
+	tomorrow.setDate(tomorrow.getDate() + 1);
+	tomorrow.setHours(0, 0, 0, 0);
 
 	return (
 		<form
@@ -74,10 +81,8 @@ export function ReservationForm({
 		>
 			<Card>
 				<CardHeader>
-					<CardTitle>Leia sobiv laud</CardTitle>
-					<CardDescription>
-						Vali aeg, seltskonna suurus ja eelistused. Seejarel kuvatakse soovitused saaliplaanil.
-					</CardDescription>
+					<CardTitle>Select a table</CardTitle>
+					<CardDescription>Fill in the details :)</CardDescription>
 				</CardHeader>
 
 				<CardContent className="flex flex-col gap-6">
@@ -91,10 +96,9 @@ export function ReservationForm({
 								<Calendar
 									mode="single"
 									selected={field.value ? new Date(field.value) : undefined}
-									disabled={{ before: today }}
+									disabled={{ before: tomorrow }}
 									onSelect={(date) => {
 										if (!date) return;
-										// Keep local date to avoid timezone shifts.
 										const year = date.getFullYear();
 										const month = String(date.getMonth() + 1).padStart(2, "0");
 										const day = String(date.getDate()).padStart(2, "0");
@@ -112,7 +116,7 @@ export function ReservationForm({
 						name="time"
 						render={({ field }) => (
 							<Field>
-								<FieldLabel>Kellaaeg</FieldLabel>
+								<FieldLabel>Time</FieldLabel>
 								<Input type="time" step={60} {...field} />
 								<FieldError errors={[form.formState.errors.time]} />
 							</Field>
@@ -124,7 +128,7 @@ export function ReservationForm({
 						name="people"
 						render={({ field }) => (
 							<Field>
-								<FieldLabel>Inimeste arv</FieldLabel>
+								<FieldLabel>People</FieldLabel>
 								<Input
 									type="number"
 									min={1}
@@ -142,13 +146,13 @@ export function ReservationForm({
 						name="location"
 						render={({ field }) => (
 							<Field>
-								<FieldLabel>Tsoon</FieldLabel>
+								<FieldLabel>Zone</FieldLabel>
 								<select
 									value={field.value}
 									onChange={(e) => field.onChange(e.target.value)}
 									className="h-9 w-full rounded-md border border-input bg-transparent px-3 text-sm shadow-xs transition-[color,box-shadow] outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
 								>
-									<option value="">Koik tsoonid</option>
+									<option value="">-- Select --</option>
 									{TABLE_LOCATIONS.map((location) => (
 										<option key={location} value={location}>
 											{LOCATION_LABELS[location]}
@@ -164,7 +168,7 @@ export function ReservationForm({
 						name="preferredFeatures"
 						render={({ field }) => (
 							<Field>
-								<FieldLabel>Eelistused</FieldLabel>
+								<FieldLabel>Preferences</FieldLabel>
 
 								<div className="grid gap-2 sm:grid-cols-2">
 									{preferenceOptions.map((feature) => {
@@ -197,7 +201,7 @@ export function ReservationForm({
 
 					<div className="flex flex-col gap-2 sm:flex-row">
 						<Button type="submit" disabled={isSearching}>
-							{isSearching ? "Otsin vabu laudu..." : "Leia vabad lauad"}
+							{isSearching ? "Searching..." : "Check table availability"}
 						</Button>
 						<Button
 							type="button"
@@ -207,7 +211,7 @@ export function ReservationForm({
 								onClear?.();
 							}}
 						>
-							Lahtesta
+							Clear
 						</Button>
 					</div>
 				</CardContent>
