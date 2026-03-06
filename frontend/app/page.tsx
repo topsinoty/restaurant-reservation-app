@@ -1,17 +1,17 @@
-import { FloorPlan } from "@/components/layout/floor-plan";
-import { ReservationForm } from "@/components/layout/table";
+import { ReservationClient } from "@/components/layout/reservation-client";
 
 export default function Home() {
 	return (
-		<section>
-			<h1 className="text-4xl mb-6">Booking Service</h1>
-			<div className="w-full h-full flex flex-col">
-				<span className="text-xl mb-4">Please select a table</span>
-				<div className="w-full h-full flex flex-col lg:flex-row gap-8">
-					<FloorPlan />
-					<ReservationForm />
-				</div>
-			</div>
+		<section className="space-y-6">
+			<header className="space-y-2">
+				<h1 className="text-3xl font-semibold sm:text-4xl">
+					Reservation System
+				</h1>
+				<p className="max-w-3xl text-sm text-muted-foreground sm:text-base">
+					Choose a date, time, preference options and amount of people.
+				</p>
+			</header>
+			<ReservationClient />
 		</section>
 	);
 }
