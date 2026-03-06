@@ -17,7 +17,7 @@ public class RestaurantTableService {
     public List<RestaurantTableResponse> getAllTables() {
         return tableRepository.findAll()
                 .stream()
-                .map(t -> new RestaurantTableResponse(t.getId(), t.getCapacity(), t.getLocation(), t.getFeatures()))
+                .map(t -> new RestaurantTableResponse(t.getId(), t.getCapacity(), t.getLocation(), t.getFeatures(), t.getX(), t.getY()))
                 .toList();
     }
 
