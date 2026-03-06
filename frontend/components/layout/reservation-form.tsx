@@ -23,7 +23,7 @@ const TIME_24H_REGEX = /^([01]\d|2[0-3]):[0-5]\d$/;
 const reservationBookingSchema = object({
 	date: iso.date(),
 	time: string().regex(TIME_24H_REGEX, {
-		error: "Kasuta formaati HH:mm",
+		error: "Use format HH:mm AM/PM",
 	}),
 	people: number().min(1).max(12),
 	location: z.union([literal(""), z.enum(TABLE_LOCATIONS)]),
@@ -77,12 +77,12 @@ export function ReservationForm({
 					preferredFeatures: data.preferredFeatures,
 				}),
 			)}
-			className="w-full h-min lg:max-w-[24rem]"
+			className="w-full h-min lg:max-w-full"
 		>
 			<Card>
 				<CardHeader>
 					<CardTitle>Select a table</CardTitle>
-					<CardDescription>Fill in the details :)</CardDescription>
+					<CardDescription>Fill in the details {":)"}</CardDescription>
 				</CardHeader>
 
 				<CardContent className="flex flex-col gap-6">
