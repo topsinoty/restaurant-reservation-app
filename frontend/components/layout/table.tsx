@@ -57,7 +57,7 @@ export function Table({
 			type="button"
 			disabled={!isSelectable}
 			onClick={() => onSelect?.(id)}
-			className="absolute border rounded-xl flex flex-col items-center justify-center text-[10px] z-10 transition-transform hover:scale-105 disabled:cursor-not-allowed disabled:hover:scale-100"
+			className="cursor-pointer absolute border rounded-xl flex flex-col items-center justify-center text-[10px] z-10 transition-transform hover:scale-105 disabled:cursor-not-allowed disabled:hover:scale-100"
 			style={{
 				left: x * cellSize + cellSize / 2 - size / 2,
 				top: y * cellSize + cellSize / 2 - size / 2,
