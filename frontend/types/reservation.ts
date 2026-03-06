@@ -12,7 +12,7 @@ export type ReservationSearchResponse = {
 	id: number;
 	location: TableLocation;
 	features: TableFeature[];
-	people: number;
+	capacity: number;
 };
 
 export type ReservationBookingRequest = {
@@ -26,6 +26,6 @@ export type ReservationBookingResponse = {
 	id: number;
 	date: string;
 	time: string;
-	capacity: number;
+	people: number;
 	table: number;
 };
