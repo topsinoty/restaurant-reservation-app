@@ -2,7 +2,7 @@ import { layout } from "@/lib/layout";
 import { FloorPlanManager } from "./floor-plan-manager";
 
 export const FloorPlan = async () => {
-	const planner = new FloorPlanManager(layout);
+	const planner = new FloorPlanManager();
 
 	const tables = await planner.init();
 
@@ -18,6 +18,7 @@ export const FloorPlan = async () => {
 					}}
 				>
 					{t.capacity}
+					{t.features}
 				</div>
 			))}
 		</section>
