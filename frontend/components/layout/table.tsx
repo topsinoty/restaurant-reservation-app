@@ -1,5 +1,5 @@
 import { PositionedTable } from "@/types/table";
-import { getBgColor } from "./getBgColor";
+import { getBgColor } from "./compute-bg-color";
 
 export function Table({
 	x,
