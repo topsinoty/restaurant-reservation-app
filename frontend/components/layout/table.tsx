@@ -74,8 +74,10 @@ export function Table({
 	};
 
 	return (
-		<div
-			className="absolute border rounded-xl flex items-center justify-center bg-white text-xs"
+		<button
+			type="button"
+			className="absolute border rounded-xl flex items-center justify-center text-xs z-1"
+			onClick={() => bookTable(id)}
 			style={{
 				left: x * cellSize + cellSize / 2 - size / 2,
 				top: y * cellSize + cellSize / 2 - size / 2,
