@@ -15,7 +15,7 @@ type FloorPlanProps = {
 	isSearching?: boolean;
 };
 
-const CELL_SIZE = 108;
+const CELL_SIZE = globalThis.innerWidth < 726 ? 80 : 120;
 const GRID_WIDTH = 8;
 const GRID_HEIGHT = 6;
 
@@ -31,7 +31,10 @@ export function FloorPlan({
 	isSearching,
 }: Readonly<FloorPlanProps>) {
 	return (
-		<div className="w-full rounded-2xl border bg-slate-50 p-4 sm:p-6 lg:max-w-[65%] h-min">
+		<div className="w-full rounded-2xl border bg-slate-50 p-4 sm:p-6 lg:max-w-5/7 h-min relative">
+			{!hasActiveSearch && (
+				<div className="w-full h-full absolute -m-6 bg-black/10 cursor-not-allowed rounded-2xl z-11" />
+			)}
 			<div className="mb-4 flex flex-wrap items-center gap-2 text-xs">
 				<span className="rounded-full border border-slate-300 px-2 py-1">
 					Grey: Occupied
