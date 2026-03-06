@@ -1,6 +1,6 @@
 package com.topsinoty.reservationSystem.service;
 
-import com.topsinoty.reservationSystem.dto.*;
+import com.topsinoty.reservationSystem.dto.reservation.*;
 import com.topsinoty.reservationSystem.model.Feature;
 import com.topsinoty.reservationSystem.model.Reservation;
 import com.topsinoty.reservationSystem.model.RestaurantTable;
@@ -87,12 +87,13 @@ public class ReservationService {
     }
 
     public List<ReservationSearchResponse> getPossibleTablesForReservation(ReservationSearchRequest req) {
-        ToDoubleFunction<RestaurantTable> countFeatureMatch = table -> countMatchingFeatures(table, req.preferredFeatures());
+        Set<Feature> preferred = (req.preferredFeatures()==null) ? Set.of():req.preferredFeatures();
+        ToDoubleFunction<RestaurantTable> countFeatureMatch = table -> countMatchingFeatures(table, preferred);
 
         Comparator<RestaurantTable> sortByFeatureMatchThenCapacity = Comparator.comparingDouble(countFeatureMatch)
                 .reversed()
                 .thenComparingInt(RestaurantTable::getCapacity);
-        Predicate<RestaurantTable> filterByLocationIfLocationIsPresent = t -> t.getLocation()==null || t.getLocation()
+        Predicate<RestaurantTable> filterByLocationIfLocationIsPresent = t -> req.location()==null || t.getLocation()
                 .equals(req.location());
 
         LocalTime endTime = req.time().plus(RESERVATION_DURATION);
@@ -101,9 +102,9 @@ public class ReservationService {
                 .stream().filter(filterByLocationIfLocationIsPresent)
                 .sorted(sortByFeatureMatchThenCapacity)
                 .map(t -> new ReservationSearchResponse(t.getId(), t.getLocation(), t.getFeatures(), t.getCapacity()))
+                .sorted(Comparator.comparingInt(ReservationSearchResponse::capacity))
                 .toList();
     }
-
     private long countMatchingFeatures(RestaurantTable table, Set<Feature> requestedFeatures) {
 
         if (requestedFeatures.isEmpty() || table.getFeatures()==null || table.getFeatures().isEmpty()) {

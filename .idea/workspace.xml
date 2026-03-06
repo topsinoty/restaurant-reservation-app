@@ -4,25 +4,45 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b83559b6-5e47-40ee-ae89-8bb03045e536" name="Changes" comment="removed file">
-      <change afterPath="$PROJECT_DIR$/frontend/components/layout/navbar.tsx" afterDir="false" />
+    <list default="true" id="b83559b6-5e47-40ee-ae89-8bb03045e536" name="Changes" comment="add rhf and zod and deps for form">
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/app/globals.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/app/globals.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/app/layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/app/layout.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/app/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/app/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/pnpm-lock.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/pnpm-lock.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/backend/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/types/reservation.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/types/reservation.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="EmbeddingIndexingInfo">
-    <option name="cachedIndexableFilesCount" value="25" />
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;topsinoty&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;git@github.com:topsinoty/restaurant-reservation-app.git&quot;,
+    &quot;accountId&quot;: &quot;48d9d7f7-68b0-4993-8377-cad103110002&quot;
+  }
+}</component>
+  <component name="JavaAutoRunManager">
+    <enabled-run-configurations>
+      <run-configuration type="JUnit" name="MainApplicationTests (1)" />
+    </enabled-run-configurations>
   </component>
   <component name="MavenImportPreferences">
     <option name="generalSettings">
@@ -52,6 +72,15 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "JUnit.MainApplicationTests (1).executor": "Run",
+    "JUnit.MainApplicationTests.contextLoads.executor": "Run",
+    "JUnit.MainApplicationTests.executor": "Run",
+    "Maven.restaurant-reservation-system [clean].executor": "Run",
+    "Maven.restaurant-reservation-system [compile].executor": "Run",
+    "Maven.restaurant-reservation-system [package].executor": "Run",
+    "Maven.restaurant-reservation-system [test].executor": "Run",
+    "Maven.restaurant-reservation-system [validate].executor": "Run",
+    "Maven.restaurant-reservation-system [verify].executor": "Run",
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RequestMappingsPanelOrder0": "0",
     "RequestMappingsPanelOrder1": "1",
@@ -63,7 +92,7 @@
     "RunOnceActivity.git.unshallow": "true",
     "RunOnceActivity.typescript.service.memoryLimit.init": "true",
     "Spring Boot.MainApplication.executor": "Run",
-    "git-widget-placeholder": "main",
+    "git-widget-placeholder": "dev",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "/home/topsinoty/Code/ext/clone/restaurant-reservation-app/backend",
     "node.js.detected.package.eslint": "true",
@@ -76,7 +105,7 @@
     "project.structure.last.edited": "Modules",
     "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.2",
-    "settings.editor.selected.configurable": "preferences.keymap",
+    "settings.editor.selected.configurable": "preferences.sourceCode.JAVA",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
@@ -84,13 +113,72 @@
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$" />
     </key>
+    <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
+      <recent name="com.topsinoty.reservationSystem.dto.reservation" />
+    </key>
   </component>
-  <component name="RunManager" selected="Compound.Start all">
+  <component name="RunManager" selected="JUnit.MainApplicationTests (1)">
+    <configuration name="MainApplicationTests (1)" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="restaurant-reservation-system" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.topsinoty.reservationSystem.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.topsinoty.reservationSystem" />
+      <option name="MAIN_CLASS_NAME" value="com.topsinoty.reservationSystem.MainApplicationTests" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="MainApplicationTests" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="restaurant-reservation-system" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.topsinoty.reservationSystem.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.topsinoty.reservation_system" />
+      <option name="MAIN_CLASS_NAME" value="com.topsinoty.reservation_system.MainApplicationTests" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="MainApplicationTests.contextLoads" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="restaurant-reservation-system" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.topsinoty.reservationSystem.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.topsinoty.reservation_system" />
+      <option name="MAIN_CLASS_NAME" value="com.topsinoty.reservation_system.MainApplicationTests" />
+      <option name="METHOD_NAME" value="contextLoads" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <list>
       <item itemvalue="Compound.Start all" />
+      <item itemvalue="JUnit.MainApplicationTests" />
+      <item itemvalue="JUnit.MainApplicationTests (1)" />
+      <item itemvalue="JUnit.MainApplicationTests.contextLoads" />
       <item itemvalue="npm.dev" />
       <item itemvalue="Spring Boot.MainApplication" />
     </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="JUnit.MainApplicationTests (1)" />
+        <item itemvalue="JUnit.MainApplicationTests.contextLoads" />
+        <item itemvalue="JUnit.MainApplicationTests" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
@@ -111,7 +199,11 @@
       <option name="presentableId" value="Default" />
       <updated>1772701191631</updated>
       <workItem from="1772701192786" duration="2091000" />
-      <workItem from="1772703308896" duration="1163000" />
+      <workItem from="1772703308896" duration="8748000" />
+      <workItem from="1772731368365" duration="3367000" />
+      <workItem from="1772785799413" duration="976000" />
+      <workItem from="1772787220532" duration="4431000" />
+      <workItem from="1772811110355" duration="17195000" />
     </task>
     <task id="LOCAL-00001" summary="idea stuff">
       <option name="closed" value="true" />
@@ -137,7 +229,175 @@
       <option name="project" value="LOCAL" />
       <updated>1772703452936</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="initial setup...need to speed up">
+      <option name="closed" value="true" />
+      <created>1772704519898</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1772704519898</updated>
+    </task>
+    <task id="LOCAL-00005" summary="shadcn additions">
+      <option name="closed" value="true" />
+      <created>1772704533532</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1772704533532</updated>
+    </task>
+    <task id="LOCAL-00006" summary="move to package">
+      <option name="closed" value="true" />
+      <created>1772706857215</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1772706857215</updated>
+    </task>
+    <task id="LOCAL-00007" summary="fix the typo">
+      <option name="closed" value="true" />
+      <created>1772789025134</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1772789025135</updated>
+    </task>
+    <task id="LOCAL-00008" summary="move positions to backend">
+      <option name="closed" value="true" />
+      <created>1772789072495</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1772789072495</updated>
+    </task>
+    <task id="LOCAL-00009" summary="add shadcn components">
+      <option name="closed" value="true" />
+      <created>1772807122680</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1772807122680</updated>
+    </task>
+    <task id="LOCAL-00010" summary="remake layout design">
+      <option name="closed" value="true" />
+      <created>1772807166147</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1772807166148</updated>
+    </task>
+    <task id="LOCAL-00011" summary="plan for form">
+      <option name="closed" value="true" />
+      <created>1772807181779</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1772807181779</updated>
+    </task>
+    <task id="LOCAL-00012" summary="plan for form">
+      <option name="closed" value="true" />
+      <created>1772807191621</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1772807191621</updated>
+    </task>
+    <task id="LOCAL-00013" summary="add window to design">
+      <option name="closed" value="true" />
+      <created>1772807257642</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1772807257642</updated>
+    </task>
+    <task id="LOCAL-00014" summary="WIP. change to button and add other functions">
+      <option name="closed" value="true" />
+      <created>1772807307546</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1772807307546</updated>
+    </task>
+    <task id="LOCAL-00015" summary="WIP. change to button and add other functions">
+      <option name="closed" value="true" />
+      <created>1772807321413</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1772807321416</updated>
+    </task>
+    <task id="LOCAL-00016" summary="add location back">
+      <option name="closed" value="true" />
+      <created>1772807356594</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1772807356594</updated>
+    </task>
+    <task id="LOCAL-00017" summary="add shadcn ui">
+      <option name="closed" value="true" />
+      <created>1772822638362</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1772822638363</updated>
+    </task>
+    <task id="LOCAL-00018" summary="move away from the manager and to one file....&#10;&#10;&#10;i dont see the point">
+      <option name="closed" value="true" />
+      <created>1772823045045</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1772823045045</updated>
+    </task>
+    <task id="LOCAL-00019" summary="add tags">
+      <option name="closed" value="true" />
+      <created>1772823160956</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1772823160956</updated>
+    </task>
+    <task id="LOCAL-00020" summary="change css on the navbar a bit...WIP">
+      <option name="closed" value="true" />
+      <created>1772823188907</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1772823188907</updated>
+    </task>
+    <task id="LOCAL-00021" summary="Remake types for table&#10;&#10;PositionedTable and TableProps were essentially the same thing....">
+      <option name="closed" value="true" />
+      <created>1772823245179</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1772823245179</updated>
+    </task>
+    <task id="LOCAL-00022" summary="add support for all the modes from the floor plan">
+      <option name="closed" value="true" />
+      <created>1772823279267</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1772823279267</updated>
+    </task>
+    <task id="LOCAL-00023" summary="add labels for enums in backend">
+      <option name="closed" value="true" />
+      <created>1772823605626</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1772823605626</updated>
+    </task>
+    <task id="LOCAL-00024" summary="add rhf and zod and deps for form">
+      <option name="closed" value="true" />
+      <created>1772823632045</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1772823632045</updated>
+    </task>
+    <option name="localTasksCounter" value="25" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -147,6 +407,29 @@
     <MESSAGE value="idea stuff" />
     <MESSAGE value="move files to root" />
     <MESSAGE value="removed file" />
-    <option name="LAST_COMMIT_MESSAGE" value="removed file" />
+    <MESSAGE value="initial setup...need to speed up" />
+    <MESSAGE value="shadcn additions" />
+    <MESSAGE value="move to package" />
+    <MESSAGE value="fix the typo" />
+    <MESSAGE value="move positions to backend" />
+    <MESSAGE value="add shadcn components" />
+    <MESSAGE value="remake layout design" />
+    <MESSAGE value="plan for form" />
+    <MESSAGE value="add window to design" />
+    <MESSAGE value="WIP. change to button and add other functions" />
+    <MESSAGE value="add location back" />
+    <MESSAGE value="add shadcn ui" />
+    <MESSAGE value="move away from the manager and to one file....&#10;&#10;&#10;i dont see the point" />
+    <MESSAGE value="add tags" />
+    <MESSAGE value="change css on the navbar a bit...WIP" />
+    <MESSAGE value="Remake types for table&#10;&#10;PositionedTable and TableProps were essentially the same thing...." />
+    <MESSAGE value="add support for all the modes from the floor plan" />
+    <MESSAGE value="add labels for enums in backend" />
+    <MESSAGE value="add rhf and zod and deps for form" />
+    <option name="LAST_COMMIT_MESSAGE" value="add rhf and zod and deps for form" />
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
   </component>
 </project>

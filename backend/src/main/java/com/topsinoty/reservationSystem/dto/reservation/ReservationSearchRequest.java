@@ -1,4 +1,4 @@
-package com.topsinoty.reservationSystem.dto;
+package com.topsinoty.reservationSystem.dto.reservation;
 
 
 import com.topsinoty.reservationSystem.model.Feature;

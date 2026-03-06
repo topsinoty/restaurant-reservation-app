@@ -1,6 +1,6 @@
 package com.topsinoty.reservationSystem.controller;
 
-import com.topsinoty.reservationSystem.dto.*;
+import com.topsinoty.reservationSystem.dto.reservation.*;
 import com.topsinoty.reservationSystem.service.ReservationService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
