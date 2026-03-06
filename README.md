@@ -1,12 +1,13 @@
 # Restaurant Reservation System
 
-Full-stack restaurant reservation app built for the CGI internship assignment.
 
----
 ## Initial repos
-frontend : https://github.com/topsinoty/restaurant-reservation-frontend
 
-backend : https://github.com/topsinoty/restaurant-reservation-system
+- frontend : https://github.com/topsinoty/restaurant-reservation-frontend
+- backend : https://github.com/topsinoty/restaurant-reservation-system
+---
+
+Full-stack restaurant reservation app built for the CGI internship assignment.
 
 This repository contains:
 
