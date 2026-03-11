@@ -4,6 +4,7 @@ import com.topsinoty.reservationSystem.model.Feature;
 import com.topsinoty.reservationSystem.model.Location;
 import com.topsinoty.reservationSystem.model.RestaurantTable;
 import com.topsinoty.reservationSystem.repository.RestaurantTableRepository;
+import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
@@ -24,7 +25,7 @@ public class DataInitializer implements CommandLineRunner {
     }
 
     @Override
-    public void run(String... args) {
+    public void run(String @NonNull ... args) {
 
         if (restaurantTableRepository.count() > 0) {
             System.out.println("Did not generate any restaurant tables");
