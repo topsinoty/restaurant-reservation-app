@@ -36,6 +36,13 @@ public class GlobalApiExceptionHandler {
                 .body(ApiResult.failure(message));
     }
 
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ApiResult<Void>> handleArgumentTypeMismatch(MethodArgumentTypeMismatchException ex) {
+        return ResponseEntity
+                .badRequest()
+                .body(ApiResult.failure(ex.getMessage()));
+    }
+
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ApiResult<Void>> handleJson(HttpMessageNotReadableException ex) {
         return ResponseEntity
