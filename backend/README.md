@@ -50,7 +50,7 @@ Overlap condition used in queries:
 - existing start `< requested end`
 - existing end `> requested start`
 
-For the purpose of fast iteration a hard 2h is considered the duration
+For fast iteration a hard 2h is considered the duration of a reservation
 
 Search constraints:
 
