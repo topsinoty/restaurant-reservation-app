@@ -17,7 +17,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
-import java.util.function.ToDoubleFunction;
 
 @Service
 public class ReservationService {
@@ -92,9 +91,8 @@ public class ReservationService {
 
         Set<Feature> preferred = req.preferredFeatures()==null ? Set.of():req.preferredFeatures();
 
-        ToDoubleFunction<RestaurantTable> countFeatureMatch = table -> countMatchingFeatures(table, preferred);
-
-        Comparator<RestaurantTable> sortByFeatureMatchThenCapacity = Comparator.comparingDouble(countFeatureMatch)
+        Comparator<RestaurantTable> sortByFeatureMatchThenCapacity = Comparator
+                .comparingLong((RestaurantTable table) -> countMatchingFeatures(table, preferred))
                 .reversed()
                 .thenComparingInt(RestaurantTable::getCapacity);
 
@@ -108,7 +106,6 @@ public class ReservationService {
                 .filter(filterByLocationIfLocationIsPresent)
                 .sorted(sortByFeatureMatchThenCapacity)
                 .map(t -> new ReservationSearchResponse(t.getId(), t.getLocation(), t.getFeatures(), t.getCapacity()))
-                .sorted(Comparator.comparingInt(ReservationSearchResponse::capacity))
                 .toList();
     }
 
