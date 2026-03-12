@@ -31,9 +31,7 @@ export function ReservationClient() {
 	const [availableIds, setAvailableIds] = useState<Set<number>>(new Set());
 	const [recommendedIds, setRecommendedIds] = useState<Set<number>>(new Set());
 	const [topRecommendedId, setTopRecommendedId] = useState<number | null>(null);
-	const [randomOccupiedIds, setRandomOccupiedIds] = useState<Set<number>>(
-		new Set(),
-	);
+
 	const [selectedTableId, setSelectedTableId] = useState<number | null>(null);
 	const [isLoadingTables, setIsLoadingTables] = useState(true);
 	const [selectedLocation, setSelectedLocation] =
@@ -176,7 +174,6 @@ export function ReservationClient() {
 				availableTableIds={availableIds}
 				recommendedIds={recommendedIds}
 				topRecommendedId={topRecommendedId}
-				randomOccupiedIds={randomOccupiedIds}
 				selectedTableId={selectedTableId}
 				onSelectTable={setSelectedTableId}
 				isSearching={isSearching}
