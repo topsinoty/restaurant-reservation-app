@@ -2,12 +2,12 @@ package com.topsinoty.reservationSystem.config;
 
 import com.topsinoty.reservationSystem.dto.ApiResult;
 import com.topsinoty.reservationSystem.exception.ApiException;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.util.stream.Collectors;
 
@@ -35,6 +35,8 @@ public class GlobalApiExceptionHandler {
                 .badRequest()
                 .body(ApiResult.failure(message));
     }
+
+    // todo exception handler for wrong route and wrong method use...
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<ApiResult<Void>> handleArgumentTypeMismatch(MethodArgumentTypeMismatchException ex) {
