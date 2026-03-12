@@ -176,9 +176,7 @@ export function ReservationClient() {
 					onSubmit={(data) => {
 						setSelectedTableId(null);
 						setFilters(data);
-						if (data.location) {
-							setSelectedLocation(data.location);
-						}
+						setSelectedLocation(data.location);
 					}}
 					onClear={() => {
 						setFilters(null);
