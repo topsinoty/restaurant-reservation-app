@@ -25,24 +25,6 @@ type Notice = {
 	text: string;
 };
 
-function generateRandomOccupiedIds(tables: PositionedTable[]): Set<number> {
-	if (tables.length === 0) {
-		return new Set();
-	}
-
-	const min = Math.max(1, Math.floor(tables.length * 0.2));
-	const max = Math.max(min, Math.floor(tables.length * 0.35));
-	const target = min + Math.floor(Math.random() * (max - min + 1));
-	const ids = [...tables.map((table) => table.id)];
-
-	for (let i = ids.length - 1; i > 0; i -= 1) {
-		const randomIndex = Math.floor(Math.random() * (i + 1));
-		[ids[i], ids[randomIndex]] = [ids[randomIndex], ids[i]];
-	}
-
-	return new Set(ids.slice(0, target));
-}
-
 export function ReservationClient() {
 	const [tables, setTables] = useState<PositionedTable[]>([]);
 	const [filters, setFilters] = useState<ReservationSearchFilters | null>(null);
@@ -102,7 +84,6 @@ export function ReservationClient() {
 				}
 
 				setTables(response);
-				setRandomOccupiedIds(generateRandomOccupiedIds(response));
 			} catch (error) {
 				if (ignore) {
 					return;
