@@ -23,13 +23,13 @@ public class ReservationController {
     @GetMapping
     public ResponseEntity<ApiResult<List<ReservationResponse>>> getAllReservations() {
         List<ReservationResponse> reservations = reservationService.findAll();
-        return ResponseEntity.ok(ApiResult.success(reservations));
+        return ResponseEntity.ok(ApiResult.success("Fetched all reservations", reservations));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ApiResult<ReservationResponse>> getReservationById(@PathVariable Long id) {
         ReservationResponse reservation = reservationService.findById(id);
-        return ResponseEntity.ok(ApiResult.success(reservation));
+        return ResponseEntity.ok(ApiResult.success("Fetched reservation %d".formatted(id), reservation));
     }
 
     @PostMapping("/available")
@@ -38,8 +38,7 @@ public class ReservationController {
 
         List<ReservationSearchResponse> tables =
                 reservationService.getPossibleTablesForReservation(request);
-
-        return ResponseEntity.ok(ApiResult.success(tables));
+        return ResponseEntity.ok(ApiResult.success("Fetched available tables", tables));
     }
 
     @PostMapping("/book")
@@ -50,7 +49,9 @@ public class ReservationController {
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(ApiResult.success(booking));
+                .body(ApiResult.success("Table #%d has been reserved for %s-%s".formatted(booking.table(),
+                        booking.time(), booking.time()
+                                .plusHours(2)), booking));
     }
 
     @DeleteMapping("/{id}")
