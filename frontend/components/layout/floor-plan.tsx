@@ -12,7 +12,6 @@ type FloorPlanProps = {
 	availableTableIds: Set<number>;
 	recommendedIds: Set<number>;
 	topRecommendedId: number | null;
-	randomOccupiedIds: Set<number>;
 	selectedTableId: number | null;
 	onSelectTable: (id: number) => void;
 	isSearching?: boolean;
@@ -37,7 +36,6 @@ export function FloorPlan({
 	availableTableIds,
 	recommendedIds,
 	topRecommendedId,
-	randomOccupiedIds,
 	selectedTableId,
 	onSelectTable,
 	isSearching,
@@ -84,9 +82,7 @@ export function FloorPlan({
 
 					<div className="absolute inset-0 z-10">
 						{tables.map((table) => {
-							const isOccupied = hasActiveSearch
-								? !availableTableIds.has(table.id)
-								: randomOccupiedIds.has(table.id);
+							const isOccupied = !availableTableIds.has(table.id);
 
 							return (
 								<Table
