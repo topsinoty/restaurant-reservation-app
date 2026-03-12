@@ -1,6 +1,15 @@
 import { PositionedTable } from "@/types/table";
-import { getBgColor } from "./compute-bg-color";
 import { FaPeopleGroup } from "react-icons/fa6";
+
+interface TableProps {
+	cellSize: number;
+	onSelect?: (id: number) => void;
+	isRecommended?: boolean;
+	isTopRecommended?: boolean;
+	isOccupied?: boolean;
+	isSelectable?: boolean;
+	isSelected?: boolean;
+}
 
 export function Table({
 	x,
@@ -15,15 +24,7 @@ export function Table({
 	isOccupied,
 	isSelectable,
 	isSelected,
-}: Readonly<PositionedTable> & {
-	cellSize: number;
-	onSelect?: (id: number) => void;
-	isRecommended?: boolean;
-	isTopRecommended?: boolean;
-	isOccupied?: boolean;
-	isSelectable?: boolean;
-	isSelected?: boolean;
-}) {
+}: Readonly<PositionedTable> & TableProps) {
 	const ratio = capacity / 10;
 	const size = cellSize * (0.4 + ratio * 0.6);
 
@@ -55,15 +56,14 @@ export function Table({
 			type="button"
 			disabled={!isSelectable}
 			onClick={() => onSelect?.(id)}
-			className="cursor-pointer absolute border rounded-xl flex flex-col items-center justify-center text-[10px] z-10 transition-transform hover:scale-105 disabled:cursor-not-allowed disabled:hover:scale-100"
+			className="cursor-pointer absolute border rounded-xl flex flex-col items-center justify-center text-sm z-10 transition-transform hover:scale-105 disabled:cursor-not-allowed disabled:hover:scale-100"
 			style={{
 				left: x * cellSize + cellSize / 2 - size / 2,
 				top: y * cellSize + cellSize / 2 - size / 2,
 				width: size,
 				height: size,
-				backgroundColor: getBgColor(features),
+				backgroundColor: isOccupied ? "#ff3f6f" : "green", //choose a color
 				border: borderStyle(),
-				filter: isOccupied ? "saturate(0.3) brightness(0.9)" : "none",
 				opacity: isOccupied ? 0.75 : 1,
 				...(capacity <= 3 && { borderRadius: "100%" }),
 			}}
@@ -82,12 +82,12 @@ export function Table({
 			</span>
 
 			{isOccupied && (
-				<span className="absolute -top-2 -right-2 rounded-full bg-slate-700 px-1.5 py-0.5 text-[9px] text-white">
+				<span className="absolute -top-2 -right-2 rounded-full bg-slate-700 px-1.5 py-0.5 text-xs text-white">
 					Occupied
 				</span>
 			)}
 			{isTopRecommended && (
-				<span className="absolute -bottom-2 -left-2 rounded-full bg-amber-400 px-1.5 py-0.5 text-[9px] text-slate-900">
+				<span className="absolute -bottom-2 -left-2 rounded-full bg-amber-400 px-1.5 py-0.5 text-xs text-slate-900">
 					Best
 				</span>
 			)}
