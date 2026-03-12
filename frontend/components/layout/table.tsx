@@ -12,6 +12,7 @@ interface TableProps {
 	isRecommended?: boolean;
 	isTopRecommended?: boolean;
 	isOccupied?: boolean;
+	isIdle?: boolean;
 	isSelectable?: boolean;
 	isSelected?: boolean;
 	colors: TableStatusColors;
@@ -29,6 +30,7 @@ export function Table({
 	isRecommended,
 	isTopRecommended,
 	isOccupied,
+	isIdle,
 	isSelectable,
 	isSelected,
 	colors,
@@ -46,6 +48,7 @@ export function Table({
 
 	function resolveBackgroundColor(): string {
 		if (isFilteredOut) return colors.Neutral;
+		if (isIdle) return colors.Neutral;
 		if (isOccupied) return colors.Occupied;
 		if (isTopRecommended) return colors.Best;
 		if (isRecommended) return colors.Recommended;

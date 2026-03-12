@@ -82,7 +82,9 @@ export function FloorPlan({
 
 					<div className="absolute inset-0 z-10">
 						{tables.map((table) => {
-							const isOccupied = !availableTableIds.has(table.id);
+							const isOccupied = hasActiveSearch
+								? !availableTableIds.has(table.id)
+								: false;
 
 							return (
 								<Table
@@ -92,6 +94,7 @@ export function FloorPlan({
 									cellSize={cellSize}
 									onSelect={onSelectTable}
 									isOccupied={isOccupied}
+									isIdle={!hasActiveSearch}
 									isSelectable={hasActiveSearch && !isOccupied}
 									isRecommended={
 										hasActiveSearch && recommendedIds.has(table.id)
