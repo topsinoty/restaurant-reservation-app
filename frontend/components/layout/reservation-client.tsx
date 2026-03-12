@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { toast } from "sonner";
 import { FloorPlan } from "./floor-plan";
 import { ReservationForm } from "./reservation-form";
 import {
@@ -20,11 +21,6 @@ import {
 } from "../ui/card";
 import { Button } from "../ui/button";
 
-type Notice = {
-	type: "success" | "error";
-	text: string;
-};
-
 export function ReservationClient() {
 	const [tables, setTables] = useState<PositionedTable[]>([]);
 	const [filters, setFilters] = useState<ReservationSearchFilters | null>(null);
@@ -38,7 +34,6 @@ export function ReservationClient() {
 		useState<ReservationSearchFilters["location"]>(null);
 	const [isSearching, setIsSearching] = useState(false);
 	const [isBooking, setIsBooking] = useState(false);
-	const [notice, setNotice] = useState<Notice | null>(null);
 
 	const runSearch = useCallback(
 		async (activeFilters: ReservationSearchFilters) => {
@@ -53,6 +48,10 @@ export function ReservationClient() {
 				setSelectedTableId((current) =>
 					current !== null && !ids.has(current) ? null : current,
 				);
+
+				if (availableTables.length === 0) {
+					toast.info("No tables are available for the selected filters.");
+				}
 			} catch (error) {
 				const message =
 					error instanceof Error ? error.message : "Availability search failed";
@@ -60,7 +59,7 @@ export function ReservationClient() {
 				setRecommendedIds(new Set());
 				setTopRecommendedId(null);
 				setSelectedTableId(null);
-				setNotice({ type: "error", text: message });
+				toast.error(message);
 			} finally {
 				setIsSearching(false);
 			}
@@ -89,7 +88,7 @@ export function ReservationClient() {
 
 				const message =
 					error instanceof Error ? error.message : "Floor plan loading failed";
-				setNotice({ type: "error", text: message });
+				toast.error(message);
 			} finally {
 				if (!ignore) {
 					setIsLoadingTables(false);
@@ -121,12 +120,8 @@ export function ReservationClient() {
 		[selectedTableId, tables],
 	);
 
-	const availableCount = filters
-		? availableIds.size
-		: tables.length - randomOccupiedIds.size;
-	const occupiedCount = filters
-		? tables.length - availableIds.size
-		: randomOccupiedIds.size;
+	const availableCount = filters ? availableIds.size : tables.length;
+	const occupiedCount = filters ? tables.length - availableIds.size : 0;
 
 	async function handleBookSelectedTable() {
 		if (!filters || !selectedTableId) {
@@ -134,25 +129,21 @@ export function ReservationClient() {
 		}
 
 		setIsBooking(true);
-		setNotice(null);
 
 		try {
-			const booking = await bookReservation({
+			const bookingResult = await bookReservation({
 				tableId: selectedTableId,
 				date: filters.date,
 				time: filters.time,
 				people: filters.people,
 			});
 
-			setNotice({
-				type: "success",
-				text: `Booking Successful. Booking ID: ${booking.id}.`,
-			});
+			toast.success(bookingResult.message);
 
 			await runSearch(filters);
 		} catch (error) {
 			const message = error instanceof Error ? error.message : "Booking Failed";
-			setNotice({ type: "error", text: message });
+			toast.error(message);
 		} finally {
 			setIsBooking(false);
 		}
@@ -183,7 +174,6 @@ export function ReservationClient() {
 			<div className="flex w-full flex-col gap-6 lg:max-w-2/7">
 				<ReservationForm
 					onSubmit={(data) => {
-						setNotice(null);
 						setSelectedTableId(null);
 						setFilters(data);
 						if (data.location) {
@@ -191,8 +181,8 @@ export function ReservationClient() {
 						}
 					}}
 					onClear={() => {
-						setNotice(null);
 						setFilters(null);
+						setSelectedLocation(null);
 					}}
 					isSearching={isSearching}
 				/>
@@ -253,18 +243,6 @@ export function ReservationClient() {
 								</p>
 							)}
 						</div>
-
-						{notice && (
-							<div
-								className={`rounded-md border px-3 py-2 ${
-									notice.type === "success"
-										? "border-emerald-200 bg-emerald-50 text-emerald-700"
-										: "border-red-200 bg-red-50 text-red-700"
-								}`}
-							>
-								{notice.text}
-							</div>
-						)}
 
 						<Button
 							type="button"
