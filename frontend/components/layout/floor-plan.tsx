@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { PositionedTable } from "@/types/table";
 import { Table, TableStatusColors } from "./table";
 import { Badge } from "../ui/badge";
+import { ReservationSearchFilters } from "@/types/reservation";
 
 type FloorPlanProps = {
 	tables: PositionedTable[];
@@ -15,6 +16,7 @@ type FloorPlanProps = {
 	selectedTableId: number | null;
 	onSelectTable: (id: number) => void;
 	isSearching?: boolean;
+	selectedLocation?: ReservationSearchFilters["location"];
 };
 
 const MOBILE_BREAKPOINT = 726;
@@ -39,6 +41,7 @@ export function FloorPlan({
 	selectedTableId,
 	onSelectTable,
 	isSearching,
+	selectedLocation,
 }: Readonly<FloorPlanProps>) {
 	const [cellSize, setCellSize] = useState(DESKTOP_CELL_SIZE);
 
@@ -60,6 +63,7 @@ export function FloorPlan({
 		Best: "#f59e0b",
 		Available: "#A7F3D0",
 		Occupied: "#ef4444",
+		Neutral: "#c8c8c8",
 	});
 
 	return (
@@ -100,6 +104,10 @@ export function FloorPlan({
 										hasActiveSearch && topRecommendedId === table.id
 									}
 									isSelected={selectedTableId === table.id}
+									isFilteredOut={
+										selectedLocation !== null &&
+										table.location !== selectedLocation
+									}
 								/>
 							);
 						})}

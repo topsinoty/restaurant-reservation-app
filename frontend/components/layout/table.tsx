@@ -1,12 +1,10 @@
 import { PositionedTable } from "@/types/table";
 import { FaPeopleGroup } from "react-icons/fa6";
 
-export interface TableStatusColors {
-	Recommended: `#${string}`;
-	Best: `#${string}`;
-	Available: `#${string}`;
-	Occupied: `#${string}`;
-}
+export type TableStatusColors = Record<
+	"Neutral" | "Recommended" | "Best" | "Available" | "Occupied",
+	`#${string}`
+>;
 
 interface TableProps {
 	cellSize: number;
@@ -17,6 +15,7 @@ interface TableProps {
 	isSelectable?: boolean;
 	isSelected?: boolean;
 	colors: TableStatusColors;
+	isFilteredOut?: boolean;
 }
 
 export function Table({
@@ -33,6 +32,7 @@ export function Table({
 	isSelectable,
 	isSelected,
 	colors,
+	isFilteredOut,
 }: Readonly<PositionedTable> & TableProps) {
 	const ratio = capacity / 10;
 	const size = cellSize * (0.4 + ratio * 0.6);
@@ -45,6 +45,7 @@ export function Table({
 	};
 
 	function resolveBackgroundColor(): string {
+		if (isFilteredOut) return colors.Neutral;
 		if (isOccupied) return colors.Occupied;
 		if (isTopRecommended) return colors.Best;
 		if (isRecommended) return colors.Recommended;
@@ -65,10 +66,12 @@ export function Table({
 			? "0 6px 14px rgba(37,99,235,0.25)"
 			: undefined;
 
+	const disabled = !isSelectable || isFilteredOut;
+
 	return (
 		<button
 			type="button"
-			disabled={!isSelectable}
+			disabled={disabled}
 			onClick={() => onSelect?.(id)}
 			className="cursor-pointer absolute border rounded-xl flex flex-col items-center justify-center text-sm z-10 transition-transform hover:scale-105 disabled:cursor-not-allowed disabled:hover:scale-100"
 			style={{
@@ -79,7 +82,7 @@ export function Table({
 				backgroundColor: resolveBackgroundColor(),
 				border: borderStyle(),
 				boxShadow,
-				opacity: isOccupied ? 0.75 : 1,
+				opacity: isFilteredOut ? 0.35 : isOccupied ? 0.75 : 1,
 				...(capacity <= 3 && { borderRadius: "100%" }),
 			}}
 		>
@@ -92,17 +95,18 @@ export function Table({
 			)}
 
 			<span className="font-bold">#{id}</span>
+
 			<span className="flex items-center gap-1">
 				{capacity} <FaPeopleGroup />
 			</span>
 
-			{isOccupied && (
+			{isOccupied && !isFilteredOut && (
 				<span className="absolute -top-2 -right-2 rounded-full bg-slate-700 px-1.5 py-0.5 text-xs text-white">
 					Occupied
 				</span>
 			)}
 
-			{isTopRecommended && (
+			{isTopRecommended && !isFilteredOut && (
 				<span className="absolute -bottom-2 -left-2 rounded-full bg-amber-400 px-1.5 py-0.5 text-xs text-slate-900">
 					Best
 				</span>

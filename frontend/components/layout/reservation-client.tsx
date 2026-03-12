@@ -54,6 +54,8 @@ export function ReservationClient() {
 	);
 	const [selectedTableId, setSelectedTableId] = useState<number | null>(null);
 	const [isLoadingTables, setIsLoadingTables] = useState(true);
+	const [selectedLocation, setSelectedLocation] =
+		useState<ReservationSearchFilters["location"]>(null);
 	const [isSearching, setIsSearching] = useState(false);
 	const [isBooking, setIsBooking] = useState(false);
 	const [notice, setNotice] = useState<Notice | null>(null);
@@ -197,6 +199,7 @@ export function ReservationClient() {
 				selectedTableId={selectedTableId}
 				onSelectTable={setSelectedTableId}
 				isSearching={isSearching}
+				selectedLocation={selectedLocation}
 			/>
 
 			<div className="flex w-full flex-col gap-6 lg:max-w-2/7">
@@ -205,6 +208,9 @@ export function ReservationClient() {
 						setNotice(null);
 						setSelectedTableId(null);
 						setFilters(data);
+						if (data.location) {
+							setSelectedLocation(data.location);
+						}
 					}}
 					onClear={() => {
 						setNotice(null);
