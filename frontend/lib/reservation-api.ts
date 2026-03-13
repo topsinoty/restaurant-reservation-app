@@ -68,8 +68,11 @@ async function apiRequest<T>(
 	return result;
 }
 
-export async function fetchRestaurantTables(): Promise<PositionedTable[]> {
+export async function fetchRestaurantTables(
+	config?: RequestInit,
+): Promise<PositionedTable[]> {
 	const result = await apiRequest<PositionedTable[]>("/api/tables", {
+		...config,
 		cache: "no-store",
 	});
 
@@ -78,10 +81,12 @@ export async function fetchRestaurantTables(): Promise<PositionedTable[]> {
 
 export async function searchAvailableTables(
 	filters: ReservationSearchFilters,
+	config?: RequestInit,
 ): Promise<ReservationSearchResponse[]> {
 	const result = await apiRequest<ReservationSearchResponse[]>(
 		"/api/reservations/available",
 		{
+			...config,
 			method: "POST",
 			body: JSON.stringify({
 				date: filters.date,

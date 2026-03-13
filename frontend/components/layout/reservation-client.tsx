@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 import { FloorPlan } from "./floor-plan";
 import { ReservationForm } from "./reservation-form";
@@ -35,16 +35,28 @@ export function ReservationClient() {
 	const [isSearching, setIsSearching] = useState(false);
 	const [isBooking, setIsBooking] = useState(false);
 
+	const searchControllerRef = useRef<AbortController | null>(null);
+
 	const runSearch = useCallback(
 		async (activeFilters: ReservationSearchFilters) => {
+			searchControllerRef.current?.abort();
+
+			const controller = new AbortController();
+			searchControllerRef.current = controller;
+
 			setIsSearching(true);
 
 			try {
-				const availableTables = await searchAvailableTables(activeFilters);
+				const availableTables = await searchAvailableTables(activeFilters, {
+					signal: controller.signal,
+				});
+
 				const ids = new Set(availableTables.map((table) => table.id));
+
 				setAvailableIds(ids);
 				setRecommendedIds(ids);
 				setTopRecommendedId(availableTables[0]?.id ?? null);
+
 				setSelectedTableId((current) =>
 					current !== null && !ids.has(current) ? null : current,
 				);
@@ -53,36 +65,41 @@ export function ReservationClient() {
 					toast.info("No tables are available for the selected filters.");
 				}
 			} catch (error) {
+				if (controller.signal.aborted) {
+					return;
+				}
+
 				const message =
 					error instanceof Error ? error.message : "Availability search failed";
+
 				setAvailableIds(new Set());
 				setRecommendedIds(new Set());
 				setTopRecommendedId(null);
 				setSelectedTableId(null);
+
 				toast.error(message);
 			} finally {
-				setIsSearching(false);
+				if (!controller.signal.aborted) {
+					setIsSearching(false);
+				}
 			}
 		},
 		[],
 	);
 
 	useEffect(() => {
-		let ignore = false;
+		const controller = new AbortController();
 
 		async function loadTables() {
 			setIsLoadingTables(true);
 
 			try {
-				const response = await fetchRestaurantTables();
-
-				if (ignore) {
-					return;
-				}
-
+				const response = await fetchRestaurantTables({
+					signal: controller.signal,
+				});
 				setTables(response);
 			} catch (error) {
-				if (ignore) {
+				if (controller.signal.aborted) {
 					return;
 				}
 
@@ -90,7 +107,7 @@ export function ReservationClient() {
 					error instanceof Error ? error.message : "Floor plan loading failed";
 				toast.error(message);
 			} finally {
-				if (!ignore) {
+				if (!controller.signal.aborted) {
 					setIsLoadingTables(false);
 				}
 			}
@@ -99,7 +116,7 @@ export function ReservationClient() {
 		loadTables();
 
 		return () => {
-			ignore = true;
+			controller.abort();
 		};
 	}, []);
 
@@ -172,19 +189,6 @@ export function ReservationClient() {
 			/>
 
 			<div className="flex w-full flex-col gap-6 lg:max-w-2/7">
-				<ReservationForm
-					onSubmit={(data) => {
-						setSelectedTableId(null);
-						setFilters(data);
-						setSelectedLocation(data.location);
-					}}
-					onClear={() => {
-						setFilters(null);
-						setSelectedLocation(null);
-					}}
-					isSearching={isSearching}
-				/>
-
 				<Card>
 					<CardHeader>
 						<CardTitle>Booking Summary</CardTitle>
@@ -256,6 +260,18 @@ export function ReservationClient() {
 						</Button>
 					</CardContent>
 				</Card>
+				<ReservationForm
+					onSubmit={(data) => {
+						setSelectedTableId(null);
+						setFilters(data);
+						setSelectedLocation(data.location);
+					}}
+					onClear={() => {
+						setFilters(null);
+						setSelectedLocation(null);
+					}}
+					isSearching={isSearching}
+				/>
 			</div>
 		</div>
 	);
