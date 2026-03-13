@@ -166,37 +166,45 @@ export function ReservationForm({
 					<Controller
 						control={form.control}
 						name="preferredFeatures"
-						render={({ field }) => (
-							<Field>
-								<FieldLabel>Preferences</FieldLabel>
+						render={({ field }) => {
+							const handleFeatureChange = (
+								checked: boolean,
+								feature: TableFeature,
+							) => {
+								const nextFeatures = checked
+									? [...field.value, feature]
+									: field.value.filter((item) => item !== feature);
+								field.onChange(nextFeatures);
+							};
 
-								<div className="grid gap-2 sm:grid-cols-2">
-									{preferenceOptions.map((feature) => {
-										const checked = field.value.includes(feature);
+							return (
+								<Field>
+									<FieldLabel>Preferences</FieldLabel>
 
-										return (
-											<label
-												key={feature}
-												className="flex items-center gap-2 rounded-md border border-border px-3 py-2 text-sm"
-											>
-												<input
-													type="checkbox"
-													checked={checked}
-													onChange={(event) => {
-														const nextFeatures = event.target.checked
-															? [...field.value, feature]
-															: field.value.filter((item) => item !== feature);
+									<div className="grid gap-2 sm:grid-cols-2">
+										{preferenceOptions.map((feature) => {
+											const checked = field.value.includes(feature);
 
-														field.onChange(nextFeatures);
-													}}
-												/>
-												<span>{FEATURE_LABELS[feature]}</span>
-											</label>
-										);
-									})}
-								</div>
-							</Field>
-						)}
+											return (
+												<label
+													key={feature}
+													className="flex items-center gap-2 rounded-md border border-border px-3 py-2 text-sm"
+												>
+													<input
+														type="checkbox"
+														checked={checked}
+														onChange={(event) =>
+															handleFeatureChange(event.target.checked, feature)
+														}
+													/>
+													<span>{FEATURE_LABELS[feature]}</span>
+												</label>
+											);
+										})}
+									</div>
+								</Field>
+							);
+						}}
 					/>
 
 					<div className="flex flex-col gap-2 sm:flex-row">

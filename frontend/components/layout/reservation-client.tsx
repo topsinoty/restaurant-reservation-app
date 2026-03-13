@@ -153,6 +153,7 @@ export function ReservationClient() {
 
 			toast.success(bookingResult.message);
 
+			// idk what to add maybe a dialog asking them to change it to ical
 			await runSearch(filters);
 		} catch (error) {
 			const message = error instanceof Error ? error.message : "Booking Failed";
@@ -209,7 +210,7 @@ export function ReservationClient() {
 								<p>Time: {filters.time}</p>
 								<p>People: {filters.people}</p>
 								<p>
-									Zone:
+									Zone:{" "}
 									{filters.location
 										? LOCATION_LABELS[filters.location]
 										: "All Zones"}
