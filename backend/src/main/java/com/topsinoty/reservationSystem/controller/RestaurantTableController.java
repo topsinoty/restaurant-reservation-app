@@ -1,7 +1,9 @@
 package com.topsinoty.reservationSystem.controller;
 
+import com.topsinoty.reservationSystem.dto.ApiResult;
 import com.topsinoty.reservationSystem.dto.restaurantTable.RestaurantTableResponse;
 import com.topsinoty.reservationSystem.service.RestaurantTableService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,7 +20,7 @@ public class RestaurantTableController {
     }
 
     @GetMapping
-    public List<RestaurantTableResponse> getTables() {
-        return tableService.getAllTables();
+    public ResponseEntity<ApiResult<List<RestaurantTableResponse>>> getTables() {
+        return ResponseEntity.ok(tableService.getAllTables());
     }
 }
