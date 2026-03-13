@@ -63,11 +63,26 @@ export function Table({
 		return "1px solid rgb(148,163,184)";
 	}
 
-	const boxShadow = isTopRecommended
-		? "0 8px 20px rgba(245,158,11,0.35)"
-		: isRecommended
-			? "0 6px 14px rgba(37,99,235,0.25)"
-			: undefined;
+	const generateBoxShadow = (topRecommended: string, recommended: string) => {
+		if (isTopRecommended) return topRecommended;
+		if (isRecommended) return recommended;
+	};
+
+	const boxShadow = generateBoxShadow(
+		"0 8px 20px rgba(245,158,11,0.35)",
+		"0 6px 14px rgba(37,99,235,0.25)",
+	);
+
+	const generateOpacity = (
+		filteredOutOpacity: number,
+		occupiedOpacity: number,
+	) => {
+		if (isFilteredOut) return filteredOutOpacity;
+		if (isOccupied) return occupiedOpacity;
+		return 1;
+	};
+
+	const opacity = generateOpacity(0.35, 0.75);
 
 	const disabled = !isSelectable || isFilteredOut;
 
@@ -85,7 +100,7 @@ export function Table({
 				backgroundColor: resolveBackgroundColor(),
 				border: borderStyle(),
 				boxShadow,
-				opacity: isFilteredOut ? 0.35 : isOccupied ? 0.75 : 1,
+				opacity,
 				...(capacity <= 3 && { borderRadius: "100%" }),
 			}}
 		>
