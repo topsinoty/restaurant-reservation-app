@@ -193,17 +193,16 @@ export function ReservationClient() {
 								: "No filters selected."}
 						</CardDescription>
 					</CardHeader>
-					<CardContent className="flex flex-col gap-4 text-sm">
-						<div className="grid grid-cols-2 gap-2 rounded-md bg-slate-50 p-3">
-							<div>Free tables: {availableCount}</div>
-							<div>Occupied tables: {occupiedCount}</div>
-							<div>Recommendation: {recommendedIds.size}</div>
-							<div>
-								Best table: {topRecommendedId ? `#${topRecommendedId}` : "-"}
+					{filters && (
+						<CardContent className="flex flex-col gap-4 text-sm">
+							<div className="grid grid-cols-2 gap-2 rounded-md bg-slate-50 p-3">
+								<div>Free tables: {availableCount}</div>
+								<div>Occupied tables: {occupiedCount}</div>
+								<div>Recommendation: {recommendedIds.size}</div>
+								<div>
+									Best table: {topRecommendedId ? `#${topRecommendedId}` : "-"}
+								</div>
 							</div>
-						</div>
-
-						{filters && (
 							<div className="rounded-md border p-3">
 								<p className="font-medium">Selected filters</p>
 								<p>Date: {filters.date}</p>
@@ -224,36 +223,34 @@ export function ReservationClient() {
 										: "None selected"}
 								</p>
 							</div>
-						)}
-
-						<div className="rounded-md border p-3">
-							<p className="font-medium">Selected table</p>
-							{selectedTable ? (
-								<>
-									<p>ID: #{selectedTable.id}</p>
-									<p>Capacity: {selectedTable.capacity}</p>
-									<p>Zone: {LOCATION_LABELS[selectedTable.location]}</p>
-								</>
-							) : (
-								<p className="text-muted-foreground">
-									Choose a table from the floor plan.
-								</p>
-							)}
-						</div>
-
-						<Button
-							type="button"
-							onClick={handleBookSelectedTable}
-							disabled={
-								!filters ||
-								!selectedTableId ||
-								!recommendedIds.has(selectedTableId) ||
-								isBooking
-							}
-						>
-							{isBooking ? "Booking..." : "Book selected table..."}
-						</Button>
-					</CardContent>
+							<div className="rounded-md border p-3">
+								<p className="font-medium">Selected table</p>
+								{selectedTable ? (
+									<>
+										<p>ID: #{selectedTable.id}</p>
+										<p>Capacity: {selectedTable.capacity}</p>
+										<p>Zone: {LOCATION_LABELS[selectedTable.location]}</p>
+									</>
+								) : (
+									<p className="text-muted-foreground">
+										Choose a table from the floor plan.
+									</p>
+								)}
+							</div>
+							<Button
+								type="button"
+								onClick={handleBookSelectedTable}
+								disabled={
+									!filters ||
+									!selectedTableId ||
+									!recommendedIds.has(selectedTableId) ||
+									isBooking
+								}
+							>
+								{isBooking ? "Booking..." : "Book selected table..."}
+							</Button>
+						</CardContent>
+					)}
 				</Card>
 				<ReservationForm
 					onSubmit={(data) => {
