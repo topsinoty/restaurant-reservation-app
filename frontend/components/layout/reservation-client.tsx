@@ -24,7 +24,6 @@ import { Button } from "../ui/button";
 export function ReservationClient() {
 	const [tables, setTables] = useState<PositionedTable[]>([]);
 	const [filters, setFilters] = useState<ReservationSearchFilters | null>(null);
-	const [availableIds, setAvailableIds] = useState<Set<number>>(new Set());
 	const [recommendedIds, setRecommendedIds] = useState<Set<number>>(new Set());
 	const [topRecommendedId, setTopRecommendedId] = useState<number | null>(null);
 
@@ -53,7 +52,6 @@ export function ReservationClient() {
 
 				const ids = new Set(availableTables.map((table) => table.id));
 
-				setAvailableIds(ids);
 				setRecommendedIds(ids);
 				setTopRecommendedId(availableTables[0]?.id ?? null);
 
@@ -72,7 +70,6 @@ export function ReservationClient() {
 				const message =
 					error instanceof Error ? error.message : "Availability search failed";
 
-				setAvailableIds(new Set());
 				setRecommendedIds(new Set());
 				setTopRecommendedId(null);
 				setSelectedTableId(null);
@@ -122,7 +119,6 @@ export function ReservationClient() {
 
 	useEffect(() => {
 		if (!filters) {
-			setAvailableIds(new Set());
 			setRecommendedIds(new Set());
 			setTopRecommendedId(null);
 			setSelectedTableId(null);
@@ -137,8 +133,8 @@ export function ReservationClient() {
 		[selectedTableId, tables],
 	);
 
-	const availableCount = filters ? availableIds.size : tables.length;
-	const occupiedCount = filters ? tables.length - availableIds.size : 0;
+	const availableCount = filters ? recommendedIds.size : tables.length;
+	const occupiedCount = filters ? tables.length - recommendedIds.size : 0;
 
 	async function handleBookSelectedTable() {
 		if (!filters || !selectedTableId) {
@@ -179,7 +175,6 @@ export function ReservationClient() {
 			<FloorPlan
 				tables={tables}
 				hasActiveSearch={Boolean(filters)}
-				availableTableIds={availableIds}
 				recommendedIds={recommendedIds}
 				topRecommendedId={topRecommendedId}
 				selectedTableId={selectedTableId}
@@ -252,7 +247,7 @@ export function ReservationClient() {
 							disabled={
 								!filters ||
 								!selectedTableId ||
-								!availableIds.has(selectedTableId) ||
+								!recommendedIds.has(selectedTableId) ||
 								isBooking
 							}
 						>

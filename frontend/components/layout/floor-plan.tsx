@@ -9,7 +9,6 @@ import { ReservationSearchFilters } from "@/types/reservation";
 type FloorPlanProps = {
 	tables: PositionedTable[];
 	hasActiveSearch: boolean;
-	availableTableIds: Set<number>;
 	recommendedIds: Set<number>;
 	topRecommendedId: number | null;
 	selectedTableId: number | null;
@@ -33,7 +32,6 @@ function resolveCellSize(viewportWidth: number): number {
 export function FloorPlan({
 	tables,
 	hasActiveSearch,
-	availableTableIds,
 	recommendedIds,
 	topRecommendedId,
 	selectedTableId,
@@ -83,7 +81,7 @@ export function FloorPlan({
 					<div className="absolute inset-0 z-10">
 						{tables.map((table) => {
 							const isOccupied = hasActiveSearch
-								? !availableTableIds.has(table.id)
+								? !recommendedIds.has(table.id)
 								: false;
 
 							return (
