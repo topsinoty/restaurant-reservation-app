@@ -1,5 +1,6 @@
 package com.topsinoty.reservationSystem.service;
 
+import com.topsinoty.reservationSystem.dto.ApiResult;
 import com.topsinoty.reservationSystem.dto.restaurantTable.RestaurantTableResponse;
 import com.topsinoty.reservationSystem.repository.RestaurantTableRepository;
 import org.springframework.stereotype.Service;
@@ -14,11 +15,11 @@ public class RestaurantTableService {
         this.tableRepository = tableRepository;
     }
 
-    public List<RestaurantTableResponse> getAllTables() {
-        return tableRepository.findAll()
+    public ApiResult<List<RestaurantTableResponse>> getAllTables() {
+        return ApiResult.success("Fetched all tables", tableRepository.findAll()
                 .stream()
                 .map(t -> new RestaurantTableResponse(t.getId(), t.getCapacity(), t.getLocation(), t.getFeatures(), t.getX(), t.getY()))
-                .toList();
+                .toList());
     }
 
 }
