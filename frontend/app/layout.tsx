@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
 	title: "Restaurant Reservation Planner",
-	description: "Smart table availability and booking app for restaurant visitors.",
+	description: "Table availability and booking app for restaurant visitors.",
 };
 
 export default function RootLayout({
@@ -30,7 +30,9 @@ export default function RootLayout({
 				className={`${geistSans.variable} ${geistMono.variable} antialiased`}
 			>
 				<Navbar />
-				<main className="container mx-auto px-4 py-10 sm:py-14">{children}</main>
+				<main className="container mx-auto px-4 py-10 sm:py-14">
+					{children}
+				</main>
 				<Toaster richColors position="top-right" />
 			</body>
 		</html>
