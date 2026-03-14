@@ -134,7 +134,26 @@ export function ReservationClient() {
 		[selectedTableId, tables],
 	);
 
-	const occupiedCount = filters ? tables.length - recommendedIds.size : 0;
+	function getOccupiedTableCount(
+		tables: PositionedTable[],
+		recommendedIds: Set<number>,
+		selectedLocation: ReservationSearchFilters["location"],
+	): number {
+		let occupied = 0;
+
+		for (const table of tables) {
+			if (selectedLocation && table.location !== selectedLocation) continue;
+			if (!recommendedIds.has(table.id)) occupied++;
+		}
+
+		return occupied;
+	}
+
+	const occupiedCount = getOccupiedTableCount(
+		tables,
+		recommendedIds,
+		selectedLocation,
+	);
 
 	async function handleBookSelectedTable() {
 		if (!filters || !selectedTableId) {
