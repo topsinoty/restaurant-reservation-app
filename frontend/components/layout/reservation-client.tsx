@@ -134,7 +134,6 @@ export function ReservationClient() {
 		[selectedTableId, tables],
 	);
 
-	const availableCount = filters ? recommendedIds.size : tables.length;
 	const occupiedCount = filters ? tables.length - recommendedIds.size : 0;
 
 	async function handleBookSelectedTable() {
@@ -163,6 +162,20 @@ export function ReservationClient() {
 			setIsBooking(false);
 		}
 	}
+
+	const handleReservationSubmit = useCallback(
+		(data: ReservationSearchFilters) => {
+			setSelectedTableId(null);
+			setFilters(data);
+			setSelectedLocation(data.location);
+
+			floorRef.current?.scrollIntoView({
+				behavior: "smooth",
+				block: "start",
+			});
+		},
+		[],
+	);
 
 	if (isLoadingTables) {
 		return (
@@ -199,7 +212,6 @@ export function ReservationClient() {
 					{filters && (
 						<CardContent className="flex flex-col gap-4 text-sm">
 							<div className="grid grid-cols-2 gap-2 rounded-md bg-slate-50 p-3">
-								<div>Free tables: {availableCount}</div>
 								<div>Occupied tables: {occupiedCount}</div>
 								<div>Available tables: {recommendedIds.size}</div>
 								<div>
@@ -256,11 +268,7 @@ export function ReservationClient() {
 					)}
 				</Card>
 				<ReservationForm
-					onSubmit={(data) => {
-						setSelectedTableId(null);
-						setFilters(data);
-						setSelectedLocation(data.location);
-					}}
+					onSubmit={handleReservationSubmit}
 					onClear={() => {
 						setFilters(null);
 						setSelectedLocation(null);
