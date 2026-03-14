@@ -8,6 +8,7 @@ public record ReservationResponse(
         LocalTime time,
         LocalDate date,
         Integer people,
-        Long restaurant_table_id
+        Long restaurant_table_id,
+        String guestName
 ) {
 }
