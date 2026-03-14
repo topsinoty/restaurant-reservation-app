@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
+import { BookingDialog, BookingDialogPayload } from "./booking-dialog";
 import { FloorPlan } from "./floor-plan";
 import { ReservationForm } from "./reservation-form";
 import {
@@ -32,6 +33,7 @@ export function ReservationClient() {
 	const [selectedLocation, setSelectedLocation] =
 		useState<ReservationSearchFilters["location"]>(null);
 	const [isSearching, setIsSearching] = useState(false);
+	const [isBookingDialogOpen, setIsBookingDialogOpen] = useState(false);
 	const [isBooking, setIsBooking] = useState(false);
 
 	const searchControllerRef = useRef<AbortController | null>(null);
@@ -129,9 +131,23 @@ export function ReservationClient() {
 		runSearch(filters);
 	}, [filters, runSearch]);
 
+	useEffect(() => {
+		if (
+			!filters ||
+			!selectedTableId ||
+			!availableIds.has(selectedTableId)
+		) {
+			setIsBookingDialogOpen(false);
+		}
+	}, [availableIds, filters, selectedTableId]);
+
 	const selectedTable = useMemo(
 		() => tables.find((table) => table.id === selectedTableId) ?? null,
 		[selectedTableId, tables],
+	);
+
+	const canBookSelectedTable = Boolean(
+		filters && selectedTableId && availableIds.has(selectedTableId),
 	);
 
 	function getOccupiedTableCount(
@@ -151,10 +167,13 @@ export function ReservationClient() {
 
 	const occupiedCount = getOccupiedTableCount(tables, availableIds, selectedLocation);
 
-	async function handleBookSelectedTable() {
+	async function handleBookSelectedTable(payload: BookingDialogPayload) {
 		if (!filters || !selectedTableId) {
-			return;
+			return false;
 		}
+
+		// Guest details and iCal generation will be wired into the backend later.
+		void payload;
 
 		setIsBooking(true);
 
@@ -168,11 +187,12 @@ export function ReservationClient() {
 
 			toast.success(bookingResult.message);
 
-			// idk what to add maybe a dialog asking them to change it to ical
 			await runSearch(filters);
+			return true;
 		} catch (error) {
 			const message = error instanceof Error ? error.message : "Booking Failed";
 			toast.error(message);
+			return false;
 		} finally {
 			setIsBooking(false);
 		}
@@ -269,16 +289,19 @@ export function ReservationClient() {
 							</div>
 							<Button
 								type="button"
-								onClick={handleBookSelectedTable}
-								disabled={
-									!filters ||
-									!selectedTableId ||
-									!availableIds.has(selectedTableId) ||
-									isBooking
-								}
+								onClick={() => setIsBookingDialogOpen(true)}
+								disabled={!canBookSelectedTable || isBooking}
 							>
 								{isBooking ? "Booking..." : "Book selected table..."}
 							</Button>
+							<BookingDialog
+								open={isBookingDialogOpen}
+								onOpenChange={setIsBookingDialogOpen}
+								filters={filters}
+								selectedTable={selectedTable}
+								isBooking={isBooking}
+								onConfirm={handleBookSelectedTable}
+							/>
 						</CardContent>
 					)}
 				</Card>
