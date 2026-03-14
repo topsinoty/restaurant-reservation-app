@@ -1,7 +1,7 @@
 "use client";
 
 import { Ref, useEffect, useRef, useState } from "react";
-import { PositionedTable } from "@/types/table";
+import { PositionedTable, TABLE_LOCATIONS } from "@/types/table";
 import { Table, TableStatusColors } from "./table";
 import { Badge } from "../ui/badge";
 import { ReservationSearchFilters } from "@/types/reservation";
@@ -131,7 +131,7 @@ export function FloorPlan({
 						<div className="absolute inset-0 z-20 cursor-not-allowed bg-slate-900/15 rounded-2xl" />
 					)}
 
-					<div className="absolute inset-0 z-10">
+					<div className="absolute inset-0">
 						{tables.map((table) => {
 							const isOccupied = hasActiveSearch
 								? !recommendedIds.has(table.id)
@@ -172,6 +172,7 @@ export function FloorPlan({
 					</div>
 
 					<div
+						title={TABLE_LOCATIONS[1]}
 						className="absolute z-0 rounded-b-xl border border-slate-200 border-dashed bg-slate-50"
 						style={{
 							width: cellSize * 1.2,
@@ -182,6 +183,7 @@ export function FloorPlan({
 					/>
 
 					<div
+						title={TABLE_LOCATIONS[1]}
 						className="absolute z-0 rounded-xl border border-slate-200 border-dashed bg-slate-50"
 						style={{
 							width: cellSize * 8,
@@ -192,6 +194,7 @@ export function FloorPlan({
 					/>
 
 					<div
+						title={TABLE_LOCATIONS[2]}
 						className="absolute z-0 rounded-xl border border-slate-200 border-dashed bg-slate-50"
 						style={{
 							width: cellSize * 2.2,
@@ -202,6 +205,7 @@ export function FloorPlan({
 					/>
 
 					<div
+						title={TABLE_LOCATIONS[0]}
 						className="absolute z-0 rounded-xl border border-slate-200 border-dashed bg-slate-50"
 						style={{
 							width: cellSize * 3.2,
