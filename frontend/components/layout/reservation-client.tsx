@@ -24,8 +24,8 @@ import { Button } from "../ui/button";
 export function ReservationClient() {
 	const [tables, setTables] = useState<PositionedTable[]>([]);
 	const [filters, setFilters] = useState<ReservationSearchFilters | null>(null);
-	const [recommendedIds, setRecommendedIds] = useState<Set<number>>(new Set());
-	const [topRecommendedId, setTopRecommendedId] = useState<number | null>(null);
+	const [availableIds, setAvailableIds] = useState<Set<number>>(new Set());
+	const [bestTableId, setBestTableId] = useState<number | null>(null);
 
 	const [selectedTableId, setSelectedTableId] = useState<number | null>(null);
 	const [isLoadingTables, setIsLoadingTables] = useState(true);
@@ -53,8 +53,8 @@ export function ReservationClient() {
 
 				const ids = new Set(availableTables.map((table) => table.id));
 
-				setRecommendedIds(ids);
-				setTopRecommendedId(availableTables[0]?.id ?? null);
+				setAvailableIds(ids);
+				setBestTableId(availableTables[0]?.id ?? null);
 
 				setSelectedTableId((current) =>
 					current !== null && !ids.has(current) ? null : current,
@@ -71,8 +71,8 @@ export function ReservationClient() {
 				const message =
 					error instanceof Error ? error.message : "Availability search failed";
 
-				setRecommendedIds(new Set());
-				setTopRecommendedId(null);
+				setAvailableIds(new Set());
+				setBestTableId(null);
 				setSelectedTableId(null);
 
 				toast.error(message);
@@ -120,8 +120,8 @@ export function ReservationClient() {
 
 	useEffect(() => {
 		if (!filters) {
-			setRecommendedIds(new Set());
-			setTopRecommendedId(null);
+			setAvailableIds(new Set());
+			setBestTableId(null);
 			setSelectedTableId(null);
 			return;
 		}
@@ -136,24 +136,20 @@ export function ReservationClient() {
 
 	function getOccupiedTableCount(
 		tables: PositionedTable[],
-		recommendedIds: Set<number>,
+		availableIds: Set<number>,
 		selectedLocation: ReservationSearchFilters["location"],
 	): number {
 		let occupied = 0;
 
 		for (const table of tables) {
 			if (selectedLocation && table.location !== selectedLocation) continue;
-			if (!recommendedIds.has(table.id)) occupied++;
+			if (!availableIds.has(table.id)) occupied++;
 		}
 
 		return occupied;
 	}
 
-	const occupiedCount = getOccupiedTableCount(
-		tables,
-		recommendedIds,
-		selectedLocation,
-	);
+	const occupiedCount = getOccupiedTableCount(tables, availableIds, selectedLocation);
 
 	async function handleBookSelectedTable() {
 		if (!filters || !selectedTableId) {
@@ -210,8 +206,8 @@ export function ReservationClient() {
 				ref={floorRef}
 				tables={tables}
 				hasActiveSearch={Boolean(filters)}
-				recommendedIds={recommendedIds}
-				topRecommendedId={topRecommendedId}
+				availableIds={availableIds}
+				bestTableId={bestTableId}
 				selectedTableId={selectedTableId}
 				onSelectTable={setSelectedTableId}
 				isSearching={isSearching}
@@ -224,7 +220,7 @@ export function ReservationClient() {
 						<CardTitle>Booking Summary</CardTitle>
 						<CardDescription>
 							{filters
-								? "Recommendations and selections are based on the applied filters"
+								? "Availability and the best table are based on the applied filters"
 								: "No filters selected."}
 						</CardDescription>
 					</CardHeader>
@@ -232,9 +228,9 @@ export function ReservationClient() {
 						<CardContent className="flex flex-col gap-4 text-sm">
 							<div className="grid grid-cols-2 gap-2 rounded-md bg-slate-50 p-3">
 								<div>Occupied tables: {occupiedCount}</div>
-								<div>Available tables: {recommendedIds.size}</div>
+								<div>Available tables: {availableIds.size}</div>
 								<div>
-									Best table: {topRecommendedId ? `#${topRecommendedId}` : "-"}
+									Best table: {bestTableId ? `#${bestTableId}` : "-"}
 								</div>
 							</div>
 							<div className="rounded-md border p-3">
@@ -277,7 +273,7 @@ export function ReservationClient() {
 								disabled={
 									!filters ||
 									!selectedTableId ||
-									!recommendedIds.has(selectedTableId) ||
+									!availableIds.has(selectedTableId) ||
 									isBooking
 								}
 							>

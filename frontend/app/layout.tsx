@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
 	title: "Restaurant Reservation Planner",
-	description: "Smart table recommendation and booking app for restaurant visitors.",
+	description: "Smart table availability and booking app for restaurant visitors.",
 };
 
 export default function RootLayout({

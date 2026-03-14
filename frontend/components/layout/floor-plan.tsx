@@ -9,8 +9,8 @@ import { ReservationSearchFilters } from "@/types/reservation";
 type FloorPlanProps = {
 	tables: PositionedTable[];
 	hasActiveSearch: boolean;
-	recommendedIds: Set<number>;
-	topRecommendedId: number | null;
+	availableIds: Set<number>;
+	bestTableId: number | null;
 	selectedTableId: number | null;
 	onSelectTable: (id: number) => void;
 	isSearching?: boolean;
@@ -32,8 +32,8 @@ function resolveCellSize(viewportWidth: number): number {
 export function FloorPlan({
 	tables,
 	hasActiveSearch,
-	recommendedIds,
-	topRecommendedId,
+	availableIds,
+	bestTableId,
 	selectedTableId,
 	onSelectTable,
 	isSearching,
@@ -58,20 +58,20 @@ export function FloorPlan({
 	}, []);
 
 	useEffect(() => {
-		if (!hasActiveSearch || isSearching || topRecommendedId === null) {
+		if (!hasActiveSearch || isSearching || bestTableId === null) {
 			return;
 		}
 
 		const scrollContainer = scrollContainerRef.current;
-		const recommendedTable = tableElementsRef.current.get(topRecommendedId);
+		const bestTable = tableElementsRef.current.get(bestTableId);
 
-		if (!scrollContainer || !recommendedTable) {
+		if (!scrollContainer || !bestTable) {
 			return;
 		}
 
 		const frameId = globalThis.requestAnimationFrame(() => {
 			const containerRect = scrollContainer.getBoundingClientRect();
-			const tableRect = recommendedTable.getBoundingClientRect();
+			const tableRect = bestTable.getBoundingClientRect();
 
 			scrollContainer.scrollTo({
 				top:
@@ -91,10 +91,9 @@ export function FloorPlan({
 		return () => {
 			globalThis.cancelAnimationFrame(frameId);
 		};
-	}, [hasActiveSearch, isSearching, topRecommendedId]);
+	}, [bestTableId, hasActiveSearch, isSearching]);
 
 	const { component: Legend, legend: colors } = legendMaker({
-		Recommended: "#2563eb",
 		Best: "#f59e0b",
 		Available: "#A7F3D0",
 		Occupied: "#ef4444",
@@ -134,7 +133,7 @@ export function FloorPlan({
 					<div className="absolute inset-0">
 						{tables.map((table) => {
 							const isOccupied = hasActiveSearch
-								? !recommendedIds.has(table.id)
+								? !availableIds.has(table.id)
 								: false;
 
 							return (
@@ -155,12 +154,8 @@ export function FloorPlan({
 									isOccupied={isOccupied}
 									isIdle={!hasActiveSearch}
 									isSelectable={hasActiveSearch && !isOccupied}
-									isRecommended={
-										hasActiveSearch && recommendedIds.has(table.id)
-									}
-									isTopRecommended={
-										hasActiveSearch && topRecommendedId === table.id
-									}
+									isAvailable={hasActiveSearch && availableIds.has(table.id)}
+									isBestTable={hasActiveSearch && bestTableId === table.id}
 									isSelected={selectedTableId === table.id}
 									isFilteredOut={
 										selectedLocation !== null &&

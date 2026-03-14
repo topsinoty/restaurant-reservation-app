@@ -3,7 +3,7 @@ import { Ref } from "react";
 import { FaPeopleGroup } from "react-icons/fa6";
 
 export type TableStatusColors = Record<
-	"Neutral" | "Recommended" | "Best" | "Available" | "Occupied",
+	"Neutral" | "Best" | "Available" | "Occupied",
 	`#${string}`
 >;
 
@@ -11,8 +11,8 @@ interface TableProps {
 	cellSize: number;
 	onSelect?: (id: number) => void;
 	elementRef?: Ref<HTMLButtonElement>;
-	isRecommended?: boolean;
-	isTopRecommended?: boolean;
+	isAvailable?: boolean;
+	isBestTable?: boolean;
 	isOccupied?: boolean;
 	isIdle?: boolean;
 	isSelectable?: boolean;
@@ -30,8 +30,8 @@ export function Table({
 	cellSize,
 	onSelect,
 	elementRef,
-	isRecommended,
-	isTopRecommended,
+	isAvailable,
+	isBestTable,
 	isOccupied,
 	isIdle,
 	isSelectable,
@@ -53,22 +53,21 @@ export function Table({
 		if (isFilteredOut) return colors.Neutral;
 		if (isIdle) return colors.Neutral;
 		if (isOccupied) return colors.Occupied;
-		if (isTopRecommended) return colors.Best;
-		if (isRecommended) return colors.Recommended;
+		if (isBestTable) return colors.Best;
 		return colors.Available;
 	}
 
 	function borderStyle(): string {
 		if (isSelected) return "3px solid rgb(15,23,42)";
-		if (isTopRecommended) return `3px solid ${colors.Best}`;
-		if (isRecommended) return `2px solid ${colors.Recommended}`;
+		if (isBestTable) return `3px solid ${colors.Best}`;
+		if (isAvailable) return `2px solid ${colors.Available}`;
 		if (isOccupied) return "2px solid rgb(156,163,175)";
 		return "1px solid rgb(148,163,184)";
 	}
 
-	const generateBoxShadow = (topRecommended: string, recommended: string) => {
-		if (isTopRecommended) return topRecommended;
-		if (isRecommended) return recommended;
+	const generateBoxShadow = (best: string, available: string) => {
+		if (isBestTable) return best;
+		if (isAvailable) return available;
 	};
 
 	const boxShadow = generateBoxShadow(
@@ -128,7 +127,7 @@ export function Table({
 				</span>
 			)}
 
-			{isTopRecommended && !isFilteredOut && (
+			{isBestTable && !isFilteredOut && (
 				<span className="absolute -bottom-2 -left-2 rounded-full bg-amber-400 px-1.5 py-0.5 text-xs text-slate-900">
 					Best
 				</span>
