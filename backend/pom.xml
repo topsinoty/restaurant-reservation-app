@@ -110,7 +110,22 @@
                 </annotationProcessorPaths>
             </configuration>
         </plugin>
-		</plugins>
+            <!--
+            Source - https://stackoverflow.com/a/79213258
+            Posted by Andrey, modified by community. See post 'Timeline' for change history
+            Retrieved 2026-03-13, License - CC BY-SA 4.0
+            -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <argLine>
+                        -javaagent:${settings.localRepository}/org/mockito/mockito-core/${mockito.version}/mockito-core-${mockito.version}.jar
+                    </argLine>
+                </configuration>
+            </plugin>
+
+        </plugins>
 
 
 
