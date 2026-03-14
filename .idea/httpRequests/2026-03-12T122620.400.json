@@ -1,0 +1,5 @@
+{
+  "success": false,
+  "message": "Method parameter 'id': Failed to convert value of type 'java.lang.String' to required type 'java.lang.Long'; For input string: \"available\"",
+  "data": null
+}

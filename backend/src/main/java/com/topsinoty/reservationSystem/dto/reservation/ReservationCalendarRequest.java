@@ -1,14 +1,13 @@
 package com.topsinoty.reservationSystem.dto.reservation;
 
 import jakarta.validation.constraints.FutureOrPresent;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-public record ReservationBookingRequest(
+public record ReservationCalendarRequest(
 
         @NotNull Long tableId,
 
@@ -16,9 +15,7 @@ public record ReservationBookingRequest(
 
         @NotNull LocalTime time,
 
-        @NotNull @Positive Integer people,
-
-        @NotBlank String guestName
+        @NotNull @Positive Integer people
 
 ) {
 }

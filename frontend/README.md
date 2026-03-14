@@ -1,83 +1,80 @@
 # Restaurant Reservation System - Frontend
 
-Next.js frontend for the CGI internship assignment. This app lets a guest search for available tables, view recommendations on a floor plan, and book a selected table through a Spring Boot API.
+Next.js frontend for the CGI internship assignment. The app lets a guest browse the restaurant floor plan, apply reservation filters, inspect available tables, and submit a booking for a selected table.
 
 ## Tech Stack
 
-- Next.js 16 (App Router)
-- React 19 + TypeScript
+- Next.js 16
+- React 19
+- TypeScript
 - Tailwind CSS 4
-- React Hook Form + Zod
+- React Hook Form
+- Zod
+- shadcn/ui components
 
-## Implemented Requirements
+## Implemented Functionality
 
-### 1) Search and Filtering
+- Displays a visual floor plan based on table coordinates from the backend
+- Lets the user filter by date, time, party size, zone, and preferred features
+- Highlights available, best, selected, and occupied tables after availability has been searched
+- Lets the user select a table directly from the floor plan
+- Sends a booking request for the selected table
+- Shows a booking summary panel for the active search
 
-The UI supports these filters:
+## UI Behavior
 
-- Date
-- Time
-- Party size
-- Zone (`CENTER`, `CORNER`, `OUTDOOR`)
-- Preferences:
-  - Quiet / private
-  - Window-side
-  - Kids area nearby
-  - Romantic
-  - Great view
-
-### 2) Table Recommendation and Selection Logic
-
-- Availability and ranking are requested from backend endpoint:
-- all available results are visually marked as recommended
-- first ranked result is highlighted as the best table
-- user can click a free table directly on the floor plan
-
-### 3) Visual Floor Plan
-
-- Tables are shown on a fixed hall layout grid.
-- Occupied tables are visually distinct.
-- Recommended tables are highlighted in blue.
-- Best recommendation is highlighted in gold.
-- Selected table is highlighted in black.
-
-### Random Occupancy Demo State
-
-- Before filters are submitted, the floor plan shows a demo occupancy state generated randomly in the frontend.
-- After filters are submitted, occupancy and recommendations come from the backend search result.
-
-### Booking Flow
-
-- User selects a table on the floor plan.
-- `POST /api/reservations/book` is sent with table id, date, time, and party size.
-- On success, a booking id is shown and availability is refreshed.
+- Table layout data is loaded from `GET /api/tables`
+- Availability search is sent to `POST /api/reservations/available`
+- Booking is sent to `POST /api/reservations/book`
+- Before filters are applied, the floor plan is shown in a neutral state and table selection is disabled
+- After filters are applied, occupied, available, and best-table states come from the backend search result
+- The booking dialog collects a guest name for the UI flow, but that value is not persisted in the backend yet
 
 ## Project Structure
 
-- `app/` - Next.js app router pages and global styles
-- `components/layout/` - floor plan, reservation form, reservation client flow
-- `lib/reservation-api.ts` - API calls to backend
-- `types/` - shared frontend types for tables and reservations
+- `app/` - app router entrypoints and global styling
+- `components/layout/` - reservation flow, floor plan, and form components
+- `components/ui/` - shadcn components
+- `lib/` - API helpers, labels, and utility functions
+- `types/` - shared frontend types
 
 ## Run Locally
 
-## 1. Start backend
+### Prerequisites
 
-Backend setup is in `../backend/README.md`.
-Default API base URL expected by frontend is `http://localhost:8080`.
+- Node.js
+- pnpm (npm also works)
+- Running backend API on `http://localhost:8080` by default
 
-## 2. Install dependencies and run frontend
+### 1. Install dependencies
 
 ```bash
 pnpm install
+```
+
+or
+
+```bash
+npm install
+```
+
+### 2. Start the development server
+
+```bash
 pnpm dev
 ```
 
-Open: `http://localhost:3000`
+or
+
+```bash
+npm run dev
+```
+
+Open `http://localhost:3000`.
 
 ## Configuration
 
-Set custom backend base URL in `.env.local` if needed:
+Set a custom backend base URL in `.env.local` if needed:
 
 ```bash
 NEXT_PUBLIC_API_BASE_URL=http://localhost:8080
@@ -90,31 +87,50 @@ pnpm lint
 pnpm build
 ```
 
-## Assumptions and Limitations
+or
 
-- Reservation duration is handled by backend and currently fixed to 2 hours.
-- No separate accessibility enum was defined in backend features, so other available preference tags are used.
-- Admin table-layout editing is not implemented.
-- Multi-table merge suggestions for very large groups are not implemented.
-- Automated frontend test coverage is not implemented yet.
+```bash
+npm run lint
+npm run build
+```
 
-## Sources and Attribution
+## Assumptions
 
-- UI foundation: shadcn/ui components
-- Documentation references:
-  - Next.js docs
-  - React Hook Form docs
-  - Zod docs
+- Reservation duration is handled by the backend and is currently fixed to 2 hours
+- Table positions are static and come from backend seed data
+- Available-table results and the best-table ranking are based on the backend response
+- The floor plan is the primary view instead of a time-slot schedule
 
-If you used larger snippets from external sources, StackOverflow, or AI tools, list them here before submission.
+## Known Limitations
+
+- There is no automated frontend test coverage yet
+- UI polish can still be improved
+- Randomly generated occupied tables are not shown before a search; the initial view is neutral until availability is requested
+- The guest name entered in the booking dialog is not saved yet
+- Admin table editing and dynamic multi-table merge suggestions are not implemented yet
 
 ## Submission Notes
 
-- Total time spent: 23h
+- Time spent on the frontend: about 53 hours
 - Main challenges:
-  - Layout Rendering logic
-    I started with a grid and later moved to an absolute position rendering
-- How challenges were solved:
-  - Trial and error and checking what looked better
-- Unresolved issues and planned fixes:
-  - I dont like the UI
+  - Rendering the floor plan in a way that felt readable and interactive
+  - Designing something that worked and still felt like my style
+  - Moving from a simple grid approach to absolute positioning based on table coordinates
+- How those challenges were handled:
+  - Trial and error
+  - Reviewing documentation and existing UI patterns
+  - Adjusting the layout until the interaction flow felt usable
+- Unresolved issues:
+  - The UI can still be improved visually
+  - The best-table ranking is intentionally backend-driven, so frontend behavior depends on backend ranking quality
+  - Initial random occupied-table generation from the assignment brief is still missing
+
+## Sources and Attribution
+
+- shadcn/ui for UI component foundations
+- https://time.openstatus.dev/
+- Official documentation:
+  - https://nextjs.org/docs
+  - https://react-hook-form.com/
+  - https://zod.dev/
+- AI tools were used for documentation and code review.

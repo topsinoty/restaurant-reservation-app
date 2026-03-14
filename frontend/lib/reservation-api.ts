@@ -1,6 +1,9 @@
+import { ApiResult } from "@/types/api-result";
 import {
 	ReservationBookingRequest,
 	ReservationBookingResponse,
+	ReservationCalendarRequest,
+	ReservationCalendarResponse,
 	ReservationSearchFilters,
 	ReservationSearchResponse,
 } from "@/types/reservation";
@@ -42,7 +45,10 @@ async function parseErrorMessage(response: Response): Promise<string> {
 	return "Unexpected API error";
 }
 
-async function apiRequest<T>(path: string, init?: RequestInit): Promise<T> {
+async function apiRequest<T>(
+	path: string,
+	init?: RequestInit,
+): Promise<ApiResult<T>> {
 	const response = await fetch(`${API_BASE_URL}${path}`, {
 		...init,
 		headers: {
@@ -55,21 +61,34 @@ async function apiRequest<T>(path: string, init?: RequestInit): Promise<T> {
 		throw new Error(await parseErrorMessage(response));
 	}
 
-	return response.json() as Promise<T>;
+	const result = (await response.json()) as ApiResult<T>;
+
+	if (!result.success) {
+		throw new Error(result.message || "Unexpected API error");
+	}
+
+	return result;
 }
 
-export async function fetchRestaurantTables(): Promise<PositionedTable[]> {
-	return apiRequest<PositionedTable[]>("/api/tables", {
+export async function fetchRestaurantTables(
+	config?: RequestInit,
+): Promise<PositionedTable[]> {
+	const result = await apiRequest<PositionedTable[]>("/api/tables", {
+		...config,
 		cache: "no-store",
 	});
+
+	return result.data;
 }
 
 export async function searchAvailableTables(
 	filters: ReservationSearchFilters,
+	config?: RequestInit,
 ): Promise<ReservationSearchResponse[]> {
-	return apiRequest<ReservationSearchResponse[]>(
+	const result = await apiRequest<ReservationSearchResponse[]>(
 		"/api/reservations/available",
 		{
+			...config,
 			method: "POST",
 			body: JSON.stringify({
 				date: filters.date,
@@ -83,11 +102,13 @@ export async function searchAvailableTables(
 			}),
 		},
 	);
+
+	return result.data;
 }
 
 export async function bookReservation(
 	request: ReservationBookingRequest,
-): Promise<ReservationBookingResponse> {
+): Promise<ApiResult<ReservationBookingResponse>> {
 	return apiRequest<ReservationBookingResponse>("/api/reservations/book", {
 		method: "POST",
 		body: JSON.stringify({
@@ -95,4 +116,21 @@ export async function bookReservation(
 			time: normalizeTime(request.time),
 		}),
 	});
+}
+
+export async function prepareReservationCalendar(
+	request: ReservationCalendarRequest,
+): Promise<ReservationCalendarResponse> {
+	const result = await apiRequest<ReservationCalendarResponse>(
+		"/api/reservations/calendar",
+		{
+			method: "POST",
+			body: JSON.stringify({
+				...request,
+				time: normalizeTime(request.time),
+			}),
+		},
+	);
+
+	return result.data;
 }

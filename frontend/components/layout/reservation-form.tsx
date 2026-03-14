@@ -1,6 +1,7 @@
 "use client";
 
-import { iso, number, object, string, array, literal, z } from "zod";
+import { Clock3, MapPin, SlidersHorizontal, Users } from "lucide-react";
+import { iso, object, string, array, literal, z, int } from "zod";
 import { Controller, useForm } from "react-hook-form";
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import {
@@ -11,9 +12,16 @@ import {
 	CardTitle,
 } from "../ui/card";
 import { Field, FieldError, FieldLabel } from "../ui/field";
-import { Input } from "../ui/input";
 import { Calendar } from "../ui/calendar";
 import { Button } from "../ui/button";
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "../ui/select";
+import { TimePicker } from "../ui/time-picker";
 import { FEATURE_LABELS, LOCATION_LABELS } from "@/lib/table-labels";
 import { ReservationSearchFilters } from "@/types/reservation";
 import { TABLE_FEATURES, TABLE_LOCATIONS, TableFeature } from "@/types/table";
@@ -25,7 +33,7 @@ const reservationBookingSchema = object({
 	time: string().regex(TIME_24H_REGEX, {
 		error: "Use 24-hour format HH:mm",
 	}),
-	people: number().min(1).max(12),
+	people: int().min(1).max(12),
 	location: z.union([literal(""), z.enum(TABLE_LOCATIONS)]),
 	preferredFeatures: array(z.enum(TABLE_FEATURES)),
 });
@@ -81,7 +89,7 @@ export function ReservationForm({
 		>
 			<Card>
 				<CardHeader>
-					<CardTitle>Select a table</CardTitle>
+					<CardTitle>Start your reservation! </CardTitle>
 					<CardDescription>Fill in the details {":)"}</CardDescription>
 				</CardHeader>
 
@@ -91,8 +99,6 @@ export function ReservationForm({
 						name="date"
 						render={({ field }) => (
 							<Field>
-								<FieldLabel>Date</FieldLabel>
-
 								<Calendar
 									mode="single"
 									selected={field.value ? new Date(field.value) : undefined}
@@ -111,54 +117,83 @@ export function ReservationForm({
 						)}
 					/>
 
-					<Controller
-						control={form.control}
-						name="time"
-						render={({ field }) => (
-							<Field>
-								<FieldLabel>Time</FieldLabel>
-								<Input type="time" step={60} {...field} />
-								<FieldError errors={[form.formState.errors.time]} />
-							</Field>
-						)}
-					/>
+					<div className="flex flex-wrap gap-4">
+						<Controller
+							control={form.control}
+							name="time"
+							render={({ field, fieldState }) => (
+								<Field className="min-w-48 md:min-w-12 flex-1">
+									<FieldLabel>
+										<Clock3 className="size-4 text-muted-foreground" />
+										Time
+									</FieldLabel>
+									<TimePicker
+										value={field.value}
+										onChange={field.onChange}
+										onBlur={field.onBlur}
+										aria-invalid={fieldState.invalid}
+									/>
+									<FieldError errors={[fieldState.error]} />
+								</Field>
+							)}
+						/>
 
-					<Controller
-						control={form.control}
-						name="people"
-						render={({ field }) => (
-							<Field>
-								<FieldLabel>People</FieldLabel>
-								<Input
-									type="number"
-									min={1}
-									max={12}
-									value={field.value}
-									onChange={(e) => field.onChange(Number(e.target.value))}
-								/>
-								<FieldError errors={[form.formState.errors.people]} />
-							</Field>
-						)}
-					/>
+						<Controller
+							control={form.control}
+							name="people"
+							render={({ field }) => (
+								<Field className="min-w-48 flex-1">
+									<FieldLabel>
+										<Users className="size-4 text-muted-foreground" />
+										People
+									</FieldLabel>
+									<Select
+										value={field.value.toString()}
+										onValueChange={(value) => field.onChange(Number(value))}
+									>
+										<SelectTrigger className="w-full">
+											<SelectValue />
+										</SelectTrigger>
+										<SelectContent>
+											{Array.from({ length: 11 }, (_, i) => i)
+												.slice(2)
+												.map((i) => (
+													<SelectItem key={i} value={i.toString()}>
+														{i}
+													</SelectItem>
+												))}
+										</SelectContent>
+									</Select>
+									<FieldError errors={[form.formState.errors.people]} />
+								</Field>
+							)}
+						/>
+					</div>
 
 					<Controller
 						control={form.control}
 						name="location"
 						render={({ field }) => (
 							<Field>
-								<FieldLabel>Zone</FieldLabel>
-								<select
-									value={field.value}
-									onChange={(e) => field.onChange(e.target.value)}
-									className="h-9 w-full rounded-md border border-input bg-transparent px-3 text-sm shadow-xs transition-[color,box-shadow] outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
+								<FieldLabel>
+									<MapPin className="size-4 text-muted-foreground" />
+									Zone
+								</FieldLabel>
+								<Select
+									value={field.value || undefined}
+									onValueChange={field.onChange}
 								>
-									<option value="">-- Select --</option>
-									{TABLE_LOCATIONS.map((location) => (
-										<option key={location} value={location}>
-											{LOCATION_LABELS[location]}
-										</option>
-									))}
-								</select>
+									<SelectTrigger className="w-full">
+										<SelectValue placeholder="-- Select --" />
+									</SelectTrigger>
+									<SelectContent>
+										{TABLE_LOCATIONS.map((location) => (
+											<SelectItem key={location} value={location}>
+												{LOCATION_LABELS[location]}
+											</SelectItem>
+										))}
+									</SelectContent>
+								</Select>
 							</Field>
 						)}
 					/>
@@ -166,37 +201,48 @@ export function ReservationForm({
 					<Controller
 						control={form.control}
 						name="preferredFeatures"
-						render={({ field }) => (
-							<Field>
-								<FieldLabel>Preferences</FieldLabel>
+						render={({ field }) => {
+							const handleFeatureChange = (
+								checked: boolean,
+								feature: TableFeature,
+							) => {
+								const nextFeatures = checked
+									? [...field.value, feature]
+									: field.value.filter((item) => item !== feature);
+								field.onChange(nextFeatures);
+							};
 
-								<div className="grid gap-2 sm:grid-cols-2">
-									{preferenceOptions.map((feature) => {
-										const checked = field.value.includes(feature);
+							return (
+								<Field>
+									<FieldLabel>
+										<SlidersHorizontal className="size-4 text-muted-foreground" />
+										Preferences
+									</FieldLabel>
 
-										return (
-											<label
-												key={feature}
-												className="flex items-center gap-2 rounded-md border border-border px-3 py-2 text-sm"
-											>
-												<input
-													type="checkbox"
-													checked={checked}
-													onChange={(event) => {
-														const nextFeatures = event.target.checked
-															? [...field.value, feature]
-															: field.value.filter((item) => item !== feature);
+									<div className="grid gap-2 sm:grid-cols-2">
+										{preferenceOptions.map((feature) => {
+											const checked = field.value.includes(feature);
 
-														field.onChange(nextFeatures);
-													}}
-												/>
-												<span>{FEATURE_LABELS[feature]}</span>
-											</label>
-										);
-									})}
-								</div>
-							</Field>
-						)}
+											return (
+												<label
+													key={feature}
+													className="flex items-center gap-2 rounded-md border border-border px-3 py-2 text-sm"
+												>
+													<input
+														type="checkbox"
+														checked={checked}
+														onChange={(event) =>
+															handleFeatureChange(event.target.checked, feature)
+														}
+													/>
+													<span>{FEATURE_LABELS[feature]}</span>
+												</label>
+											);
+										})}
+									</div>
+								</Field>
+							);
+						}}
 					/>
 
 					<div className="flex flex-col gap-2 sm:flex-row">

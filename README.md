@@ -1,58 +1,84 @@
 # Restaurant Reservation System
 
+Full-stack restaurant reservation prototype built for the CGI suvepraktika assignment. The repository contains a Spring Boot backend and a Next.js frontend for searching availability, recommending tables, visualizing the floor plan, and booking a table.
 
-## Initial repos
+## Stack Overview
 
-- frontend : https://github.com/topsinoty/restaurant-reservation-frontend
-- backend : https://github.com/topsinoty/restaurant-reservation-system
----
-
-Full-stack restaurant reservation app built for the CGI internship assignment.
-
-This repository contains:
-
-- Spring Boot backend API for availability search, recommendation ranking, and booking
-- Next.js frontend for filtering, floor-plan table selection, and reservation flow
+- Backend: Java 25, Spring Boot 4, Spring Data JPA, Bean Validation, PostgreSQL, H2 for tests
+- Frontend: Next.js 16, React 19, TypeScript, Tailwind CSS 4, React Hook Form, Zod, shadcn/ui
+- Tooling: Maven Wrapper, pnpm, Docker Compose
 
 ## Repository Structure
 
-- `backend/` - Spring Boot service
-- `frontend/` - Next.js application
+- `backend/` - Spring Boot API and business logic
+- `frontend/` - Next.js client application
 - `compose.yaml` - local PostgreSQL container
 
-Detailed docs:
+Detailed component-level documentation:
 
-- Backend setup and API details: `backend/README.md`
-- Frontend setup and UI behavior: `frontend/README.md`
+- `backend/README.md`
+- `frontend/README.md`
 
-## Assignment Coverage
+## Implemented Scope
 
-Implemented:
+- Seeded restaurant floor plan with coordinates, capacities, locations, and feature tags
+- Availability search by date, time, party size, zone, and preferred features
+- Backend recommendation ranking based on feature matches and smallest suitable capacity
+- Floor plan view with neutral, available, occupied, best, and selected table states after a search
+- Reservation booking from the selected table
+- Reservation listing, lookup, and cancellation endpoints
+- Backend unit tests for core service logic
 
-- Reservation search with filters (date, time, people, zone, preferences)
-- Table recommendation flow backed by ranking logic in API
-- Interactive visual floor plan with occupied/recommended/best/selected states
-- Booking selected table from UI
+## Core Assignment Check
 
-Not implemented:
+Covered:
 
-- Admin drag-and-drop table layout editor
-- Dynamic table merge for very large groups
-- Extended automated test coverage
+- Search and filtering by date, time, people count, zone, and preferences
+- Table recommendation shown directly on the floor plan
+- Visual distinction between unavailable tables and the best recommendation after a search
+- Booking flow from the UI through the backend API
+
+Missing or partial:
+
+- Swagger / OpenAPI documentation is not implemented in the backend
+- Randomly generated already-booked tables on initial app load are not implemented; a clean database starts with free tables until reservations are created
+- There is no explicit accessibility preference flag, although other preferences such as quiet, window-side, kids-area, romantic, and great-view are supported
+
+## Assumptions
+
+- The floor plan is the main entry view instead of a schedule view
+- One reservation is assigned to one table
+- Reservation duration is fixed to 2 hours
+- Table positions are seeded from code and treated as static
+- Recommendation quality is intentionally simple and still open to refinement
 
 ## Quick Start
 
-## 1. Start PostgreSQL
+### Prerequisites
 
-From repository root:
+- Docker
+- Java 25
+- Node.js
+- pnpm
+
+### 1. Start PostgreSQL
+
+From the repository root:
 
 ```bash
 docker compose up -d
 ```
 
-## 2. Run backend
+### 2. Initialize the backend schema on a clean database
 
-From `backend/`:
+The backend currently defaults to `spring.jpa.hibernate.ddl-auto=validate`. On a brand-new local PostgreSQL database, run the backend once with schema generation enabled:
+
+```bash
+cd backend
+SPRING_JPA_HIBERNATE_DDL_AUTO=create-only ./mvnw spring-boot:run
+```
+
+After the schema is created, stop the backend and start it normally:
 
 ```bash
 ./mvnw spring-boot:run
@@ -60,7 +86,7 @@ From `backend/`:
 
 Backend base URL: `http://localhost:8080`
 
-## 3. Run frontend
+### 3. Run the frontend
 
 From `frontend/`:
 
@@ -71,7 +97,14 @@ pnpm dev
 
 Frontend URL: `http://localhost:3000`
 
-## 4. Useful checks
+## Checks
+
+Backend:
+
+```bash
+cd backend
+./mvnw test
+```
 
 Frontend:
 
@@ -81,16 +114,31 @@ pnpm lint
 pnpm build
 ```
 
-Backend:
+## Known Limitations
 
-```bash
-cd backend
-./mvnw test
-```
+- Backend table ranking still needs refinement
+- Backend Swagger / OpenAPI docs are missing
+- Backend test coverage is still limited, and frontend tests are not implemented yet
+- A first-run schema initialization step is still needed on a clean PostgreSQL database because migrations are not set up yet
 
-## Notes Before Submission
+## Submission Notes
 
-Fill in actual values in both:
+- Approximate total time spent: about 114 hours
+- Backend time: about 61 hours
+- Frontend time: about 53 hours
+- Main challenges:
+  - Learning Spring Boot while doing the assignment
+  - Reworking the reservation model after an early data-model mistake made the calculations awkward
+  - Moving the frontend floor plan from a simple grid to coordinate-based positioning
+  - Combining frontend and backend work that started in separate branches
+- How those challenges were handled:
+  - Official docs and tutorial material
+  - Trial and error
+  - Looking at similar reservation flows and UI patterns for reference
+  - AI-assisted research and debugging support
 
-- `frontend/README.md` (time spent, challenges, unresolved parts, references)
-- `backend/README.md` (time spent, challenges, unresolved parts, references)
+## Attribution
+
+- Backend references are listed in `backend/README.md`
+- Frontend references are listed in `frontend/README.md`
+- AI tools were used for research, debugging guidance, and checking implementation direction. Final project-specific code was adapted manually.

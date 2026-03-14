@@ -4,22 +4,28 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b83559b6-5e47-40ee-ae89-8bb03045e536" name="Changes" comment="add rhf and zod and deps for form">
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/backend/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/types/reservation.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/types/reservation.ts" afterDir="false" />
+    <list default="true" id="b83559b6-5e47-40ee-ae89-8bb03045e536" name="Changes" comment="commit tests">
+      <change beforePath="$PROJECT_DIR$/frontend/components/layout/reservation-client.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/components/layout/reservation-client.tsx" afterDir="false" />
     </list>
+    <list id="dd931809-69d4-4223-a251-575800504094" name="Idea Changes" comment="Idea Changes" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="ChangesViewManager">
+    <option name="groupingKeys">
+      <option value="directory" />
+      <option value="repository" />
+    </option>
+  </component>
+  <component name="EmbeddingIndexingInfo">
+    <option name="cachedIndexableFilesCount" value="36" />
+  </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
+        <option value="Record" />
         <option value="Class" />
       </list>
     </option>
@@ -55,6 +61,9 @@
     <commands />
     <urls />
   </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="DEPENDENCY_CHECKER_PROBLEMS_TAB" />
+  </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 3
 }</component>
@@ -72,9 +81,12 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "HTTP Request.MainApplication | #2.executor": "Run",
     "JUnit.MainApplicationTests (1).executor": "Run",
     "JUnit.MainApplicationTests.contextLoads.executor": "Run",
     "JUnit.MainApplicationTests.executor": "Run",
+    "JUnit.ReservationServiceTest.executor": "Run",
+    "JUnit.RestaurantTableServiceTest.executor": "Run",
     "Maven.restaurant-reservation-system [clean].executor": "Run",
     "Maven.restaurant-reservation-system [compile].executor": "Run",
     "Maven.restaurant-reservation-system [package].executor": "Run",
@@ -84,8 +96,8 @@
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RequestMappingsPanelOrder0": "0",
     "RequestMappingsPanelOrder1": "1",
-    "RequestMappingsPanelWidth0": "75",
-    "RequestMappingsPanelWidth1": "75",
+    "RequestMappingsPanelWidth0": "870",
+    "RequestMappingsPanelWidth1": "870",
     "RunOnceActivity.MCP Project settings loaded": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
@@ -102,10 +114,10 @@
     "nodejs_package_manager_path": "pnpm",
     "npm.dev.executor": "Run",
     "npm.install.executor": "Run",
-    "project.structure.last.edited": "Modules",
+    "project.structure.last.edited": "Libraries",
     "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.2",
-    "settings.editor.selected.configurable": "preferences.sourceCode.JAVA",
+    "settings.editor.selected.configurable": "editing.templates",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
@@ -117,7 +129,10 @@
       <recent name="com.topsinoty.reservationSystem.dto.reservation" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.MainApplicationTests (1)">
+  <component name="RunManager" selected="Compound.Start all">
+    <configuration name="MainApplication | #2" type="HttpClient.HttpRequestRunConfigurationType" factoryName="HTTP Request" temporary="true" nameIsGenerated="true" path="$APPLICATION_CONFIG_DIR$/scratches/MainApplication.http" executionIdentifier="#2" index="2" runType="Run single request">
+      <method v="2" />
+    </configuration>
     <configuration name="MainApplicationTests (1)" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="restaurant-reservation-system" />
       <extension name="coverage">
@@ -128,21 +143,6 @@
       </extension>
       <option name="PACKAGE_NAME" value="com.topsinoty.reservationSystem" />
       <option name="MAIN_CLASS_NAME" value="com.topsinoty.reservationSystem.MainApplicationTests" />
-      <option name="TEST_OBJECT" value="class" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="MainApplicationTests" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="restaurant-reservation-system" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="com.topsinoty.reservationSystem.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="com.topsinoty.reservation_system" />
-      <option name="MAIN_CLASS_NAME" value="com.topsinoty.reservation_system.MainApplicationTests" />
       <option name="TEST_OBJECT" value="class" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -164,9 +164,41 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="ReservationServiceTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="restaurant-reservation-system" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.topsinoty.reservationSystem.service.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.topsinoty.reservationSystem.service" />
+      <option name="MAIN_CLASS_NAME" value="com.topsinoty.reservationSystem.service.ReservationServiceTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="RestaurantTableServiceTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="restaurant-reservation-system" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.topsinoty.reservationSystem.service.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.topsinoty.reservationSystem.service" />
+      <option name="MAIN_CLASS_NAME" value="com.topsinoty.reservationSystem.service.RestaurantTableServiceTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <list>
       <item itemvalue="Compound.Start all" />
-      <item itemvalue="JUnit.MainApplicationTests" />
+      <item itemvalue="HTTP Request.MainApplication | #2" />
+      <item itemvalue="JUnit.RestaurantTableServiceTest" />
+      <item itemvalue="JUnit.ReservationServiceTest" />
       <item itemvalue="JUnit.MainApplicationTests (1)" />
       <item itemvalue="JUnit.MainApplicationTests.contextLoads" />
       <item itemvalue="npm.dev" />
@@ -174,9 +206,11 @@
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.RestaurantTableServiceTest" />
+        <item itemvalue="JUnit.ReservationServiceTest" />
+        <item itemvalue="HTTP Request.MainApplication | #2" />
         <item itemvalue="JUnit.MainApplicationTests (1)" />
         <item itemvalue="JUnit.MainApplicationTests.contextLoads" />
-        <item itemvalue="JUnit.MainApplicationTests" />
       </list>
     </recent_temporary>
   </component>
@@ -194,6 +228,7 @@
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
       <changelist id="b83559b6-5e47-40ee-ae89-8bb03045e536" name="Changes" comment="" />
+      <changelist id="dd931809-69d4-4223-a251-575800504094" name="Idea Changes" comment="" />
       <created>1772701191631</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
@@ -204,6 +239,17 @@
       <workItem from="1772785799413" duration="976000" />
       <workItem from="1772787220532" duration="4431000" />
       <workItem from="1772811110355" duration="17195000" />
+      <workItem from="1772910027256" duration="6593000" />
+      <workItem from="1773047414417" duration="70000" />
+      <workItem from="1773164999167" duration="7356000" />
+      <workItem from="1773223502718" duration="486000" />
+      <workItem from="1773224026472" duration="6068000" />
+      <workItem from="1773272520341" duration="489000" />
+      <workItem from="1773309471361" duration="4000" />
+      <workItem from="1773309510844" duration="19897000" />
+      <workItem from="1773384212083" duration="898000" />
+      <workItem from="1773387628941" duration="7938000" />
+      <workItem from="1773503713005" duration="19840000" />
     </task>
     <task id="LOCAL-00001" summary="idea stuff">
       <option name="closed" value="true" />
@@ -397,36 +443,199 @@
       <option name="project" value="LOCAL" />
       <updated>1772823632045</updated>
     </task>
-    <option name="localTasksCounter" value="25" />
+    <task id="LOCAL-00025" summary="add api result style from backend">
+      <option name="closed" value="true" />
+      <created>1773213995741</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1773213995741</updated>
+    </task>
+    <task id="LOCAL-00026" summary="add error handling with status codes">
+      <option name="closed" value="true" />
+      <created>1773214669013</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1773214669013</updated>
+    </task>
+    <task id="LOCAL-00027" summary="make it handle api errors only">
+      <option name="closed" value="true" />
+      <created>1773224265637</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1773224265664</updated>
+    </task>
+    <task id="LOCAL-00028" summary="make the default for the ddl to validate...">
+      <option name="closed" value="true" />
+      <created>1773225525480</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1773225525480</updated>
+    </task>
+    <task id="LOCAL-00029" summary="add IDE suggestion for Non-Null annotation">
+      <option name="closed" value="true" />
+      <created>1773225555098</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1773225555098</updated>
+    </task>
+    <task id="LOCAL-00030" summary="fix ranking issue... use LongComparator (rtfm :sob:)">
+      <option name="closed" value="true" />
+      <created>1773225644217</created>
+      <option name="number" value="00030" />
+      <option name="presentableId" value="LOCAL-00030" />
+      <option name="project" value="LOCAL" />
+      <updated>1773225644217</updated>
+    </task>
+    <task id="LOCAL-00031" summary="fix name and handle invalid method argument">
+      <option name="closed" value="true" />
+      <created>1773227844619</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL-00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1773227844619</updated>
+    </task>
+    <task id="LOCAL-00032" summary="handle method argument type mismatch">
+      <option name="closed" value="true" />
+      <created>1773228262926</created>
+      <option name="number" value="00032" />
+      <option name="presentableId" value="LOCAL-00032" />
+      <option name="project" value="LOCAL" />
+      <updated>1773228262926</updated>
+    </task>
+    <task id="LOCAL-00033" summary="use ResponseEntity for the api error handler">
+      <option name="closed" value="true" />
+      <created>1773311415371</created>
+      <option name="number" value="00033" />
+      <option name="presentableId" value="LOCAL-00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1773311415372</updated>
+    </task>
+    <task id="LOCAL-00034" summary="Add text for success ops">
+      <option name="closed" value="true" />
+      <created>1773311435772</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1773311435772</updated>
+    </task>
+    <task id="LOCAL-00035" summary="remove mapping for static files">
+      <option name="closed" value="true" />
+      <created>1773311452221</created>
+      <option name="number" value="00035" />
+      <option name="presentableId" value="LOCAL-00035" />
+      <option name="project" value="LOCAL" />
+      <updated>1773311452221</updated>
+    </task>
+    <task id="LOCAL-00036" summary="backend readme clean up">
+      <option name="closed" value="true" />
+      <created>1773311716933</created>
+      <option name="number" value="00036" />
+      <option name="presentableId" value="LOCAL-00036" />
+      <option name="project" value="LOCAL" />
+      <updated>1773311716933</updated>
+    </task>
+    <task id="LOCAL-00037" summary="frontend readme clean up">
+      <option name="closed" value="true" />
+      <created>1773312227204</created>
+      <option name="number" value="00037" />
+      <option name="presentableId" value="LOCAL-00037" />
+      <option name="project" value="LOCAL" />
+      <updated>1773312227204</updated>
+    </task>
+    <task id="LOCAL-00038" summary="use logger">
+      <option name="closed" value="true" />
+      <created>1773388200351</created>
+      <option name="number" value="00038" />
+      <option name="presentableId" value="LOCAL-00038" />
+      <option name="project" value="LOCAL" />
+      <updated>1773388200352</updated>
+    </task>
+    <task id="LOCAL-00039" summary="use apiresult for table contrpoller">
+      <option name="closed" value="true" />
+      <created>1773388233735</created>
+      <option name="number" value="00039" />
+      <option name="presentableId" value="LOCAL-00039" />
+      <option name="project" value="LOCAL" />
+      <updated>1773388233735</updated>
+    </task>
+    <task id="LOCAL-00040" summary="use apiresult for table controller">
+      <option name="closed" value="true" />
+      <created>1773388253919</created>
+      <option name="number" value="00040" />
+      <option name="presentableId" value="LOCAL-00040" />
+      <option name="project" value="LOCAL" />
+      <updated>1773388253919</updated>
+    </task>
+    <task id="LOCAL-00041" summary="add logging">
+      <option name="closed" value="true" />
+      <created>1773516202566</created>
+      <option name="number" value="00041" />
+      <option name="presentableId" value="LOCAL-00041" />
+      <option name="project" value="LOCAL" />
+      <updated>1773516202566</updated>
+    </task>
+    <task id="LOCAL-00042" summary="fix the mockito self attachment">
+      <option name="closed" value="true" />
+      <created>1773517256941</created>
+      <option name="number" value="00042" />
+      <option name="presentableId" value="LOCAL-00042" />
+      <option name="project" value="LOCAL" />
+      <updated>1773517256941</updated>
+    </task>
+    <task id="LOCAL-00043" summary="add readme">
+      <option name="closed" value="true" />
+      <created>1773519811424</created>
+      <option name="number" value="00043" />
+      <option name="presentableId" value="LOCAL-00043" />
+      <option name="project" value="LOCAL" />
+      <updated>1773519811424</updated>
+    </task>
+    <task id="LOCAL-00044" summary="commit tests">
+      <option name="closed" value="true" />
+      <created>1773519975611</created>
+      <option name="number" value="00044" />
+      <option name="presentableId" value="LOCAL-00044" />
+      <option name="project" value="LOCAL" />
+      <updated>1773519975611</updated>
+    </task>
+    <option name="localTasksCounter" value="45" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="idea stuff" />
-    <MESSAGE value="move files to root" />
-    <MESSAGE value="removed file" />
-    <MESSAGE value="initial setup...need to speed up" />
-    <MESSAGE value="shadcn additions" />
-    <MESSAGE value="move to package" />
-    <MESSAGE value="fix the typo" />
-    <MESSAGE value="move positions to backend" />
-    <MESSAGE value="add shadcn components" />
-    <MESSAGE value="remake layout design" />
-    <MESSAGE value="plan for form" />
-    <MESSAGE value="add window to design" />
-    <MESSAGE value="WIP. change to button and add other functions" />
-    <MESSAGE value="add location back" />
-    <MESSAGE value="add shadcn ui" />
-    <MESSAGE value="move away from the manager and to one file....&#10;&#10;&#10;i dont see the point" />
-    <MESSAGE value="add tags" />
     <MESSAGE value="change css on the navbar a bit...WIP" />
     <MESSAGE value="Remake types for table&#10;&#10;PositionedTable and TableProps were essentially the same thing...." />
     <MESSAGE value="add support for all the modes from the floor plan" />
     <MESSAGE value="add labels for enums in backend" />
     <MESSAGE value="add rhf and zod and deps for form" />
-    <option name="LAST_COMMIT_MESSAGE" value="add rhf and zod and deps for form" />
+    <MESSAGE value="add api result style from backend" />
+    <MESSAGE value="add error handling with status codes" />
+    <MESSAGE value="make it handle api errors only" />
+    <MESSAGE value="make the default for the ddl to validate..." />
+    <MESSAGE value="add IDE suggestion for Non-Null annotation" />
+    <MESSAGE value="fix ranking issue... use LongComparator (rtfm :sob:)" />
+    <MESSAGE value="fix name and handle invalid method argument" />
+    <MESSAGE value="handle method argument type mismatch" />
+    <MESSAGE value="use ResponseEntity for the api error handler" />
+    <MESSAGE value="Add text for success ops" />
+    <MESSAGE value="remove mapping for static files" />
+    <MESSAGE value="backend readme clean up" />
+    <MESSAGE value="frontend readme clean up" />
+    <MESSAGE value="use logger" />
+    <MESSAGE value="use apiresult for table contrpoller" />
+    <MESSAGE value="use apiresult for table controller" />
+    <MESSAGE value="add logging" />
+    <MESSAGE value="fix the mockito self attachment" />
+    <MESSAGE value="add readme" />
+    <MESSAGE value="commit tests" />
+    <option name="LAST_COMMIT_MESSAGE" value="commit tests" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
