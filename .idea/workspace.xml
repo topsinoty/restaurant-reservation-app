@@ -4,14 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b83559b6-5e47-40ee-ae89-8bb03045e536" name="Changes" comment="commit tests" />
-    <list id="dd931809-69d4-4223-a251-575800504094" name="Idea Changes" comment="Idea Changes">
-      <change beforePath="$PROJECT_DIR$/.idea/ShadcnHelperSettings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/ShadcnHelperSettings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/485120f8-4f8e-4dc1-a0da-a1c63d83a257.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/485120f8-4f8e-4dc1-a0da-a1c63d83a257.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/485120f8-4f8e-4dc1-a0da-a1c63d83a257/storage_v2/_src_/database/restaurantDB.e3j0aA/schema/public.abK9xQ.meta" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/485120f8-4f8e-4dc1-a0da-a1c63d83a257/storage_v2/_src_/database/restaurantDB.e3j0aA/schema/public.abK9xQ.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    <list default="true" id="b83559b6-5e47-40ee-ae89-8bb03045e536" name="Changes" comment="commit tests">
+      <change beforePath="$PROJECT_DIR$/frontend/components/layout/reservation-client.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/components/layout/reservation-client.tsx" afterDir="false" />
     </list>
+    <list id="dd931809-69d4-4223-a251-575800504094" name="Idea Changes" comment="Idea Changes" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -253,7 +249,7 @@
       <workItem from="1773309510844" duration="19897000" />
       <workItem from="1773384212083" duration="898000" />
       <workItem from="1773387628941" duration="7938000" />
-      <workItem from="1773503713005" duration="19461000" />
+      <workItem from="1773503713005" duration="19840000" />
     </task>
     <task id="LOCAL-00001" summary="idea stuff">
       <option name="closed" value="true" />

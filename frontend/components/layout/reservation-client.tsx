@@ -292,7 +292,7 @@ export function ReservationClient() {
 				selectedLocation={selectedLocation}
 			/>
 
-			<div className="flex w-full flex-col gap-6 lg:max-w-2/7">
+			<div className="flex w-full flex-col-reverse lg:flex-col gap-6 lg:max-w-2/7">
 				<Card>
 					<CardHeader>
 						<CardTitle>Booking Summary</CardTitle>

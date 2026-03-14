@@ -1,11 +1,6 @@
 "use client";
 
-import {
-	Clock3,
-	MapPin,
-	SlidersHorizontal,
-	Users,
-} from "lucide-react";
+import { Clock3, MapPin, SlidersHorizontal, Users } from "lucide-react";
 import { iso, object, string, array, literal, z, int } from "zod";
 import { Controller, useForm } from "react-hook-form";
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
@@ -94,7 +89,7 @@ export function ReservationForm({
 		>
 			<Card>
 				<CardHeader>
-					<CardTitle>Select a table</CardTitle>
+					<CardTitle>Start your reservation! </CardTitle>
 					<CardDescription>Fill in the details {":)"}</CardDescription>
 				</CardHeader>
 
