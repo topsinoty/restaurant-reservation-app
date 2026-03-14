@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Ref, useEffect, useRef, useState } from "react";
 import { PositionedTable } from "@/types/table";
 import { Table, TableStatusColors } from "./table";
 import { Badge } from "../ui/badge";
@@ -38,8 +38,11 @@ export function FloorPlan({
 	onSelectTable,
 	isSearching,
 	selectedLocation,
-}: Readonly<FloorPlanProps>) {
+	ref,
+}: Readonly<FloorPlanProps> & { ref?: Ref<HTMLDivElement> }) {
 	const [cellSize, setCellSize] = useState(DESKTOP_CELL_SIZE);
+	const scrollContainerRef = useRef<HTMLDivElement | null>(null);
+	const tableElementsRef = useRef(new Map<number, HTMLButtonElement>());
 
 	useEffect(() => {
 		const updateCellSize = () => {
@@ -54,6 +57,42 @@ export function FloorPlan({
 		};
 	}, []);
 
+	useEffect(() => {
+		if (!hasActiveSearch || isSearching || topRecommendedId === null) {
+			return;
+		}
+
+		const scrollContainer = scrollContainerRef.current;
+		const recommendedTable = tableElementsRef.current.get(topRecommendedId);
+
+		if (!scrollContainer || !recommendedTable) {
+			return;
+		}
+
+		const frameId = globalThis.requestAnimationFrame(() => {
+			const containerRect = scrollContainer.getBoundingClientRect();
+			const tableRect = recommendedTable.getBoundingClientRect();
+
+			scrollContainer.scrollTo({
+				top:
+					scrollContainer.scrollTop +
+					tableRect.top -
+					containerRect.top -
+					(containerRect.height - tableRect.height) / 2,
+				left:
+					scrollContainer.scrollLeft +
+					tableRect.left -
+					containerRect.left -
+					(containerRect.width - tableRect.width) / 2,
+				behavior: "smooth",
+			});
+		});
+
+		return () => {
+			globalThis.cancelAnimationFrame(frameId);
+		};
+	}, [hasActiveSearch, isSearching, topRecommendedId]);
+
 	const { component: Legend, legend: colors } = legendMaker({
 		Recommended: "#2563eb",
 		Best: "#f59e0b",
@@ -64,7 +103,21 @@ export function FloorPlan({
 
 	return (
 		<div className="relative h-min w-full rounded-2xl border border-slate-200 bg-slate-50 p-4 sm:p-6 lg:max-w-5/7">
-			<div className="max-h-screen w-full overflow-auto rounded-xl border border-slate-200 bg-white shadow-sm px-8">
+			<div
+				ref={(node) => {
+					scrollContainerRef.current = node;
+
+					if (typeof ref === "function") {
+						ref(node);
+						return;
+					}
+
+					if (ref) {
+						ref.current = node;
+					}
+				}}
+				className="max-h-screen w-full overflow-auto rounded-xl border border-slate-200 bg-white shadow-sm px-8"
+			>
 				{Legend}
 
 				<div
@@ -90,6 +143,14 @@ export function FloorPlan({
 									key={table.id}
 									{...table}
 									cellSize={cellSize}
+									elementRef={(node) => {
+										if (node) {
+											tableElementsRef.current.set(table.id, node);
+											return;
+										}
+
+										tableElementsRef.current.delete(table.id);
+									}}
 									onSelect={onSelectTable}
 									isOccupied={isOccupied}
 									isIdle={!hasActiveSearch}

@@ -1,4 +1,5 @@
 import { PositionedTable } from "@/types/table";
+import { Ref } from "react";
 import { FaPeopleGroup } from "react-icons/fa6";
 
 export type TableStatusColors = Record<
@@ -9,6 +10,7 @@ export type TableStatusColors = Record<
 interface TableProps {
 	cellSize: number;
 	onSelect?: (id: number) => void;
+	elementRef?: Ref<HTMLButtonElement>;
 	isRecommended?: boolean;
 	isTopRecommended?: boolean;
 	isOccupied?: boolean;
@@ -27,6 +29,7 @@ export function Table({
 	id,
 	cellSize,
 	onSelect,
+	elementRef,
 	isRecommended,
 	isTopRecommended,
 	isOccupied,
@@ -88,6 +91,7 @@ export function Table({
 
 	return (
 		<button
+			ref={elementRef}
 			type="button"
 			disabled={disabled}
 			onClick={() => onSelect?.(id)}

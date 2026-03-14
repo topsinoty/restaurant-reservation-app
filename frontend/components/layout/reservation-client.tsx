@@ -35,6 +35,7 @@ export function ReservationClient() {
 	const [isBooking, setIsBooking] = useState(false);
 
 	const searchControllerRef = useRef<AbortController | null>(null);
+	const floorRef = useRef<HTMLDivElement>(null);
 
 	const runSearch = useCallback(
 		async (activeFilters: ReservationSearchFilters) => {
@@ -174,6 +175,7 @@ export function ReservationClient() {
 	return (
 		<div className="flex w-full flex-col-reverse gap-6 lg:flex-row">
 			<FloorPlan
+				ref={floorRef}
 				tables={tables}
 				hasActiveSearch={Boolean(filters)}
 				recommendedIds={recommendedIds}
@@ -199,7 +201,7 @@ export function ReservationClient() {
 							<div className="grid grid-cols-2 gap-2 rounded-md bg-slate-50 p-3">
 								<div>Free tables: {availableCount}</div>
 								<div>Occupied tables: {occupiedCount}</div>
-								<div>Recommendation: {recommendedIds.size}</div>
+								<div>Available tables: {recommendedIds.size}</div>
 								<div>
 									Best table: {topRecommendedId ? `#${topRecommendedId}` : "-"}
 								</div>
