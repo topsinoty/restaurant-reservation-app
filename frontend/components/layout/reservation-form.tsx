@@ -14,6 +14,14 @@ import { Field, FieldError, FieldLabel } from "../ui/field";
 import { Input } from "../ui/input";
 import { Calendar } from "../ui/calendar";
 import { Button } from "../ui/button";
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "../ui/select";
+import { TimePicker } from "../ui/time-picker";
 import { FEATURE_LABELS, LOCATION_LABELS } from "@/lib/table-labels";
 import { ReservationSearchFilters } from "@/types/reservation";
 import { TABLE_FEATURES, TABLE_LOCATIONS, TableFeature } from "@/types/table";
@@ -114,11 +122,16 @@ export function ReservationForm({
 					<Controller
 						control={form.control}
 						name="time"
-						render={({ field }) => (
+						render={({ field, fieldState }) => (
 							<Field>
 								<FieldLabel>Time</FieldLabel>
-								<Input type="time" step={60} {...field} />
-								<FieldError errors={[form.formState.errors.time]} />
+								<TimePicker
+									value={field.value}
+									onChange={field.onChange}
+									onBlur={field.onBlur}
+									aria-invalid={fieldState.invalid}
+								/>
+								<FieldError errors={[fieldState.error]} />
 							</Field>
 						)}
 					/>
@@ -147,18 +160,21 @@ export function ReservationForm({
 						render={({ field }) => (
 							<Field>
 								<FieldLabel>Zone</FieldLabel>
-								<select
-									value={field.value}
-									onChange={(e) => field.onChange(e.target.value)}
-									className="h-9 w-full rounded-md border border-input bg-transparent px-3 text-sm shadow-xs transition-[color,box-shadow] outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
+								<Select
+									value={field.value || undefined}
+									onValueChange={field.onChange}
 								>
-									<option value="">-- Select --</option>
-									{TABLE_LOCATIONS.map((location) => (
-										<option key={location} value={location}>
-											{LOCATION_LABELS[location]}
-										</option>
-									))}
-								</select>
+									<SelectTrigger className="w-full">
+										<SelectValue placeholder="-- Select --" />
+									</SelectTrigger>
+									<SelectContent>
+										{TABLE_LOCATIONS.map((location) => (
+											<SelectItem key={location} value={location}>
+												{LOCATION_LABELS[location]}
+											</SelectItem>
+										))}
+									</SelectContent>
+								</Select>
 							</Field>
 						)}
 					/>
