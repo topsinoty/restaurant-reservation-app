@@ -1,6 +1,12 @@
 package com.topsinoty.reservationSystem.service;
 
-import com.topsinoty.reservationSystem.dto.reservation.*;
+import com.topsinoty.reservationSystem.dto.reservation.ReservationBookingRequest;
+import com.topsinoty.reservationSystem.dto.reservation.ReservationBookingResponse;
+import com.topsinoty.reservationSystem.dto.reservation.ReservationCalendarRequest;
+import com.topsinoty.reservationSystem.dto.reservation.ReservationCalendarResponse;
+import com.topsinoty.reservationSystem.dto.reservation.ReservationResponse;
+import com.topsinoty.reservationSystem.dto.reservation.ReservationSearchRequest;
+import com.topsinoty.reservationSystem.dto.reservation.ReservationSearchResponse;
 import com.topsinoty.reservationSystem.exception.ApiException;
 import com.topsinoty.reservationSystem.model.Feature;
 import com.topsinoty.reservationSystem.model.Location;
@@ -19,21 +25,31 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertIterableEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 class ReservationServiceTest {
 
     private ReservationRepository reservationRepository;
     private RestaurantTableRepository tableRepository;
+    private ReservationCalendarService reservationCalendarService;
     private ReservationService reservationService;
 
     @BeforeEach
     void setUp() {
         reservationRepository = mock(ReservationRepository.class);
         tableRepository = mock(RestaurantTableRepository.class);
-        reservationService = new ReservationService(reservationRepository, tableRepository);
+        reservationCalendarService = mock(ReservationCalendarService.class);
+        reservationService = new ReservationService(reservationRepository, tableRepository, reservationCalendarService);
     }
 
     @Test
@@ -50,31 +66,10 @@ class ReservationServiceTest {
         assertIterableEquals(List.of(12L, 11L), result.stream().map(ReservationResponse::id).toList());
         assertIterableEquals(List.of(2, 6), result.stream().map(ReservationResponse::people).toList());
         assertIterableEquals(List.of(15L, 3L), result.stream().map(ReservationResponse::restaurant_table_id).toList());
+        assertIterableEquals(List.of("Jamie Doe", "Jamie Doe"), result.stream().map(ReservationResponse::guestName).toList());
         assertIterableEquals(List.of(LocalTime.of(18, 0), LocalTime.of(19, 0)), result.stream()
                 .map(ReservationResponse::time)
                 .toList());
-    }
-
-    private Reservation makeReservation(Long id, int people, LocalDate date, LocalTime time, Long tableId) {
-        Reservation reservation = new Reservation();
-        reservation.setId(id);
-        reservation.setPeople(people);
-        reservation.setDate(date);
-        reservation.setTime(time);
-        reservation.setEndTime(time.plusHours(2));
-        reservation.setRestaurantTable(makeTable(tableId, Math.max(people, 2), Location.CENTER, Set.of(Feature.QUIET)));
-        return reservation;
-    }
-
-    private RestaurantTable makeTable(Long id, int capacity, Location location, Set<Feature> features) {
-        RestaurantTable table = new RestaurantTable();
-        table.setId(id);
-        table.setCapacity(capacity);
-        table.setLocation(location);
-        table.setFeatures(features);
-        table.setX(0);
-        table.setY(0);
-        return table;
     }
 
     @Test
@@ -88,7 +83,8 @@ class ReservationServiceTest {
 
         assertAll(() -> assertEquals(25L, result.id()), () -> assertEquals(date, result.date()),
                 () -> assertEquals(LocalTime.of(18, 30), result.time()), () -> assertEquals(4, result.people()),
-                () -> assertEquals(1L, result.restaurant_table_id()));
+                () -> assertEquals(1L, result.restaurant_table_id()), () -> assertEquals("Jamie Doe",
+                        result.guestName()));
     }
 
     @Test
@@ -102,10 +98,30 @@ class ReservationServiceTest {
     }
 
     @Test
-    void bookReservation_savesReservationWithTwoHourEndTime() {
+    void generateReservationCalendar_returnsCalendarPreviewForAvailableTable() {
         LocalDate date = LocalDate.of(2030, 6, 15);
         LocalTime time = LocalTime.of(18, 0);
-        ReservationBookingRequest request = new ReservationBookingRequest(7L, date, time, 4);
+        ReservationCalendarRequest request = new ReservationCalendarRequest(7L, date, time, 4);
+        RestaurantTable table = makeTable(7L, 4, Location.CORNER, Set.of(Feature.QUIET));
+        ReservationCalendarResponse preview = new ReservationCalendarResponse("reservation.ics",
+                "text/calendar;charset=utf-8", "BEGIN:VCALENDAR", "Reservation", "Table #7 (CORNER)", date, time,
+                time.plusHours(2));
+
+        when(tableRepository.isTableFree(7L, date, time, time.plusHours(2))).thenReturn(true);
+        when(tableRepository.findById(7L)).thenReturn(Optional.of(table));
+        when(reservationCalendarService.generateInvite(table, date, time, time.plusHours(2), 4)).thenReturn(preview);
+
+        ReservationCalendarResponse result = reservationService.generateReservationCalendar(request);
+
+        assertSame(preview, result);
+        verify(reservationCalendarService).generateInvite(table, date, time, time.plusHours(2), 4);
+    }
+
+    @Test
+    void bookReservation_savesReservationWithGuestNameAndTwoHourEndTime() {
+        LocalDate date = LocalDate.of(2030, 6, 15);
+        LocalTime time = LocalTime.of(18, 0);
+        ReservationBookingRequest request = new ReservationBookingRequest(7L, date, time, 4, "Jamie Doe");
         RestaurantTable table = makeTable(7L, 4, Location.CORNER, Set.of(Feature.QUIET));
 
         when(tableRepository.isTableFree(7L, date, time, time.plusHours(2))).thenReturn(true);
@@ -124,17 +140,18 @@ class ReservationServiceTest {
 
         assertAll(() -> assertEquals(500L, result.id()), () -> assertEquals(date, result.date()),
                 () -> assertEquals(time, result.time()), () -> assertEquals(4, result.people()),
-                () -> assertEquals(7L, result.table()), () -> assertEquals(date, savedReservation.getDate()),
-                () -> assertEquals(time, savedReservation.getTime()), () -> assertEquals(time.plusHours(2),
-                        savedReservation.getEndTime()), () -> assertEquals(4, savedReservation.getPeople()),
-                () -> assertSame(table, savedReservation.getRestaurantTable()));
+                () -> assertEquals(7L, result.table()), () -> assertEquals("Jamie Doe", result.guestName()),
+                () -> assertEquals(date, savedReservation.getDate()), () -> assertEquals(time,
+                        savedReservation.getTime()), () -> assertEquals(time.plusHours(2), savedReservation.getEndTime()),
+                () -> assertEquals(4, savedReservation.getPeople()), () -> assertEquals("Jamie Doe",
+                        savedReservation.getGuestName()), () -> assertSame(table, savedReservation.getRestaurantTable()));
     }
 
     @Test
     void bookReservation_throwsConflictWhenTableIsAlreadyBooked() {
         LocalDate date = LocalDate.of(2030, 6, 15);
         LocalTime time = LocalTime.of(18, 0);
-        ReservationBookingRequest request = new ReservationBookingRequest(7L, date, time, 4);
+        ReservationBookingRequest request = new ReservationBookingRequest(7L, date, time, 4, "Jamie Doe");
 
         when(tableRepository.isTableFree(7L, date, time, time.plusHours(2))).thenReturn(false);
 
@@ -150,7 +167,7 @@ class ReservationServiceTest {
     void bookReservation_throwsNotFoundWhenTableDoesNotExist() {
         LocalDate date = LocalDate.of(2030, 6, 15);
         LocalTime time = LocalTime.of(18, 0);
-        ReservationBookingRequest request = new ReservationBookingRequest(99L, date, time, 4);
+        ReservationBookingRequest request = new ReservationBookingRequest(99L, date, time, 4, "Jamie Doe");
 
         when(tableRepository.isTableFree(99L, date, time, time.plusHours(2))).thenReturn(true);
         when(tableRepository.findById(99L)).thenReturn(Optional.empty());
@@ -166,7 +183,7 @@ class ReservationServiceTest {
     void bookReservation_throwsBadRequestWhenPartyExceedsCapacity() {
         LocalDate date = LocalDate.of(2030, 6, 15);
         LocalTime time = LocalTime.of(18, 0);
-        ReservationBookingRequest request = new ReservationBookingRequest(7L, date, time, 6);
+        ReservationBookingRequest request = new ReservationBookingRequest(7L, date, time, 6, "Jamie Doe");
         RestaurantTable table = makeTable(7L, 4, Location.CENTER, Set.of(Feature.ROMANTIC));
 
         when(tableRepository.isTableFree(7L, date, time, time.plusHours(2))).thenReturn(true);
@@ -226,17 +243,6 @@ class ReservationServiceTest {
         verify(tableRepository).findAvailableTables(4, date, time, time.plusHours(2));
     }
 
-    private long featureMatchCount(ReservationSearchResponse response) {
-        if (response.features()==null) {
-            return 0;
-        }
-
-        return response.features()
-                .stream()
-                .filter(feature -> feature==Feature.QUIET || feature==Feature.WINDOW_SIDE)
-                .count();
-    }
-
     @Test
     void getPossibleTablesForReservation_sortsByCapacityWhenPreferencesAreMissing() {
         LocalDate date = LocalDate.of(2030, 6, 15);
@@ -255,5 +261,39 @@ class ReservationServiceTest {
         assertIterableEquals(List.of(11L, 12L, 10L), result.stream().map(ReservationSearchResponse::id).toList());
         assertIterableEquals(List.of(2, 4, 6), result.stream().map(ReservationSearchResponse::capacity).toList());
         assertNull(result.get(1).features());
+    }
+
+    private Reservation makeReservation(Long id, int people, LocalDate date, LocalTime time, Long tableId) {
+        Reservation reservation = new Reservation();
+        reservation.setId(id);
+        reservation.setPeople(people);
+        reservation.setDate(date);
+        reservation.setTime(time);
+        reservation.setEndTime(time.plusHours(2));
+        reservation.setGuestName("Jamie Doe");
+        reservation.setRestaurantTable(makeTable(tableId, Math.max(people, 2), Location.CENTER, Set.of(Feature.QUIET)));
+        return reservation;
+    }
+
+    private RestaurantTable makeTable(Long id, int capacity, Location location, Set<Feature> features) {
+        RestaurantTable table = new RestaurantTable();
+        table.setId(id);
+        table.setCapacity(capacity);
+        table.setLocation(location);
+        table.setFeatures(features);
+        table.setX(0);
+        table.setY(0);
+        return table;
+    }
+
+    private long featureMatchCount(ReservationSearchResponse response) {
+        if (response.features()==null) {
+            return 0;
+        }
+
+        return response.features()
+                .stream()
+                .filter(feature -> feature==Feature.QUIET || feature==Feature.WINDOW_SIDE)
+                .count();
     }
 }

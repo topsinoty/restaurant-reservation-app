@@ -2,6 +2,8 @@ import { ApiResult } from "@/types/api-result";
 import {
 	ReservationBookingRequest,
 	ReservationBookingResponse,
+	ReservationCalendarRequest,
+	ReservationCalendarResponse,
 	ReservationSearchFilters,
 	ReservationSearchResponse,
 } from "@/types/reservation";
@@ -114,4 +116,21 @@ export async function bookReservation(
 			time: normalizeTime(request.time),
 		}),
 	});
+}
+
+export async function prepareReservationCalendar(
+	request: ReservationCalendarRequest,
+): Promise<ReservationCalendarResponse> {
+	const result = await apiRequest<ReservationCalendarResponse>(
+		"/api/reservations/calendar",
+		{
+			method: "POST",
+			body: JSON.stringify({
+				...request,
+				time: normalizeTime(request.time),
+			}),
+		},
+	);
+
+	return result.data;
 }

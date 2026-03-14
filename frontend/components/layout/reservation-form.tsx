@@ -1,7 +1,6 @@
 "use client";
 
 import {
-	CalendarDays,
 	Clock3,
 	MapPin,
 	SlidersHorizontal,

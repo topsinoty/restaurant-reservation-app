@@ -47,6 +47,15 @@ public class ReservationController {
         return ResponseEntity.ok(ApiResult.success("Fetched available tables", tables));
     }
 
+    @PostMapping("/calendar")
+    public ResponseEntity<ApiResult<ReservationCalendarResponse>> generateReservationCalendar(
+            @Valid @RequestBody ReservationCalendarRequest request) {
+
+        ReservationCalendarResponse calendar = reservationService.generateReservationCalendar(request);
+        log.info("Generated reservation calendar preview for table #{}", request.tableId());
+        return ResponseEntity.ok(ApiResult.success("Generated reservation calendar preview", calendar));
+    }
+
     @PostMapping("/book")
     public ResponseEntity<ApiResult<ReservationBookingResponse>> bookReservation(
             @Valid @RequestBody ReservationBookingRequest request) {

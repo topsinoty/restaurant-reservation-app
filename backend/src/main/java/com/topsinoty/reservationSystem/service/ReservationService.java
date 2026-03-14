@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Comparator;
 import java.util.List;
@@ -25,17 +26,21 @@ public class ReservationService {
 
     private final ReservationRepository reservationRepository;
     private final RestaurantTableRepository tableRepository;
+    private final ReservationCalendarService reservationCalendarService;
 
-    public ReservationService(ReservationRepository reservationRepository, RestaurantTableRepository tableRepository) {
+    public ReservationService(ReservationRepository reservationRepository,
+                              RestaurantTableRepository tableRepository,
+                              ReservationCalendarService reservationCalendarService) {
         this.reservationRepository = reservationRepository;
         this.tableRepository = tableRepository;
+        this.reservationCalendarService = reservationCalendarService;
     }
 
     public List<ReservationResponse> findAll() {
         return reservationRepository.findAll()
                 .stream()
                 .map(r -> new ReservationResponse(r.getId(), r.getTime(), r.getDate(), r.getPeople(), r.getRestaurantTable()
-                        .getId()))
+                        .getId(), r.getGuestName()))
                 .sorted(Comparator.comparingInt(ReservationResponse::people))
                 .toList();
     }
@@ -43,40 +48,36 @@ public class ReservationService {
     public ReservationResponse findById(Long id) {
         return reservationRepository.findById(id)
                 .map(r -> new ReservationResponse(r.getId(), r.getTime(), r.getDate(), r.getPeople(), r.getRestaurantTable()
-                        .getId()))
+                        .getId(), r.getGuestName()))
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "Reservation not found with id: " + id));
+    }
+
+    public ReservationCalendarResponse generateReservationCalendar(ReservationCalendarRequest request) {
+        ReservationDraft reservationDraft = validateReservation(request.tableId(), request.date(), request.time(),
+                request.people());
+
+        return reservationCalendarService.generateInvite(reservationDraft.table(), request.date(), request.time(),
+                reservationDraft.endTime(), request.people());
     }
 
     @Transactional
     public ReservationBookingResponse bookReservation(ReservationBookingRequest request) {
 
-        LocalTime endTime = request.time().plus(RESERVATION_DURATION);
-
-        boolean tableFree = tableRepository.isTableFree(request.tableId(), request.date(), request.time(), endTime);
-
-        if (!tableFree) {
-            throw new ApiException(HttpStatus.CONFLICT, "Table is not available for the selected time");
-        }
-
-        RestaurantTable table = tableRepository.findById(request.tableId())
-                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
-                        "Table not found with id: " + request.tableId()));
-
-        if (request.people() > table.getCapacity()) {
-            throw new ApiException(HttpStatus.BAD_REQUEST, "Table capacity is too small for the requested size");
-        }
+        ReservationDraft reservationDraft = validateReservation(request.tableId(), request.date(), request.time(),
+                request.people());
 
         Reservation reservation = new Reservation();
         reservation.setTime(request.time());
-        reservation.setEndTime(endTime);
+        reservation.setEndTime(reservationDraft.endTime());
         reservation.setDate(request.date());
         reservation.setPeople(request.people());
-        reservation.setRestaurantTable(table);
+        reservation.setGuestName(request.guestName().trim());
+        reservation.setRestaurantTable(reservationDraft.table());
 
         Reservation saved = reservationRepository.save(reservation);
 
         return new ReservationBookingResponse(saved.getId(), saved.getDate(), saved.getTime(), saved.getPeople(), saved.getRestaurantTable()
-                .getId());
+                .getId(), saved.getGuestName());
     }
 
     @Transactional
@@ -116,5 +117,27 @@ public class ReservationService {
         }
 
         return requestedFeatures.stream().filter(table.getFeatures()::contains).count();
+    }
+
+    private ReservationDraft validateReservation(Long tableId, LocalDate date, LocalTime time, Integer people) {
+        LocalTime endTime = time.plus(RESERVATION_DURATION);
+
+        boolean tableFree = tableRepository.isTableFree(tableId, date, time, endTime);
+
+        if (!tableFree) {
+            throw new ApiException(HttpStatus.CONFLICT, "Table is not available for the selected time");
+        }
+
+        RestaurantTable table = tableRepository.findById(tableId)
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "Table not found with id: " + tableId));
+
+        if (people > table.getCapacity()) {
+            throw new ApiException(HttpStatus.BAD_REQUEST, "Table capacity is too small for the requested size");
+        }
+
+        return new ReservationDraft(table, endTime);
+    }
+
+    private record ReservationDraft(RestaurantTable table, LocalTime endTime) {
     }
 }

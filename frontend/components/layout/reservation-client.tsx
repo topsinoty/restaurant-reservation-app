@@ -8,10 +8,14 @@ import { ReservationForm } from "./reservation-form";
 import {
 	bookReservation,
 	fetchRestaurantTables,
+	prepareReservationCalendar,
 	searchAvailableTables,
 } from "@/lib/reservation-api";
 import { FEATURE_LABELS, LOCATION_LABELS } from "@/lib/table-labels";
-import { ReservationSearchFilters } from "@/types/reservation";
+import {
+	ReservationCalendarResponse,
+	ReservationSearchFilters,
+} from "@/types/reservation";
 import { PositionedTable } from "@/types/table";
 import {
 	Card,
@@ -34,6 +38,9 @@ export function ReservationClient() {
 		useState<ReservationSearchFilters["location"]>(null);
 	const [isSearching, setIsSearching] = useState(false);
 	const [isBookingDialogOpen, setIsBookingDialogOpen] = useState(false);
+	const [calendarInvite, setCalendarInvite] =
+		useState<ReservationCalendarResponse | null>(null);
+	const [isPreparingInvite, setIsPreparingInvite] = useState(false);
 	const [isBooking, setIsBooking] = useState(false);
 
 	const searchControllerRef = useRef<AbortController | null>(null);
@@ -132,12 +139,9 @@ export function ReservationClient() {
 	}, [filters, runSearch]);
 
 	useEffect(() => {
-		if (
-			!filters ||
-			!selectedTableId ||
-			!availableIds.has(selectedTableId)
-		) {
+		if (!filters || !selectedTableId || !availableIds.has(selectedTableId)) {
 			setIsBookingDialogOpen(false);
+			setCalendarInvite(null);
 		}
 	}, [availableIds, filters, selectedTableId]);
 
@@ -165,28 +169,80 @@ export function ReservationClient() {
 		return occupied;
 	}
 
-	const occupiedCount = getOccupiedTableCount(tables, availableIds, selectedLocation);
+	const occupiedCount = getOccupiedTableCount(
+		tables,
+		availableIds,
+		selectedLocation,
+	);
 
-	async function handleBookSelectedTable(payload: BookingDialogPayload) {
+	function downloadCalendarInvite(invite: ReservationCalendarResponse) {
+		const blob = new Blob([invite.content], {
+			type: invite.contentType,
+		});
+		const url = URL.createObjectURL(blob);
+		const link = document.createElement("a");
+
+		link.href = url;
+		link.download = invite.fileName;
+		document.body.append(link);
+		link.click();
+		link.remove();
+
+		globalThis.setTimeout(() => {
+			URL.revokeObjectURL(url);
+		}, 0);
+	}
+
+	async function handleOpenBookingDialog() {
 		if (!filters || !selectedTableId) {
-			return false;
+			return;
 		}
 
-		// Guest details and iCal generation will be wired into the backend later.
-		void payload;
-
-		setIsBooking(true);
+		setIsPreparingInvite(true);
+		setCalendarInvite(null);
 
 		try {
-			const bookingResult = await bookReservation({
+			const invite = await prepareReservationCalendar({
 				tableId: selectedTableId,
 				date: filters.date,
 				time: filters.time,
 				people: filters.people,
 			});
 
-			toast.success(bookingResult.message);
+			setCalendarInvite(invite);
+			setIsBookingDialogOpen(true);
+		} catch (error) {
+			const message =
+				error instanceof Error
+					? error.message
+					: "Calendar invite preparation failed";
+			toast.error(message);
+		} finally {
+			setIsPreparingInvite(false);
+		}
+	}
 
+	async function handleBookSelectedTable(payload: BookingDialogPayload) {
+		if (!filters || !selectedTableId || !calendarInvite) {
+			return false;
+		}
+
+		setIsBooking(true);
+
+		try {
+			const invite = calendarInvite;
+			const bookingResult = await bookReservation({
+				tableId: selectedTableId,
+				date: filters.date,
+				time: filters.time,
+				people: filters.people,
+				guestName: payload.guestName,
+			});
+
+			toast.success(bookingResult.message);
+			downloadCalendarInvite(invite);
+
+			setCalendarInvite(null);
 			await runSearch(filters);
 			return true;
 		} catch (error) {
@@ -203,6 +259,8 @@ export function ReservationClient() {
 			setSelectedTableId(null);
 			setFilters(data);
 			setSelectedLocation(data.location);
+			setCalendarInvite(null);
+			setIsBookingDialogOpen(false);
 
 			floorRef.current?.scrollIntoView({
 				behavior: "smooth",
@@ -249,9 +307,7 @@ export function ReservationClient() {
 							<div className="grid grid-cols-2 gap-2 rounded-md bg-slate-50 p-3">
 								<div>Occupied tables: {occupiedCount}</div>
 								<div>Available tables: {availableIds.size}</div>
-								<div>
-									Best table: {bestTableId ? `#${bestTableId}` : "-"}
-								</div>
+								<div>Best table: {bestTableId ? `#${bestTableId}` : "-"}</div>
 							</div>
 							<div className="rounded-md border p-3">
 								<p className="font-medium">Selected filters</p>
@@ -289,16 +345,28 @@ export function ReservationClient() {
 							</div>
 							<Button
 								type="button"
-								onClick={() => setIsBookingDialogOpen(true)}
-								disabled={!canBookSelectedTable || isBooking}
+								onClick={handleOpenBookingDialog}
+								disabled={
+									!canBookSelectedTable || isBooking || isPreparingInvite
+								}
 							>
-								{isBooking ? "Booking..." : "Book selected table..."}
+								{isPreparingInvite
+									? "Preparing invite..."
+									: isBooking
+										? "Booking..."
+										: "Continue to booking"}
 							</Button>
 							<BookingDialog
 								open={isBookingDialogOpen}
-								onOpenChange={setIsBookingDialogOpen}
+								onOpenChange={(nextOpen) => {
+									setIsBookingDialogOpen(nextOpen);
+									if (!nextOpen && !isBooking) {
+										setCalendarInvite(null);
+									}
+								}}
 								filters={filters}
 								selectedTable={selectedTable}
+								calendarInvite={calendarInvite}
 								isBooking={isBooking}
 								onConfirm={handleBookSelectedTable}
 							/>
@@ -310,6 +378,8 @@ export function ReservationClient() {
 					onClear={() => {
 						setFilters(null);
 						setSelectedLocation(null);
+						setCalendarInvite(null);
+						setIsBookingDialogOpen(false);
 					}}
 					isSearching={isSearching}
 				/>

@@ -4,7 +4,6 @@ import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import {
 	CalendarDays,
 	Clock3,
-	Mail,
 	MapPin,
 	NotebookPen,
 	Users,
@@ -13,7 +12,10 @@ import {
 import { Controller, useForm } from "react-hook-form";
 import { object, string, z } from "zod";
 import { LOCATION_LABELS } from "@/lib/table-labels";
-import { ReservationSearchFilters } from "@/types/reservation";
+import {
+	ReservationCalendarResponse,
+	ReservationSearchFilters,
+} from "@/types/reservation";
 import { PositionedTable } from "@/types/table";
 import { Button } from "../ui/button";
 import {
@@ -44,7 +46,7 @@ const defaultValues: BookingDialogValues = {
 };
 
 export type BookingDialogPayload = {
-	name: string;
+	guestName: string;
 };
 
 type BookingDialogProps = {
@@ -52,6 +54,7 @@ type BookingDialogProps = {
 	onOpenChange: (open: boolean) => void;
 	filters: ReservationSearchFilters | null;
 	selectedTable: PositionedTable | null;
+	calendarInvite: ReservationCalendarResponse | null;
 	isBooking: boolean;
 	onConfirm: (payload: BookingDialogPayload) => Promise<boolean>;
 };
@@ -61,6 +64,7 @@ export function BookingDialog({
 	onOpenChange,
 	filters,
 	selectedTable,
+	calendarInvite,
 	isBooking,
 	onConfirm,
 }: Readonly<BookingDialogProps>) {
@@ -71,7 +75,7 @@ export function BookingDialog({
 
 	async function handleSubmit(values: BookingDialogValues) {
 		const wasBooked = await onConfirm({
-			name: values.guestName,
+			guestName: values.guestName,
 		});
 
 		if (!wasBooked) {
@@ -96,8 +100,8 @@ export function BookingDialog({
 				<DialogHeader>
 					<DialogTitle>Complete your booking</DialogTitle>
 					<DialogDescription>
-						Add the guest details that the backend will later use for the
-						reservation receipt and iCal invite.
+						The calendar invite is ready. Add your name to confirm the
+						reservation.
 					</DialogDescription>
 				</DialogHeader>
 
@@ -171,6 +175,22 @@ export function BookingDialog({
 							<NotebookPen className="mt-0.5 size-4 text-muted-foreground" />
 							<div>
 								<p className="font-medium">Calendar invite</p>
+								{calendarInvite ? (
+									<>
+										<p className="text-muted-foreground">
+											{calendarInvite.summary}
+										</p>
+										<p className="text-muted-foreground">
+											{calendarInvite.fileName}
+										</p>
+										<p className="text-muted-foreground">
+											It will download automatically after the booking is
+											confirmed.
+										</p>
+									</>
+								) : (
+									<p className="text-muted-foreground">Preparing invite...</p>
+								)}
 							</div>
 						</div>
 					</div>
@@ -183,9 +203,9 @@ export function BookingDialog({
 						</DialogClose>
 						<Button
 							type="submit"
-							disabled={!filters || !selectedTable || isBooking}
+							disabled={!filters || !selectedTable || !calendarInvite || isBooking}
 						>
-							{isBooking ? "Booking..." : "Book table"}
+							{isBooking ? "Booking..." : "Confirm booking"}
 						</Button>
 					</DialogFooter>
 				</form>
