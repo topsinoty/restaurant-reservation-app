@@ -7,7 +7,7 @@ import {
 	SlidersHorizontal,
 	Users,
 } from "lucide-react";
-import { iso, number, object, string, array, literal, z } from "zod";
+import { iso, object, string, array, literal, z, int } from "zod";
 import { Controller, useForm } from "react-hook-form";
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import {
@@ -18,7 +18,6 @@ import {
 	CardTitle,
 } from "../ui/card";
 import { Field, FieldError, FieldLabel } from "../ui/field";
-import { Input } from "../ui/input";
 import { Calendar } from "../ui/calendar";
 import { Button } from "../ui/button";
 import {
@@ -40,7 +39,7 @@ const reservationBookingSchema = object({
 	time: string().regex(TIME_24H_REGEX, {
 		error: "Use 24-hour format HH:mm",
 	}),
-	people: number().min(1).max(12),
+	people: int().min(1).max(12),
 	location: z.union([literal(""), z.enum(TABLE_LOCATIONS)]),
 	preferredFeatures: array(z.enum(TABLE_FEATURES)),
 });
@@ -156,10 +155,10 @@ export function ReservationForm({
 									</FieldLabel>
 									<Select
 										value={field.value.toString()}
-										onValueChange={field.onChange}
+										onValueChange={(value) => field.onChange(Number(value))}
 									>
 										<SelectTrigger className="w-full">
-											<SelectValue></SelectValue>
+											<SelectValue />
 										</SelectTrigger>
 										<SelectContent>
 											{Array.from({ length: 11 }, (_, i) => i)
