@@ -1,5 +1,12 @@
 "use client";
 
+import {
+	CalendarDays,
+	Clock3,
+	MapPin,
+	SlidersHorizontal,
+	Users,
+} from "lucide-react";
 import { iso, number, object, string, array, literal, z } from "zod";
 import { Controller, useForm } from "react-hook-form";
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
@@ -99,8 +106,6 @@ export function ReservationForm({
 						name="date"
 						render={({ field }) => (
 							<Field>
-								<FieldLabel>Date</FieldLabel>
-
 								<Calendar
 									mode="single"
 									selected={field.value ? new Date(field.value) : undefined}
@@ -119,47 +124,68 @@ export function ReservationForm({
 						)}
 					/>
 
-					<Controller
-						control={form.control}
-						name="time"
-						render={({ field, fieldState }) => (
-							<Field>
-								<FieldLabel>Time</FieldLabel>
-								<TimePicker
-									value={field.value}
-									onChange={field.onChange}
-									onBlur={field.onBlur}
-									aria-invalid={fieldState.invalid}
-								/>
-								<FieldError errors={[fieldState.error]} />
-							</Field>
-						)}
-					/>
+					<div className="flex flex-wrap gap-4">
+						<Controller
+							control={form.control}
+							name="time"
+							render={({ field, fieldState }) => (
+								<Field className="min-w-48 md:min-w-12 flex-1">
+									<FieldLabel>
+										<Clock3 className="size-4 text-muted-foreground" />
+										Time
+									</FieldLabel>
+									<TimePicker
+										value={field.value}
+										onChange={field.onChange}
+										onBlur={field.onBlur}
+										aria-invalid={fieldState.invalid}
+									/>
+									<FieldError errors={[fieldState.error]} />
+								</Field>
+							)}
+						/>
 
-					<Controller
-						control={form.control}
-						name="people"
-						render={({ field }) => (
-							<Field>
-								<FieldLabel>People</FieldLabel>
-								<Input
-									type="number"
-									min={1}
-									max={12}
-									value={field.value}
-									onChange={(e) => field.onChange(Number(e.target.value))}
-								/>
-								<FieldError errors={[form.formState.errors.people]} />
-							</Field>
-						)}
-					/>
+						<Controller
+							control={form.control}
+							name="people"
+							render={({ field }) => (
+								<Field className="min-w-48 flex-1">
+									<FieldLabel>
+										<Users className="size-4 text-muted-foreground" />
+										People
+									</FieldLabel>
+									<Select
+										value={field.value.toString()}
+										onValueChange={field.onChange}
+									>
+										<SelectTrigger className="w-full">
+											<SelectValue></SelectValue>
+										</SelectTrigger>
+										<SelectContent>
+											{Array.from({ length: 11 }, (_, i) => i)
+												.slice(2)
+												.map((i) => (
+													<SelectItem key={i} value={i.toString()}>
+														{i}
+													</SelectItem>
+												))}
+										</SelectContent>
+									</Select>
+									<FieldError errors={[form.formState.errors.people]} />
+								</Field>
+							)}
+						/>
+					</div>
 
 					<Controller
 						control={form.control}
 						name="location"
 						render={({ field }) => (
 							<Field>
-								<FieldLabel>Zone</FieldLabel>
+								<FieldLabel>
+									<MapPin className="size-4 text-muted-foreground" />
+									Zone
+								</FieldLabel>
 								<Select
 									value={field.value || undefined}
 									onValueChange={field.onChange}
@@ -195,7 +221,10 @@ export function ReservationForm({
 
 							return (
 								<Field>
-									<FieldLabel>Preferences</FieldLabel>
+									<FieldLabel>
+										<SlidersHorizontal className="size-4 text-muted-foreground" />
+										Preferences
+									</FieldLabel>
 
 									<div className="grid gap-2 sm:grid-cols-2">
 										{preferenceOptions.map((feature) => {
