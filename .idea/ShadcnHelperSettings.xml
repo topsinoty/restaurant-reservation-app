@@ -1662,6 +1662,161 @@
         <option name="homepage" value="https://emerald-ui.com" />
         <option name="urlTemplate" value="https://emerald-ui.com/r/{name}.json" />
       </RegistryConfigState>
+      <RegistryConfigState>
+        <option name="id" value="central-spell" />
+        <option name="name" value="Spell" />
+        <option name="namespace" value="@spell" />
+        <option name="baseUrl" value="https://spell.sh/r" />
+        <option name="stylePath" value="/{name}.json" />
+        <option name="type" value="community" />
+        <option name="enabled" value="false" />
+        <option name="description" value="Beautiful, sophisticated UI components designed for modern React and Tailwind CSS applications." />
+        <option name="homepage" value="https://spell.sh" />
+        <option name="urlTemplate" value="https://spell.sh/r/{name}.json" />
+      </RegistryConfigState>
+      <RegistryConfigState>
+        <option name="id" value="central-iconiq" />
+        <option name="name" value="Iconiq" />
+        <option name="namespace" value="@iconiq" />
+        <option name="baseUrl" value="https://iconiqui.com/r" />
+        <option name="stylePath" value="/{name}.json" />
+        <option name="type" value="community" />
+        <option name="enabled" value="false" />
+        <option name="description" value="Iconiq is a collection of icons designed for web applications. It is a modern, clean, and minimalistic icon set that is perfect for web applications." />
+        <option name="homepage" value="https://iconiqui.com" />
+        <option name="urlTemplate" value="https://iconiqui.com/r/{name}.json" />
+      </RegistryConfigState>
+      <RegistryConfigState>
+        <option name="id" value="central-fonttrio" />
+        <option name="name" value="Fonttrio" />
+        <option name="namespace" value="@fonttrio" />
+        <option name="baseUrl" value="https://www.fonttrio.xyz/r" />
+        <option name="stylePath" value="/{name}.json" />
+        <option name="type" value="community" />
+        <option name="enabled" value="false" />
+        <option name="description" value="Curated font pairing registry for shadcn. Three fonts. One command. Install perfectly configured typography (heading + body + mono) with shadcn add. Includes editorial-grade type scales, CSS variables, and a live preview site." />
+        <option name="homepage" value="https://www.fonttrio.xyz" />
+        <option name="urlTemplate" value="https://www.fonttrio.xyz/r/{name}.json" />
+      </RegistryConfigState>
+      <RegistryConfigState>
+        <option name="id" value="central-componentry" />
+        <option name="name" value="Componentry" />
+        <option name="namespace" value="@componentry" />
+        <option name="baseUrl" value="https://componentry.fun/r" />
+        <option name="stylePath" value="/{name}.json" />
+        <option name="type" value="community" />
+        <option name="enabled" value="false" />
+        <option name="description" value="Beautiful, interactive React + Tailwind components for modern product UIs." />
+        <option name="homepage" value="https://componentry.fun" />
+        <option name="urlTemplate" value="https://componentry.fun/r/{name}.json" />
+      </RegistryConfigState>
+      <RegistryConfigState>
+        <option name="id" value="central-fluid" />
+        <option name="name" value="Fluid" />
+        <option name="namespace" value="@fluid" />
+        <option name="baseUrl" value="https://www.fluidfunctionalism.com/r" />
+        <option name="stylePath" value="/{name}.json" />
+        <option name="type" value="community" />
+        <option name="enabled" value="false" />
+        <option name="description" value="Fluid components used exclusively in service of functional clarity. Proximity hover, spring animations, font-weight transitions, and animated focus rings." />
+        <option name="homepage" value="https://www.fluidfunctionalism.com" />
+        <option name="urlTemplate" value="https://www.fluidfunctionalism.com/r/{name}.json" />
+      </RegistryConfigState>
+      <RegistryConfigState>
+        <option name="id" value="central-kapwa" />
+        <option name="name" value="Kapwa" />
+        <option name="namespace" value="@kapwa" />
+        <option name="baseUrl" value="https://kapwa-two.vercel.app/r" />
+        <option name="stylePath" value="/{name}.json" />
+        <option name="type" value="community" />
+        <option name="enabled" value="false" />
+        <option name="description" value="Cleanly designed components purposely built for open-source government portals." />
+        <option name="homepage" value="https://kapwa-two.vercel.app" />
+        <option name="urlTemplate" value="https://kapwa-two.vercel.app/r/{name}.json" />
+      </RegistryConfigState>
+      <RegistryConfigState>
+        <option name="id" value="central-nessra-ui" />
+        <option name="name" value="Nessra-ui" />
+        <option name="namespace" value="@nessra-ui" />
+        <option name="baseUrl" value="https://nessra-ui.vercel.app/r" />
+        <option name="stylePath" value="/{name}.json" />
+        <option name="type" value="community" />
+        <option name="enabled" value="false" />
+        <option name="description" value="Beautiful, accessible components built with Tailwind CSS v4 and Radix UI. Includes auth blocks, data tables, and TanStack Form integration." />
+        <option name="homepage" value="https://nessra-ui.vercel.app" />
+        <option name="urlTemplate" value="https://nessra-ui.vercel.app/r/{name}.json" />
+      </RegistryConfigState>
+      <RegistryConfigState>
+        <option name="id" value="central-shadcnmaps" />
+        <option name="name" value="Shadcnmaps" />
+        <option name="namespace" value="@shadcnmaps" />
+        <option name="baseUrl" value="https://shadcnmaps.com/r" />
+        <option name="stylePath" value="/{name}.json" />
+        <option name="type" value="community" />
+        <option name="enabled" value="false" />
+        <option name="description" value="Beautiful map components powered by pure SVG." />
+        <option name="homepage" value="https://shadcnmaps.com" />
+        <option name="urlTemplate" value="https://shadcnmaps.com/r/{name}.json" />
+      </RegistryConfigState>
+      <RegistryConfigState>
+        <option name="id" value="central-shadcnstore" />
+        <option name="name" value="Shadcnstore" />
+        <option name="namespace" value="@shadcnstore" />
+        <option name="baseUrl" value="https://shadcnstore.com/r" />
+        <option name="stylePath" value="/{name}.json" />
+        <option name="type" value="community" />
+        <option name="enabled" value="false" />
+        <option name="description" value="A growing collection of shadcn/ui components, blocks, and templates for building modern web apps." />
+        <option name="homepage" value="https://www.shadcnstore.com" />
+        <option name="urlTemplate" value="https://shadcnstore.com/r/{name}.json" />
+      </RegistryConfigState>
+      <RegistryConfigState>
+        <option name="id" value="central-gammaui" />
+        <option name="name" value="Gammaui" />
+        <option name="namespace" value="@gammaui" />
+        <option name="baseUrl" value="https://www.gammaui.com/r" />
+        <option name="stylePath" value="/{name}.json" />
+        <option name="type" value="community" />
+        <option name="enabled" value="false" />
+        <option name="description" value="Beautifully designed landing page components built with React &amp; Tailwind CSS &amp; Motion." />
+        <option name="homepage" value="https://www.gammaui.com" />
+        <option name="urlTemplate" value="https://www.gammaui.com/r/{name}.json" />
+      </RegistryConfigState>
+      <RegistryConfigState>
+        <option name="id" value="central-jalco" />
+        <option name="name" value="Jalco" />
+        <option name="namespace" value="@jalco" />
+        <option name="baseUrl" value="https://ui.justinlevine.me/r" />
+        <option name="stylePath" value="/{name}.json" />
+        <option name="type" value="community" />
+        <option name="enabled" value="false" />
+        <option name="description" value="A curated collection of GitHub-integrated, documentation, and developer-facing components. Self-contained, zero-dependency, and production-ready." />
+        <option name="homepage" value="https://ui.justinlevine.me" />
+        <option name="urlTemplate" value="https://ui.justinlevine.me/r/{name}.json" />
+      </RegistryConfigState>
+      <RegistryConfigState>
+        <option name="id" value="central-pacekit-gsap" />
+        <option name="name" value="Pacekit-gsap" />
+        <option name="namespace" value="@pacekit-gsap" />
+        <option name="baseUrl" value="https://gsap.pacekit.dev/r" />
+        <option name="stylePath" value="/{name}.json" />
+        <option name="type" value="community" />
+        <option name="enabled" value="false" />
+        <option name="description" value="Animated GSAP components crafted for smooth interaction and rich detail." />
+        <option name="homepage" value="https://gsap.pacekit.dev" />
+        <option name="urlTemplate" value="https://gsap.pacekit.dev/r/{name}.json" />
+      </RegistryConfigState>
+      <RegistryConfigState>
+        <option name="id" value="central-waves-cn" />
+        <option name="name" value="Waves-cn" />
+        <option name="namespace" value="@waves-cn" />
+        <option name="baseUrl" value="https://waves-cn.vercel.app" />
+        <option name="type" value="community" />
+        <option name="enabled" value="false" />
+        <option name="description" value="A collection of wave players and waveform components built with wavesurfer.js and shadcn/ui." />
+        <option name="homepage" value="https://waves-cn.vercel.app/r/{name}.json" />
+        <option name="urlTemplate" value="https://waves-cn.vercel.app" />
+      </RegistryConfigState>
     </registryConfigs>
   </component>
 </project>
