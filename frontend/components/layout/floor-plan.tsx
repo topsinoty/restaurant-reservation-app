@@ -261,7 +261,9 @@ const legendMaker = (
 							className="h-3 w-3 rounded-sm border border-slate-300"
 							style={{ backgroundColor: color }}
 						/>
-						<span>{key === "Neutral" ? "Unavailable" : key} Table</span>
+						<span>
+							{key === "Neutral" ? "Unavailable" : key} Table{"(s)"}
+						</span>
 					</Badge>
 				))}
 			</div>
