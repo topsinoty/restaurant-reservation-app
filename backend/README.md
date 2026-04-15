@@ -150,36 +150,10 @@ Base routes:
 - Docker
 - Java 25
 
-### 1. Start PostgreSQL
+### Run with Docker
 
-From the repository root:
-
-```bash
-docker compose up -d
-```
-
-### 2. Initialize the schema on a clean database
-
-The current runtime config uses `spring.jpa.hibernate.ddl-auto=validate`, which expects the schema to already exist. On a brand-new local database, run the backend once with schema generation enabled:
-
-```bash
-SPRING_JPA_HIBERNATE_DDL_AUTO=create-only ./mvnw spring-boot:run
-```
-
-After the schema has been created, stop the application.
-
-### 3. Run the backend normally
-
-```bash
-./mvnw spring-boot:run
-```
-
-The app seeds table data automatically when the table repository is empty.
-
-### 4. Run tests
-
-```bash
-./mvnw test
+```sh
+docker compose -f 'compose.yaml' up -d --build 'postgres' --build 'backend'
 ```
 
 ## Configuration
@@ -206,7 +180,7 @@ Tests use the H2 configuration from `src/test/resources/application.properties`.
 
 ## Submission Notes
 
-- Time spent on the backend: about 61 hours
+- Time spent on the backend: about 63 hours
 - Main challenges:
   - Learning Spring Boot after receiving the task
   - Understanding Spring conventions and project structure
