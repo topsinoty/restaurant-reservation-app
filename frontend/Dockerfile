@@ -134,7 +134,7 @@ COPY --from=builder --chown=node:node /app/public ./public
 
 # Set the correct permission for prerender cache
 RUN mkdir .next
-RUN chown node:node .next
+&& chown node:node .next
 
 # Automatically leverage output traces to reduce image size
 # https://nextjs.org/docs/advanced-features/output-file-tracing
