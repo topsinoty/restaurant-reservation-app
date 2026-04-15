@@ -290,6 +290,7 @@ export function ReservationClient() {
 				onSelectTable={setSelectedTableId}
 				isSearching={isSearching}
 				selectedLocation={selectedLocation}
+                minimumSize={filters?.people ?? 0}
 			/>
 
 			<div className="flex w-full flex-col-reverse lg:flex-col gap-6 lg:max-w-2/7">
