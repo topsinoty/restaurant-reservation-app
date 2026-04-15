@@ -1,9 +1,50 @@
 services:
   postgres:
-    image: 'postgres:alpine3.19'
+    image: postgres:16-alpine
     environment:
-      - 'POSTGRES_DB=restaurantDB'
-      - 'POSTGRES_PASSWORD=password'
-      - 'POSTGRES_USER=sa'
+      POSTGRES_DB: restaurantDB
+      POSTGRES_PASSWORD: password
+      POSTGRES_USER: sa
     ports:
-      - '5432:5432'
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sa -d restaurantDB"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build:
+      context: ./backend
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/restaurantDB
+      SPRING_DATASOURCE_USERNAME: sa
+      SPRING_DATASOURCE_PASSWORD: password
+      SPRING_DOCKER_COMPOSE_ENABLED: "false"
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "${BACKEND_PORT:-8080}:8080"
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_API_BASE_URL:-http://localhost:8080}
+    environment:
+      HOSTNAME: 0.0.0.0
+      NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_API_BASE_URL:-http://localhost:8080}
+      NODE_ENV: production
+      PORT: 3000
+    depends_on:
+      backend:
+        condition: service_started
+    ports:
+      - "${FRONTEND_PORT:-3000}:3000"
+
+volumes:
+  postgres_data:
