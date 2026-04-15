@@ -12,7 +12,7 @@ Full-stack restaurant reservation prototype built for the CGI suvepraktika assig
 
 - `backend/` - Spring Boot API and business logic
 - `frontend/` - Next.js client application
-- `compose.yaml` - local PostgreSQL container
+- `compose.yaml` - Backend and Frontend docker compose
 
 Detailed component-level documentation:
 
