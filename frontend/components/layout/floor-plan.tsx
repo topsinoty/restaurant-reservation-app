@@ -253,26 +253,29 @@ const legendMaker = (
 	className: string = "",
 ) => {
 	const component = (
-		<div className="mb-3 flex flex-wrap items-center gap-4 px-2 py-2 pt-4 text-xs font-medium text-slate-800">
-			{Object.entries(legend.TABLE).map(([key, color]) => (
-				<Badge key={key} className={`flex items-center gap-2 ${className}`}>
-					<span
-						className="h-3 w-3 rounded-sm border border-slate-300"
-						style={{ backgroundColor: color }}
-					/>
-					<span>{key}</span>
-				</Badge>
-			))}
-			{"|"}
-			{Object.entries(legend.ZONE).map(([key, color]) => (
-				<Badge key={key} className={`flex items-center gap-2 ${className}`}>
-					<span
-						className="h-3 w-3 rounded-sm border border-slate-300"
-						style={{ backgroundColor: color }}
-					/>
-					<span>{key} ZONE</span>
-				</Badge>
-			))}
+		<div className="mb-3 flex flex-wrap justify-center gap-4 px-2 py-2 pt-4 text-xs font-medium text-slate-800 flex-col">
+			<div className="flex gap-4">
+				{Object.entries(legend.TABLE).map(([key, color]) => (
+					<Badge key={key} className={`flex items-center gap-2 ${className}`}>
+						<span
+							className="h-3 w-3 rounded-sm border border-slate-300"
+							style={{ backgroundColor: color }}
+						/>
+						<span>{key === "Neutral" ? "Unavailable" : key} Table</span>
+					</Badge>
+				))}
+			</div>
+			<div className="flex gap-4">
+				{Object.entries(legend.ZONE).map(([key, color]) => (
+					<Badge key={key} className={`flex items-center gap-2 ${className}`}>
+						<span
+							className="h-3 w-3 rounded-sm border border-slate-300"
+							style={{ backgroundColor: color }}
+						/>
+						<span className="capitalize">{key.toLowerCase()} Zone</span>
+					</Badge>
+				))}
+			</div>
 		</div>
 	);
 	return { legend, component };
