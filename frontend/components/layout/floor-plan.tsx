@@ -106,8 +106,8 @@ export function FloorPlan({
 		},
 		ZONE: {
 			[TABLE_LOCATIONS[1]]: " #fef3c6",
-			[TABLE_LOCATIONS[2]]: "oklch(93% 0.034 272.788)",
-			[TABLE_LOCATIONS[0]]: "oklch(95.2% 0.037 318.852)",
+			[TABLE_LOCATIONS[2]]: "oklch(87% 0.065 274.039)",
+			[TABLE_LOCATIONS[0]]: "oklch(90.3% 0.076 319.62)",
 		},
 	});
 
