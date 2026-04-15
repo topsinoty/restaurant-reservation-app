@@ -1,9 +1,50 @@
 services:
   postgres:
-    image: 'postgres:alpine3.19'
+    image: postgres:16-alpine
     environment:
-      - 'POSTGRES_DB=restaurantDB'
-      - 'POSTGRES_PASSWORD=password'
-      - 'POSTGRES_USER=sa'
+      POSTGRES_DB: ${POSTGRES_DB?POSTGRES_DB is required}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD?POSTGRES_PASSWORD is required}
+      POSTGRES_USER: ${POSTGRES_USER?POSTGRES_USER is required}
     ports:
-      - '5432:5432'
+      - "${POSTGRES_PORT?POSTGRES_PORT is required}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build:
+      context: ./backend
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+      SPRING_JPA_HIBERNATE_DDL_AUTO: ${DB_DDL?DB_DDL is required}
+      SPRING_DOCKER_COMPOSE_ENABLED: "false"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "${BACKEND_PORT?BACKEND_PORT is required}:8080"
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_API_BASE_URL?NEXT_PUBLIC_API_BASE_URL is required}
+    environment:
+      HOSTNAME: 0.0.0.0
+      NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_API_BASE_URL}
+      NODE_ENV: ${NODE_ENV?NODE_ENV is required}
+      PORT: ${FRONTEND_PORT?FRONTEND_PORT is required}
+    depends_on:
+      backend:
+        condition: service_started
+    ports:
+      - "${FRONTEND_PORT?FRONTEND_PORT is required}:3000"
+
+volumes:
+  postgres_data:

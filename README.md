@@ -57,61 +57,47 @@ Missing or partial:
 ### Prerequisites
 
 - Docker
-- Java 25
-- Node.js
-- pnpm
+- .env file
 
-### 1. Start PostgreSQL
+### Create the env file
+
+Use the `.env.example` as basis
+
+```bash
+cat .env.example > .env
+```
+
+### Start the full stack
 
 From the repository root:
 
 ```bash
-docker compose up -d
-```
-
-### 2. Initialize the backend schema on a clean database
-
-The backend currently defaults to `spring.jpa.hibernate.ddl-auto=validate`. On a brand-new local PostgreSQL database, run the backend once with schema generation enabled:
-
-```bash
-cd backend
-SPRING_JPA_HIBERNATE_DDL_AUTO=create-only ./mvnw spring-boot:run
-```
-
-After the schema is created, stop the backend and start it normally:
-
-```bash
-./mvnw spring-boot:run
-```
-
-Backend base URL: `http://localhost:8080`
-
-### 3. Run the frontend
-
-From `frontend/`:
-
-```bash
-pnpm install
-pnpm dev
+docker compose up --build
 ```
 
 Frontend URL: `http://localhost:3000`
 
-## Checks
+Backend base URL: `http://localhost:8080`
 
-Backend:
+PostgreSQL is still exposed on `localhost:5432` with:
+
+- Database: `restaurantDB`
+- User: `sa`
+- Password: `supersecret`
+
+
+The Docker Compose backend uses `SPRING_JPA_HIBERNATE_DDL_AUTO=update`, so a clean PostgreSQL volume is initialized automatically. The database is persisted in the `postgres_data` Docker volume.
+
+The frontend build uses `NEXT_PUBLIC_API_BASE_URL=http://localhost:8080` by default. To point the browser client somewhere else, rebuild with:
 
 ```bash
-cd backend
-./mvnw test
+NEXT_PUBLIC_API_BASE_URL=http://your-api-host:8080 docker compose up --build
 ```
 
-Frontend:
+If one of the default host ports is already busy, override the published port:
 
 ```bash
-cd frontend
-pnpm lint
-pnpm build
+FRONTEND_PORT=3001 docker compose up --build
 ```
 
 ## Known Limitations
@@ -119,18 +105,18 @@ pnpm build
 - Backend table ranking still needs refinement
 - Backend Swagger / OpenAPI docs are missing
 - Backend test coverage is still limited, and frontend tests are not implemented yet
-- A first-run schema initialization step is still needed on a clean PostgreSQL database because migrations are not set up yet
 
 ## Submission Notes
 
-- Approximate total time spent: about 114 hours
-- Backend time: about 61 hours
+- Approximate total time spent: about 122 hours
+- Backend time: about 63 hours
 - Frontend time: about 53 hours
 - Main challenges:
   - Learning Spring Boot while doing the assignment
   - Reworking the reservation model after an early data-model mistake made the calculations awkward
   - Moving the frontend floor plan from a simple grid to coordinate-based positioning
   - Combining frontend and backend work that started in separate branches
+  - Reading Docs and configuring Docker for seamless build
 - How those challenges were handled:
   - Official docs and tutorial material
   - Trial and error

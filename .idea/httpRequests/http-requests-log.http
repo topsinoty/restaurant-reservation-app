@@ -1,9 +1,0 @@
-GET http://localhost:8080/api/reservations/available
-User-Agent: IntelliJ HTTP Client/IntelliJ IDEA 2025.3.2
-Accept-Encoding: br, deflate, gzip, x-gzip
-Accept: */*
-
-<> 2026-03-12T122620.400.json
-
-###
-

@@ -15,6 +15,7 @@ type FloorPlanProps = {
 	onSelectTable: (id: number) => void;
 	isSearching?: boolean;
 	selectedLocation?: ReservationSearchFilters["location"];
+	minimumSize: number;
 };
 
 const MOBILE_BREAKPOINT = 726;
@@ -39,7 +40,10 @@ export function FloorPlan({
 	isSearching,
 	selectedLocation,
 	ref,
-}: Readonly<FloorPlanProps> & { ref?: Ref<HTMLDivElement> }) {
+	minimumSize,
+}: Readonly<FloorPlanProps> & {
+	ref?: Ref<HTMLDivElement>;
+}) {
 	const [cellSize, setCellSize] = useState(DESKTOP_CELL_SIZE);
 	const scrollContainerRef = useRef<HTMLDivElement | null>(null);
 	const tableElementsRef = useRef(new Map<number, HTMLButtonElement>());
@@ -94,11 +98,29 @@ export function FloorPlan({
 	}, [bestTableId, hasActiveSearch, isSearching]);
 
 	const { component: Legend, legend: colors } = legendMaker({
-		Best: "#f59e0b",
-		Available: "#A7F3D0",
-		Occupied: "#ef4444",
-		Neutral: "#c8c8c8",
+		TABLE: {
+			Best: "#f59e0b",
+			Available: "#A7F3D0",
+			Occupied: "#ef4444",
+			Neutral: "#c8c8c8",
+		},
+		ZONE: {
+			[TABLE_LOCATIONS[1]]: " #fef3c6",
+			[TABLE_LOCATIONS[2]]: "oklch(87% 0.065 274.039)",
+			[TABLE_LOCATIONS[0]]: "oklch(90.3% 0.076 319.62)",
+		},
 	});
+
+	const getTableStatus = (table: PositionedTable) => {
+		console.log();
+		const tooSmall = table.capacity < minimumSize;
+		const occupied =
+			hasActiveSearch && !tooSmall ? !availableIds.has(table.id) : false;
+		return {
+			occupied,
+			tooSmall,
+		};
+	};
 
 	return (
 		<div className="relative h-min w-full rounded-2xl border border-slate-200 bg-slate-50 p-4 sm:p-6 lg:max-w-5/7">
@@ -132,13 +154,12 @@ export function FloorPlan({
 
 					<div className="absolute inset-0">
 						{tables.map((table) => {
-							const isOccupied = hasActiveSearch
-								? !availableIds.has(table.id)
-								: false;
+							const isOccupied = getTableStatus(table).occupied;
+							const isTooSmall = getTableStatus(table).tooSmall;
 
 							return (
 								<Table
-									colors={colors}
+									colors={colors.TABLE}
 									key={table.id}
 									{...table}
 									cellSize={cellSize}
@@ -161,6 +182,7 @@ export function FloorPlan({
 										selectedLocation !== null &&
 										table.location !== selectedLocation
 									}
+									isTooSmall={isTooSmall}
 								/>
 							);
 						})}
@@ -168,7 +190,7 @@ export function FloorPlan({
 
 					<div
 						title={TABLE_LOCATIONS[1]}
-						className="absolute z-0 rounded-b-xl border border-slate-200 border-dashed bg-slate-50"
+						className="absolute z-0 rounded-b-xl border border-slate-200 border-dashed bg-amber-100"
 						style={{
 							width: cellSize * 1.2,
 							height: cellSize * 3.95,
@@ -179,7 +201,7 @@ export function FloorPlan({
 
 					<div
 						title={TABLE_LOCATIONS[1]}
-						className="absolute z-0 rounded-xl border border-slate-200 border-dashed bg-slate-50"
+						className="absolute z-0 rounded-xl border border-slate-200 border-dashed bg-amber-100"
 						style={{
 							width: cellSize * 8,
 							height: cellSize * 1.05,
@@ -190,7 +212,7 @@ export function FloorPlan({
 
 					<div
 						title={TABLE_LOCATIONS[2]}
-						className="absolute z-0 rounded-xl border border-slate-200 border-dashed bg-slate-50"
+						className="absolute z-0 rounded-xl border border-slate-200 border-dashed bg-fuchsia-100"
 						style={{
 							width: cellSize * 2.2,
 							height: cellSize * 3.95,
@@ -201,7 +223,7 @@ export function FloorPlan({
 
 					<div
 						title={TABLE_LOCATIONS[0]}
-						className="absolute z-0 rounded-xl border border-slate-200 border-dashed bg-slate-50"
+						className="absolute z-0 rounded-xl border border-slate-200 border-dashed bg-indigo-100"
 						style={{
 							width: cellSize * 3.2,
 							height: cellSize * 3.2,
@@ -223,18 +245,39 @@ export function FloorPlan({
 	);
 }
 
-const legendMaker = (legend: TableStatusColors, className: string = "") => {
+const legendMaker = (
+	legend: {
+		ZONE: Record<(typeof TABLE_LOCATIONS)[number], string>;
+		TABLE: TableStatusColors;
+	},
+	className: string = "",
+) => {
 	const component = (
-		<div className="mb-3 flex flex-wrap items-center gap-4 px-2 py-2 pt-4 text-xs font-medium text-slate-800">
-			{Object.entries(legend).map(([key, color]) => (
-				<Badge key={key} className={`flex items-center gap-2 ${className}`}>
-					<span
-						className="h-3 w-3 rounded-sm border border-slate-300"
-						style={{ backgroundColor: color }}
-					/>
-					<span>{key}</span>
-				</Badge>
-			))}
+		<div className="mb-3 flex flex-wrap justify-center gap-4 px-2 py-2 pt-4 text-xs font-medium text-slate-800 flex-col">
+			<div className="flex gap-4">
+				{Object.entries(legend.TABLE).map(([key, color]) => (
+					<Badge key={key} className={`flex items-center gap-2 ${className}`}>
+						<span
+							className="h-3 w-3 rounded-sm border border-slate-300"
+							style={{ backgroundColor: color }}
+						/>
+						<span>
+							{key === "Neutral" ? "Unavailable" : key} Table{"(s)"}
+						</span>
+					</Badge>
+				))}
+			</div>
+			<div className="flex gap-4">
+				{Object.entries(legend.ZONE).map(([key, color]) => (
+					<Badge key={key} className={`flex items-center gap-2 ${className}`}>
+						<span
+							className="h-3 w-3 rounded-sm border border-slate-300"
+							style={{ backgroundColor: color }}
+						/>
+						<span className="capitalize">{key.toLowerCase()} Zone</span>
+					</Badge>
+				))}
+			</div>
 		</div>
 	);
 	return { legend, component };

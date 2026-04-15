@@ -28,7 +28,7 @@ public interface RestaurantTableRepository extends ListCrudRepository<Restaurant
                                               @Param("endTime") LocalTime endTime);
 
     @Query("""
-            SELECT CASE WHEN COUNT(r) = 0 THEN true ELSE false END
+            SELECT COUNT(r) = 0
             FROM Reservation r
             WHERE r.restaurantTable.id = :tableId
             AND r.date = :date
