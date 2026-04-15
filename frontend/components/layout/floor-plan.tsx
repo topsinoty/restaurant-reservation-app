@@ -98,10 +98,17 @@ export function FloorPlan({
 	}, [bestTableId, hasActiveSearch, isSearching]);
 
 	const { component: Legend, legend: colors } = legendMaker({
-		Best: "#f59e0b",
-		Available: "#A7F3D0",
-		Occupied: "#ef4444",
-		Neutral: "#c8c8c8",
+		TABLE: {
+			Best: "#f59e0b",
+			Available: "#A7F3D0",
+			Occupied: "#ef4444",
+			Neutral: "#c8c8c8",
+		},
+		ZONE: {
+			[TABLE_LOCATIONS[1]]: " #fef3c6",
+			[TABLE_LOCATIONS[2]]: "oklch(93% 0.034 272.788)",
+			[TABLE_LOCATIONS[0]]: "oklch(95.2% 0.037 318.852)",
+		},
 	});
 
 	const getTableStatus = (table: PositionedTable) => {
@@ -152,7 +159,7 @@ export function FloorPlan({
 
 							return (
 								<Table
-									colors={colors}
+									colors={colors.TABLE}
 									key={table.id}
 									{...table}
 									cellSize={cellSize}
@@ -183,7 +190,7 @@ export function FloorPlan({
 
 					<div
 						title={TABLE_LOCATIONS[1]}
-						className="absolute z-0 rounded-b-xl border border-slate-200 border-dashed bg-slate-50"
+						className="absolute z-0 rounded-b-xl border border-slate-200 border-dashed bg-amber-100"
 						style={{
 							width: cellSize * 1.2,
 							height: cellSize * 3.95,
@@ -194,7 +201,7 @@ export function FloorPlan({
 
 					<div
 						title={TABLE_LOCATIONS[1]}
-						className="absolute z-0 rounded-xl border border-slate-200 border-dashed bg-slate-50"
+						className="absolute z-0 rounded-xl border border-slate-200 border-dashed bg-amber-100"
 						style={{
 							width: cellSize * 8,
 							height: cellSize * 1.05,
@@ -205,7 +212,7 @@ export function FloorPlan({
 
 					<div
 						title={TABLE_LOCATIONS[2]}
-						className="absolute z-0 rounded-xl border border-slate-200 border-dashed bg-slate-50"
+						className="absolute z-0 rounded-xl border border-slate-200 border-dashed bg-fuchsia-100"
 						style={{
 							width: cellSize * 2.2,
 							height: cellSize * 3.95,
@@ -216,7 +223,7 @@ export function FloorPlan({
 
 					<div
 						title={TABLE_LOCATIONS[0]}
-						className="absolute z-0 rounded-xl border border-slate-200 border-dashed bg-slate-50"
+						className="absolute z-0 rounded-xl border border-slate-200 border-dashed bg-indigo-100"
 						style={{
 							width: cellSize * 3.2,
 							height: cellSize * 3.2,
@@ -238,16 +245,32 @@ export function FloorPlan({
 	);
 }
 
-const legendMaker = (legend: TableStatusColors, className: string = "") => {
+const legendMaker = (
+	legend: {
+		ZONE: Record<(typeof TABLE_LOCATIONS)[number], string>;
+		TABLE: TableStatusColors;
+	},
+	className: string = "",
+) => {
 	const component = (
 		<div className="mb-3 flex flex-wrap items-center gap-4 px-2 py-2 pt-4 text-xs font-medium text-slate-800">
-			{Object.entries(legend).map(([key, color]) => (
+			{Object.entries(legend.TABLE).map(([key, color]) => (
 				<Badge key={key} className={`flex items-center gap-2 ${className}`}>
 					<span
 						className="h-3 w-3 rounded-sm border border-slate-300"
 						style={{ backgroundColor: color }}
 					/>
 					<span>{key}</span>
+				</Badge>
+			))}
+			{"|"}
+			{Object.entries(legend.ZONE).map(([key, color]) => (
+				<Badge key={key} className={`flex items-center gap-2 ${className}`}>
+					<span
+						className="h-3 w-3 rounded-sm border border-slate-300"
+						style={{ backgroundColor: color }}
+					/>
+					<span>{key} ZONE</span>
 				</Badge>
 			))}
 		</div>
